@@ -27,77 +27,37 @@ spec:
           {{- end -}}
     spec:
       containers:
-      - name: develop-execution-app-{{PR_NUMBER}}
-        image: registry.digitalocean.com/karpatkey/execution-app:pr{{DOCKER_TAG}}
-        imagePullPolicy: Always
-        command:
-          ['/bin/sh', '-c']
-        args:
-          ['source /vault/secrets/develop-execution-app && node server.js']
-        ports:
-        - containerPort: 3000
-          protocol: TCP
-        env:
-        - name: AUTH0_BASE_URL
-          value: "{{PR_SUBDOMAIN}}"
+        - name: develop-execution-app-{{PR_NUMBER}}
+          image: registry.digitalocean.com/karpatkey/execution-app:pr{{DOCKER_TAG}}
+          imagePullPolicy: Always
+          command: ['/bin/sh', '-c']
+          args: ['source /vault/secrets/develop-execution-app && node server.js']
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          env:
+            - name: AUTH0_BASE_URL
+              value: '{{PR_SUBDOMAIN}}'
 
-        - name: DATA_WAREHOUSE_ENV
-          value: development
+            - name: DATA_WAREHOUSE_ENV
+              value: development
 
-        - name: MODE
-          value: development
+            - name: MODE
+              value: development
 
-        - name: LOCAL_FORK_PORT_ETHEREUM
-          value: "8546"
+            - name: PULLEY_URL
+              value: 'http://localhost:4000'
 
-        - name: LOCAL_FORK_PORT_GNOSIS
-          value: "8547"
-
-         # LOCAL_FORK_HOST = anvil
-
-
-      - name: ethereum
-        image: ghcr.io/foundry-rs/foundry:latest
-        imagePullPolicy: Always
-
-        command:
-          - 'anvil'
-        args:
-          - '--accounts'
-          - '15'
-          - '-f'
-          - 'https://rpc.mevblocker.io'
-          - '--port'
-          - '8546'
-          - '--host'
-          - '0.0.0.0'
-
-        ports:
-        - containerPort: 8546
-          protocol: TCP
-
-      - name: gnosis
-        image: ghcr.io/foundry-rs/foundry:latest
-        imagePullPolicy: Always
-
-        command:
-          - 'anvil'
-        args:
-          - '--accounts'
-          - '15'
-          - '-f'
-          - 'https://rpc.gnosischain.com/'
-          - '--port'
-          - '8547'
-          - '--host'
-          - '0.0.0.0'
-
-        ports:
-        - containerPort: 8547
-          protocol: TCP
+        - name: pulley
+          image: registry.digitalocean.com/karpatkey/pulley:main
+          imagePullPolicy: Always
+          env:
+            - name: ETHEREUM_RPC_ENDPOINT
+              value: 'https://rpc.mevblocker.io'
+            - name: GNOSIS_RPC_ENDPOINT
+              value: 'https://rpc.gnosischain.com'
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -105,10 +65,10 @@ metadata:
   namespace: agile-pr-review
 spec:
   ports:
-  - port: 3000
-    name: one
-    protocol: TCP
-    targetPort: 3000
+    - port: 3000
+      name: one
+      protocol: TCP
+      targetPort: 3000
 
   selector:
     app: develop-execution-app-{{PR_NUMBER}}
