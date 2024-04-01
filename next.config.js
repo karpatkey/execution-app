@@ -3,7 +3,7 @@ const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   images: {
-    domains: ['panic.karpatkey.com', 'localhost', 'panic.karpatkey.dev']
+    domains: ['agile.karpatkey.com', 'localhost', 'agile.karpatkey.dev']
   },
   experimental: {
     externalDir: true

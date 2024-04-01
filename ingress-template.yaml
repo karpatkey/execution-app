@@ -10,8 +10,8 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-buffering: "on"
     nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"  # Adjust buffer size as needed
     nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
-  name: develop-panic-button-app-ingress-{{PR_NUMBER}}
-  namespace: panic-pr-review
+  name: develop-execution-app-ingress-{{PR_NUMBER}}
+  namespace: agile-pr-review
 spec:
   # ingressClassName: nginx
   rules:
@@ -20,7 +20,7 @@ spec:
       paths:
       - backend:
           service:
-            name: develop-panic-button-app-{{PR_NUMBER}}
+            name: develop-execution-app-{{PR_NUMBER}}
             port:
               number: 3000
         pathType: ImplementationSpecific

@@ -37,7 +37,7 @@ jobs:
         id: docker_meta
         uses: docker/metadata-action@v5
         with:
-          images: registry.digitalocean.com/karpatkey/panic-button-app
+          images: registry.digitalocean.com/karpatkey/execution-app
           tags: |
             type=raw,value=pr${{ env.PR_SHA }}
             ${{ steps.extract_branch.outputs.branch }}

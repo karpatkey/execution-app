@@ -16,10 +16,10 @@ export type DAO_MAPPER_TYPE = {
   config: any
 }
 
-const EXECUTE_FILE_PATH = 'roles_royce/roles_royce/applications/panic_button_app/execute.py'
-const SIMULATE_FILE_PATH = 'roles_royce/roles_royce/applications/panic_button_app/simulate.py'
+const EXECUTE_FILE_PATH = 'roles_royce/roles_royce/applications/execution_app/execute.py'
+const SIMULATE_FILE_PATH = 'roles_royce/roles_royce/applications/execution_app/simulate.py'
 const TRANSACTION_BUILDER_FILE_PATH =
-  'roles_royce/roles_royce/applications/panic_button_app/transaction_builder.py'
+  'roles_royce/roles_royce/applications/execution_app/transaction_builder.py'
 
 export enum DEFAULT_VALUES_KEYS {
   dao = 'dao',

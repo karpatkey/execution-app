@@ -2,38 +2,38 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: develop-panic-button-app-{{PR_NUMBER}}
-  name: develop-panic-button-app-{{PR_NUMBER}}
-  namespace: panic-pr-review
+    app: develop-execution-app-{{PR_NUMBER}}
+  name: develop-execution-app-{{PR_NUMBER}}
+  namespace: agile-pr-review
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: develop-panic-button-app-{{PR_NUMBER}}
+      app: develop-execution-app-{{PR_NUMBER}}
   template:
     metadata:
       labels:
-        app: develop-panic-button-app-{{PR_NUMBER}}
+        app: develop-execution-app-{{PR_NUMBER}}
       annotations:
         vault.hashicorp.com/agent-inject: 'true'
         vault.hashicorp.com/agent-inject-status: 'update'
         vault.hashicorp.com/role: 'internal-app'
-        vault.hashicorp.com/agent-inject-secret-develop-panic-button-app: 'internal/data/develop-panic-button-app'
-        vault.hashicorp.com/agent-inject-template-develop-panic-button-app: |
-          {{- with secret "internal/data/develop-panic-button-app" -}}
+        vault.hashicorp.com/agent-inject-secret-develop-execution-app: 'internal/data/develop-execution-app'
+        vault.hashicorp.com/agent-inject-template-develop-execution-app: |
+          {{- with secret "internal/data/develop-execution-app" -}}
             {{- range $key, $value := .Data.data }}
               export {{ $key }}={{ $value }}
             {{- end }}
           {{- end -}}
     spec:
       containers:
-      - name: develop-panic-button-app-{{PR_NUMBER}}
-        image: registry.digitalocean.com/karpatkey/panic-button-app:pr{{DOCKER_TAG}}
+      - name: develop-execution-app-{{PR_NUMBER}}
+        image: registry.digitalocean.com/karpatkey/execution-app:pr{{DOCKER_TAG}}
         imagePullPolicy: Always
         command:
           ['/bin/sh', '-c']
         args:
-          ['source /vault/secrets/develop-panic-button-app && node server.js']
+          ['source /vault/secrets/develop-execution-app && node server.js']
         ports:
         - containerPort: 3000
           protocol: TCP
@@ -101,8 +101,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: develop-panic-button-app-{{PR_NUMBER}}
-  namespace: panic-pr-review
+  name: develop-execution-app-{{PR_NUMBER}}
+  namespace: agile-pr-review
 spec:
   ports:
   - port: 3000
@@ -111,4 +111,4 @@ spec:
     targetPort: 3000
 
   selector:
-    app: develop-panic-button-app-{{PR_NUMBER}}
+    app: develop-execution-app-{{PR_NUMBER}}

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # GitHub repository and PR API endpoint
-GITHUB_REPO="karpatkey/panic-button-app"
+GITHUB_REPO="karpatkey/execution-app"
 GITHUB_SHA=$1
 GITHUB_API_URL="https://api.github.com/repos/${GITHUB_REPO}/commits/${GITHUB_SHA}/pulls"
 
@@ -22,14 +22,14 @@ INGRESS_TEMPLATE="ingress-template.yaml"
 TEMP_DEPLOYMENT_FILE="deployment-temp.yaml"
 TEMP_INGRESS_FILE="ingress-temp.yaml"
 
-sed "s|{{PR_SUBDOMAIN}}|${PR_NUMBER}-panic.karpatkey.dev|g" ${DEPLOYMENT_TEMPLATE} > ${TEMP_DEPLOYMENT_FILE}
+sed "s|{{PR_SUBDOMAIN}}|${PR_NUMBER}-agile.karpatkey.dev|g" ${DEPLOYMENT_TEMPLATE} > ${TEMP_DEPLOYMENT_FILE}
 
 sed -i "s|{{DOCKER_TAG}}|${DOCKER_TAG}|g" ${TEMP_DEPLOYMENT_FILE}
 
 sed -i "s|{{PR_NUMBER}}|${PR_NUMBER}|g" ${TEMP_DEPLOYMENT_FILE}
 
 # Create temporary ingress file by setting the subdomain
-sed "s|{{PR_SUBDOMAIN}}|${PR_NUMBER}-panic.karpatkey.dev|g" ${INGRESS_TEMPLATE} > ${TEMP_INGRESS_FILE}
+sed "s|{{PR_SUBDOMAIN}}|${PR_NUMBER}-agile.karpatkey.dev|g" ${INGRESS_TEMPLATE} > ${TEMP_INGRESS_FILE}
 
 sed -i "s|{{PR_NUMBER}}|${PR_NUMBER}|g" ${TEMP_INGRESS_FILE}
 

@@ -1,5 +1,5 @@
 {
-  "name": "panic-button-app",
+  "name": "execution-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -79,7 +79,7 @@
   },
   "lint-staged": {
     "src/**/*.+(js,ts,tsx)": [
-      "eslint -c ./dapps/panic-button/.eslintrc.json -cache --fix",
+      "eslint -c ./dapps/execution-app/.eslintrc.json -cache --fix",
       "tsc-files --noEmit"
     ],
     "src/**/*.{js,ts,tsx,css,md,json}": [
