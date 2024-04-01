@@ -26,10 +26,13 @@ const DAO_MAPPER: Record<string, string> = {
 
 function filteredObject(raw: any, allowed: string[]) {
   function match(key: string, rule: string) {
-    rule = rule.split('*').join('.*')
-    rule = '^' + rule + '$'
-    const regex = new RegExp(rule)
-    return regex.test(key)
+    if (rule[0] == '*') {
+      return key.endsWith(rule.substring(1))
+    }
+    if (rule[rule.length - 1] == '*') {
+      return key.startsWith(rule.substring(0, rule.length - 1))
+    }
+    return false
   }
   return Object.keys(process.env)
     .filter((key) => allowed.includes(key) || allowed.find((r) => match(key, r)))
@@ -46,20 +49,16 @@ async function executorEnv(blockchain: string) {
   const fork = await Pulley.start(chain)
 
   const filtered = filteredObject(process.env, [
-    'SHELL',
     'PATH',
-    'PWD',
-    // 'LANG',
-    // 'HOME',
     'MODE',
     'ENVIRONMENT',
-
     '*_AVATAR_SAFE_ADDRESS',
     '*_ROLES_MOD_ADDRESS',
     '*_ROLE',
     '*_DISASSEMBLER_ADDRESS',
     'TENDERLY_*',
   ])
+
   const env = {
     ...filtered,
     LOCAL_FORK_URL: fork.url,
