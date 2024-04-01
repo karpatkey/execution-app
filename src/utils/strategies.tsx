@@ -2,14 +2,13 @@ import { BLOCKCHAIN, DAO, ExecConfig, getStrategyByPositionId } from 'src/config
 import { Position } from 'src/contexts/state'
 
 export const getStrategy = (daosConfigs: any[], position: Position) => {
-  const { dao, position_id: positionId, protocol, blockchain } = position
+  const { dao, pool_id, blockchain } = position
 
   const config: ExecConfig = getStrategyByPositionId(
     daosConfigs,
     dao as DAO,
     blockchain as unknown as BLOCKCHAIN,
-    protocol,
-    positionId
+    pool_id,
   )
   return config
 }

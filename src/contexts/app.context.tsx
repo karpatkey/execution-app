@@ -1,14 +1,14 @@
 import React, { createContext, useReducer } from 'react'
 import { Actions } from './actions'
-import { initialState, InitialState } from './state'
 import { mainReducer } from './reducers'
+import { InitialState, initialState } from './state'
 
 const AppContext = createContext<{
   state: InitialState
   dispatch: React.Dispatch<Actions>
 }>({
   state: initialState,
-  dispatch: () => undefined
+  dispatch: () => undefined,
 })
 
 interface AppProviderProps {

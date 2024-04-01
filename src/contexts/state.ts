@@ -1,21 +1,55 @@
+import { ExecConfig } from 'src/config/strategies/manager'
+
 export enum Status {
   Loading = 'Loading',
-  Finished = 'Finished'
+  Finished = 'Finished',
+}
+
+export type Token = {
+  symbol: string
+  as: 'supply' | 'borrow' | 'reward' | 'other' | 'core'
+  amount: number
+  price: number
+  // updatedAt: number
 }
 
 export type Position = {
-  position_id: string
   dao: string
+  pool_id: string
   protocol: string
   blockchain: string
   lptoken_address: string
-  lptoken_name: string
-  isActive: boolean | undefined
+  lptokenName: string
+  positionType?: string
+  usd_amount: number
+  updated_at: number
+  tokens?: Token[]
+}
+
+export type PositionWithStrategies = Position & {
+  isActive: boolean
+  strategies: ExecConfig
+}
+
+export type DBankInfo = {
+  chain: string
+  wallet: string
+  protocol_name: string
+  position: string
+  pool_id: string
+  position_type: string
+  token_type: string
+  symbol: string
+  amount: number
+  price: number
+  datetime: number
 }
 
 export type Strategy = {
   id: string
+  dao: string
   name: string
+  pool_id: string
   description: string
   rewards_address: Maybe<string>
   max_slippage: Maybe<number>
@@ -25,7 +59,6 @@ export type Strategy = {
   percentage: Maybe<number>
   blockchain: Maybe<string>
   protocol: Maybe<string>
-  position_id: Maybe<string>
   position_name: Maybe<string>
 }
 
@@ -38,7 +71,12 @@ export enum SetupItemStatus {
   NotDone = 'not done',
   Loading = 'loading',
   Failed = 'failed',
-  Success = 'success'
+  Success = 'success',
+}
+
+export enum State {
+  Active = 'Active',
+  Inactive = 'Inactive',
 }
 
 export enum SetupStatus {
@@ -48,53 +86,43 @@ export enum SetupStatus {
   TransactionCheck = 'transaction_check',
   Simulation = 'simulation',
   Confirm = 'confirm',
-  Error = 'error'
+  Error = 'error',
 }
 
 export const initialState: InitialState = {
   status: Status.Loading,
-  positions: [],
-  filteredPositions: [],
   daosConfigs: [],
-  selectedPosition: null,
-  search: null,
-  DAOs: [],
-  selectedDAO: null,
+  daos: [],
   envNetworkData: null,
   setup: {
     status: SetupStatus.Loading,
     create: {
       value: null,
-      status: SetupItemStatus.NotDone
+      status: SetupItemStatus.NotDone,
     },
     transactionBuild: {
       value: null,
-      status: SetupItemStatus.NotDone
+      status: SetupItemStatus.NotDone,
     },
     transactionCheck: {
       value: null,
-      status: SetupItemStatus.NotDone
+      status: SetupItemStatus.NotDone,
     },
     simulation: {
       value: null,
-      status: SetupItemStatus.NotDone
+      status: SetupItemStatus.NotDone,
     },
     confirm: {
       value: null,
-      status: SetupItemStatus.NotDone
-    }
-  }
+      status: SetupItemStatus.NotDone,
+    },
+  },
 }
 
 export type InitialState = {
   status: Status
-  positions: Position[]
-  filteredPositions: Position[]
   daosConfigs: any[]
-  selectedPosition: Maybe<Position>
-  search: Maybe<string>
-  DAOs: string[]
-  selectedDAO: Maybe<string>
+  daos: string[]
   envNetworkData: Maybe<any>
   setup: {
     status: SetupStatus

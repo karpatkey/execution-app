@@ -1,13 +1,13 @@
-import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 import CustomTypography from 'src/components/CustomTypography'
-import * as React from 'react'
+import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 
 interface TitleSecondaryProps {
   title: string
   subtitle?: string
+  children?: React.ReactNode
 }
 
-const Secondary = ({ title, subtitle }: TitleSecondaryProps) => {
+const Secondary = ({ title, subtitle, children }: TitleSecondaryProps) => {
   return (
     <BoxWrapperRow gap={2} sx={{ justifyContent: 'flex-start' }}>
       <CustomTypography
@@ -17,7 +17,7 @@ const Secondary = ({ title, subtitle }: TitleSecondaryProps) => {
           fontStyle: 'normal',
           fontSize: 18,
           lineHeight: '18px',
-          color: 'custom.grey.dark'
+          color: 'custom.grey.dark',
         }}
       >
         {title}
@@ -30,12 +30,13 @@ const Secondary = ({ title, subtitle }: TitleSecondaryProps) => {
             fontStyle: 'normal',
             fontSize: 18,
             lineHeight: '18px',
-            color: 'custom.grey.dark'
+            color: 'custom.grey.dark',
           }}
         >
-          {subtitle}
+          {subtitle || children}
         </CustomTypography>
       ) : null}
+      {children ? children : null}
     </BoxWrapperRow>
   )
 }

@@ -29,7 +29,6 @@ services:
   anvil_ethereum:
     image: ghcr.io/foundry-rs/foundry:latest
     container_name: anvil_ethereum
-    # Remember to update the KEY with your own key
     entrypoint: /bin/sh -c "anvil --accounts 15 -f $ETHEREUM_RPC_ENDPOINT --port 8546 --host 0.0.0.0"
     ports:
       - '8546:8546'
@@ -37,7 +36,6 @@ services:
   anvil_gnosis:
     image: ghcr.io/foundry-rs/foundry:latest
     container_name: anvil_gnosis
-    # Remember to update the KEY with your own key
     entrypoint: /bin/sh -c "anvil --accounts 15 -f $GNOSIS_RPC_ENDPOINT --port 8547 --host 0.0.0.0"
     ports:
       - '8547:8547'

@@ -14,12 +14,12 @@ interface File {
 
 const DAO_NAME_MAPPER = {
   GnosisDAO: 'Gnosis DAO',
-  GnosisLtd: 'Gnosis LTD',
+  GnosisLtd: 'Gnosis Ltd',
   karpatkey: 'karpatkey DAO',
   BalancerDAO: 'Balancer DAO',
   ENS: 'ENS DAO',
   CoW: 'CoW DAO',
-  GnosisGuild: 'Gnosis Guild'
+  GnosisGuild: 'Gnosis Guild',
 } as any
 
 function streamBucketToString<T>(stream: Minio.BucketStream<T>): Promise<T[]> {
@@ -40,7 +40,7 @@ async function fetchJsons(): Promise<File[]> {
     endPoint: MINIO_ENDPOINT,
     accessKey: MINIO_ACCESS_KEY,
     secretKey: MINIO_SECRET_KEY,
-    useSSL: true
+    useSSL: true,
   })
 
   const objectsStream = minioClient.listObjects(MINIO_BUCKET)
@@ -75,15 +75,16 @@ function invalidCache() {
 
 async function refreshCache(fn: () => Promise<Cache>) {
   if (invalidCache()) {
-    console.time('[Strategies] Refetching json configs')
     try {
+      console.time('[Strategies] Refetching json configs')
       CACHE = await fn()
     } catch (e) {
       console.error('Error fetching strategies files.' + (CACHE ? ' Using outdated version' : ''))
       console.error(e)
+    } finally {
+      console.timeEnd('[Strategies] Refetching json configs')
+      LAST_REFRESH = +new Date()
     }
-    console.timeEnd('[Strategies] Refetching json configs')
-    LAST_REFRESH = +new Date()
   }
 }
 
@@ -107,7 +108,7 @@ export async function getDaosConfigs(daos: string[]) {
     .map((f) => ({
       ...f,
       dao: DAO_NAME_MAPPER[f.dao] || f.dao,
-      blockchain: f.blockchain.toLowerCase()
+      blockchain: f.blockchain.toLowerCase(),
     }))
     .filter((f) => {
       return daos.includes(f.dao)

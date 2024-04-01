@@ -2,9 +2,10 @@
   "arrowParens": "always",
   "bracketSpacing": true,
   "printWidth": 100,
-  "trailingComma": "none",
+  "trailingComma": "all",
   "tabWidth": 2,
   "semi": false,
   "singleQuote": true,
-  "useTabs": false
+  "useTabs": false,
+  "plugins": ["prettier-plugin-organize-imports"]
 }

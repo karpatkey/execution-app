@@ -1,14 +1,14 @@
-import * as React from 'react'
+import { LoopOutlined } from '@mui/icons-material'
 import Box from '@mui/material/Box'
-import StepperMUI from '@mui/material/Stepper'
+import Paper from '@mui/material/Paper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
-import Paper from '@mui/material/Paper'
+import StepperMUI from '@mui/material/Stepper'
+import * as React from 'react'
 import CustomTypography from 'src/components/CustomTypography'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 import { useApp } from 'src/contexts/app.context'
 import { SetupStatus } from 'src/contexts/state'
-import { LoopOutlined } from '@mui/icons-material'
 
 type Step = {
   key: string
@@ -18,24 +18,24 @@ type Step = {
 const steps: Step[] = [
   {
     key: 'create',
-    label: 'Overview'
+    label: 'Overview',
   },
   {
     key: 'transaction_build',
-    label: 'Transaction details'
+    label: 'Transaction details',
   },
   {
     key: 'transaction_check',
-    label: 'Transaction check'
+    label: 'Transaction check',
   },
   {
     key: 'simulation',
-    label: 'Simulation'
+    label: 'Simulation',
   },
   {
     key: 'confirm',
-    label: 'Confirmation'
-  }
+    label: 'Confirmation',
+  },
 ]
 
 const LoadingStepIcon = () => (
@@ -44,18 +44,17 @@ const LoadingStepIcon = () => (
       animation: 'spin 2s linear infinite',
       '@keyframes spin': {
         '0%': {
-          transform: 'rotate(360deg)'
+          transform: 'rotate(360deg)',
         },
         '100%': {
-          transform: 'rotate(0deg)'
-        }
-      }
+          transform: 'rotate(0deg)',
+        },
+      },
     }}
   />
 )
 
 export const Stepper = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { state } = useApp()
 
   const status = state?.setup?.status ?? ('create' as SetupStatus)
@@ -97,7 +96,7 @@ export const Stepper = () => {
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
-            width: '90%'
+            width: '90%',
           }}
         >
           Transaction status
@@ -113,7 +112,7 @@ export const Stepper = () => {
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
-                  width: '90%'
+                  width: '90%',
                 }}
               >
                 {step.label}

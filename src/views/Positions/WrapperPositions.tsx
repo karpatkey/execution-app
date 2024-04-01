@@ -1,103 +1,93 @@
-import ErrorBoundaryWrapper from 'src/components/ErrorBoundary/ErrorBoundaryWrapper'
-import React from 'react'
-import PaperSection from 'src/components/PaperSection'
-import { useApp } from 'src/contexts/app.context'
-import List from 'src/views/Positions/List'
-import EmptyData from 'src/components/EmptyData'
-import BoxContainerWrapper from 'src/components/Wrappers/BoxContainerWrapper'
-import Loading from 'src/components/Loading'
-import { TextField, IconButton } from '@mui/material'
 import { SearchOutlined } from '@mui/icons-material'
-import { HEADER_HEIGHT } from 'src/components/Layout/Header'
-import { FOOTER_HEIGHT } from 'src/components/Layout/Footer'
-import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
+import { IconButton, TextField } from '@mui/material'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import React, { useCallback } from 'react'
 import { DAOFilter } from 'src/components/DAOFilter'
-import { filter, setSearch } from 'src/contexts/reducers'
+import ErrorBoundaryWrapper from 'src/components/ErrorBoundary/ErrorBoundaryWrapper'
+import Loading from 'src/components/Loading'
+import PaperSection from 'src/components/PaperSection'
+import BoxContainerWrapper from 'src/components/Wrappers/BoxContainerWrapper'
 import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
-import { Position, Status } from 'src/contexts/state'
-import { getStrategy } from 'src/utils/strategies'
+import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
+import { usePositions } from 'src/queries/positions'
+import List from 'src/views/Positions/List'
 
 interface SearchPositionProps {
   onChange: (value: string) => void
+  value: string
 }
 
-const SearchPosition = (props: SearchPositionProps) => {
+const Search = (props: SearchPositionProps) => {
   return (
     <TextField
       size="small"
-      sx={{ width: '600px' }}
+      sx={{ width: '600px', maxWidth: '80vw' }}
       variant="outlined"
       onChange={(e) => props.onChange(e.target.value)}
       placeholder="Search position"
+      defaultValue={props.value}
       InputProps={{
         endAdornment: (
           <IconButton>
             <SearchOutlined />
           </IconButton>
-        )
+        ),
       }}
     />
   )
 }
 
+const SearchPosition = React.memo(Search)
+
+import { useDebounceCallback } from 'usehooks-ts'
+
 const WrapperPositions = () => {
-  const { dispatch, state } = useApp()
-  const { filteredPositions, positions, search, status } = state
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const router = useRouter()
+  const positions = usePositions()
+  const { isFetched } = positions
 
-  const onChange = React.useCallback(
-    (value: string) => {
-      dispatch(setSearch(value))
-      dispatch(filter())
+  const query = searchParams.get('query') || ''
+
+  const updateUrl = useDebounceCallback((uri) => {
+    router.push(uri)
+  }, 200)
+
+  const handleSearch = useCallback(
+    (term: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      if (term) {
+        params.set('query', term)
+      } else {
+        params.delete('query')
+      }
+
+      const p = params.toString()
+      const uri = p ? `${pathname}?${p}` : pathname
+      updateUrl(uri)
     },
-    [dispatch]
-  )
-
-  const filteredPositionsActive = React.useMemo(
-    () =>
-      filteredPositions
-        .map((position: Position) => {
-          const { positionConfig } = getStrategy(state.daosConfigs, position as Position)
-          const isActive = !!positionConfig.find((p) => p.stresstest)
-          return {
-            ...position,
-            isActive
-          }
-        })
-        .sort((a: Position, b: Position) => {
-          if (a.isActive && !b.isActive) return -1
-          if (!a.isActive && b.isActive) return 1
-          if (a.lptoken_name < b.lptoken_name) return -1
-          if (a.lptoken_name > b.lptoken_name) return 1
-          return 0
-        }),
-    [filteredPositions, state.daosConfigs]
+    [pathname, searchParams, updateUrl],
   )
 
   return (
     <ErrorBoundaryWrapper>
       <BoxContainerWrapper>
-        {status === Status.Loading ? (
-          <Loading minHeight={`calc(100vh - ${HEADER_HEIGHT}px - ${FOOTER_HEIGHT}px)`} />
-        ) : null}
-        {status === Status.Finished ? (
+        {!isFetched ? (
+          <Loading fullPage />
+        ) : (
           <BoxWrapperColumn>
             <BoxWrapperRow sx={{ justifyContent: 'flex-end' }}>
               <DAOFilter />
             </BoxWrapperRow>
             <PaperSection title="Positions">
               <BoxWrapperRow gap={2} sx={{ justifyContent: 'space-between' }}>
-                <SearchPosition onChange={onChange} />
+                <SearchPosition value={query} onChange={handleSearch} />
               </BoxWrapperRow>
-              {filteredPositionsActive?.length > 0 ? (
-                <List positions={filteredPositionsActive} />
-              ) : null}
-              {(filteredPositionsActive?.length === 0 && search !== '') ||
-              positions?.length === 0 ? (
-                <EmptyData />
-              ) : null}
+              <List />
             </PaperSection>
           </BoxWrapperColumn>
-        ) : null}
+        )}
       </BoxContainerWrapper>
     </ErrorBoundaryWrapper>
   )

@@ -1,15 +1,15 @@
-import CustomTypography from 'src/components/CustomTypography'
+import { Box } from '@mui/material'
 import Button from '@mui/material/Button'
 import * as React from 'react'
 import { AccordionBoxWrapper } from 'src/components/Accordion/AccordionBoxWrapper'
+import CustomTypography from 'src/components/CustomTypography'
+import StatusLabel from 'src/components/StatusLabel'
+import TextLoadingDots from 'src/components/TextLoadingDots'
+import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
+import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 import { useApp } from 'src/contexts/app.context'
 import { setSetupSimulation, setSetupSimulationStatus, setSetupStatus } from 'src/contexts/reducers'
 import { SetupItemStatus, SetupStatus } from 'src/contexts/state'
-import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
-import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
-import TextLoadingDots from 'src/components/TextLoadingDots'
-import StatusLabel from 'src/components/StatusLabel'
-import { Box } from '@mui/material'
 
 const WaitingSimulatingTransaction = () => {
   return (
@@ -37,29 +37,33 @@ function translateErrorMessage(error: Error | string | null) {
 }
 
 export const Tenderly = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { dispatch, state } = useApp()
 
   const [error, setError] = React.useState<Error | null>(null)
 
-  const { blockchain } = state?.setup?.create?.value ?? {}
+  const { blockchain, dao } = state?.setup?.create?.value ?? {}
   const { transaction, decodedTransaction } = state?.setup?.transactionBuild?.value ?? {}
   const transactionBuildStatus = state?.setup?.transactionBuild?.status ?? null
   const simulationStatus = state?.setup?.simulation?.status ?? null
   const shareUrl = state?.setup?.simulation?.value?.shareUrl ?? null
   const simulationErrorMessage = state?.setup?.simulation?.value?.simulationErrorMessage ?? null
-  const selectedDAO = state?.selectedPosition?.dao ?? null
 
   const isLoading = simulationStatus == 'loading'
 
   const isDisabled = React.useMemo(
     () =>
-      !blockchain || !transaction || !decodedTransaction || transactionBuildStatus !== 'success',
-    [blockchain, transaction, decodedTransaction, transactionBuildStatus]
+      !blockchain ||
+      !dao ||
+      !transaction ||
+      !decodedTransaction ||
+      transactionBuildStatus !== 'success',
+    [blockchain, dao, transaction, decodedTransaction, transactionBuildStatus],
   )
 
   const onSimulate = React.useCallback(async () => {
     try {
+      if (isLoading) return
+
       dispatch(setSetupSimulation(null))
       dispatch(setSetupStatus('simulation' as SetupStatus))
       dispatch(setSetupSimulationStatus('loading' as SetupItemStatus))
@@ -68,16 +72,16 @@ export const Tenderly = () => {
         execution_type: 'simulate',
         transaction: transaction,
         blockchain,
-        dao: selectedDAO
+        dao,
       }
 
       const response = await fetch('/api/execute', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(parameters)
+        body: JSON.stringify(parameters),
       })
 
       const body = await response.json()
@@ -98,8 +102,8 @@ export const Tenderly = () => {
           setSetupSimulationStatus(
             !!simulationErrorMessage
               ? ('failed' as SetupItemStatus)
-              : ('success' as SetupItemStatus)
-          )
+              : ('success' as SetupItemStatus),
+          ),
         )
         dispatch(setSetupStatus('simulation' as SetupStatus))
         window.open(shareUrl, '_blank')
@@ -111,13 +115,13 @@ export const Tenderly = () => {
       setError(err as Error)
       dispatch(setSetupSimulationStatus('failed' as SetupItemStatus))
     }
-  }, [blockchain, transaction, dispatch, selectedDAO])
+  }, [dispatch, transaction, blockchain, dao])
 
   React.useEffect(() => {
-    if (!isDisabled && simulationStatus === 'not done') {
+    if (!isDisabled && simulationStatus === 'not done' && !isLoading) {
       onSimulate().then(() => console.log('Simulation finished'))
     }
-  }, [isDisabled, onSimulate, simulationStatus])
+  }, [isDisabled, simulationStatus, isLoading, onSimulate])
 
   const showSimulateButton = !isLoading && !shareUrl && !isDisabled
   return (
@@ -125,7 +129,7 @@ export const Tenderly = () => {
       gap={2}
       sx={{
         m: 3,
-        backgroundColor: 'background.default'
+        backgroundColor: 'background.default',
       }}
     >
       <BoxWrapperColumn gap={4} sx={{ width: '100%', marginY: '14px', justifyContent: 'center' }}>
@@ -136,7 +140,7 @@ export const Tenderly = () => {
         <BoxWrapperRow
           sx={{
             justifyContent:
-              simulationStatus === ('failed' as SetupItemStatus) ? 'space-between' : 'flex-end'
+              simulationStatus === ('failed' as SetupItemStatus) ? 'space-between' : 'flex-end',
           }}
           gap="20px"
         >

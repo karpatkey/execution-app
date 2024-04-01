@@ -17,7 +17,9 @@
     "baseUrl": ".",
     "paths": {
       "react": ["./node_modules/@types/react"],
-      "src": ["./src/*"]
+      "src": ["./src/*"],
+      "@": ["./src/*"],
+      "@utils/": ["./src/utils/"]
     },
     "types": ["./src/types/additional.d.ts"],
     "plugins": [

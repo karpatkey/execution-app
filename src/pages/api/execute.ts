@@ -1,13 +1,12 @@
-import { withApiAuthRequired } from '@auth0/nextjs-auth0'
+import { Session, getSession, withApiAuthRequired } from '@auth0/nextjs-auth0'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getSession, Session } from '@auth0/nextjs-auth0'
 import {
   BLOCKCHAIN,
   DAO,
+  EXECUTION_TYPE,
   getDAOFilePath,
-  getStrategyByPositionId
+  getStrategyByPositionId,
 } from 'src/config/strategies/manager'
-import { EXECUTION_TYPE } from 'src/config/strategies/manager'
 import { CommonExecutePromise } from 'src/utils/execute'
 import { getDaosConfigs } from 'src/utils/jsonsFetcher'
 
@@ -21,12 +20,12 @@ type Status = {
 const DAO_MAPPER: Record<string, string> = {
   'Gnosis DAO': 'GnosisDAO',
   'Gnosis Ltd': 'GnosisLtd',
-  'karpatkey DAO': 'karpatkey'
+  'karpatkey DAO': 'karpatkey',
 }
 
 export default withApiAuthRequired(async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Status>
+  res: NextApiResponse<Status>,
 ) {
   // Should be a post request
   if (req.method !== 'POST') {
@@ -46,7 +45,7 @@ export default withApiAuthRequired(async function handler(
   const {
     execution_type,
     blockchain,
-    dao = ''
+    dao = '',
   } = req.body as {
     execution_type: EXECUTION_TYPE
     blockchain: Maybe<BLOCKCHAIN>
@@ -91,10 +90,10 @@ export default withApiAuthRequired(async function handler(
       // Build de arguments for the transaction builder
 
       // Get the strategy from the body, if not found, return an error
-      const { strategy, percentage, position_id, protocol, exit_arguments } = req.body as {
+      const { strategy, percentage, pool_id, protocol, exit_arguments } = req.body as {
         strategy: Maybe<string>
         percentage: Maybe<number>
-        position_id: Maybe<string>
+        pool_id: Maybe<string>
         protocol: Maybe<string>
         exit_arguments: {
           rewards_address: Maybe<string>
@@ -102,6 +101,10 @@ export default withApiAuthRequired(async function handler(
           token_out_address: Maybe<string>
           bpt_address: Maybe<string>
         }
+      }
+
+      if (!pool_id || !protocol || !strategy) {
+        return res.status(500).json({ status: 500, error: 'Missing params' })
       }
 
       // Add the rest of the parameters if needed
@@ -128,18 +131,17 @@ export default withApiAuthRequired(async function handler(
           daosConfigs,
           dao as DAO,
           blockchain as unknown as BLOCKCHAIN,
-          protocol,
-          position_id as string
+          pool_id || '',
         )
         const positionConfigItemFound = positionConfig?.find(
-          (positionConfigItem) => positionConfigItem.function_name === strategy
+          (positionConfigItem) => positionConfigItem.function_name === strategy,
         )
 
         positionConfigItemFound?.parameters?.forEach((parameter) => {
           if (parameter.type === 'constant') {
             exitArguments = {
               ...exitArguments,
-              [parameter.name]: parameter.value
+              [parameter.name]: parameter.value,
             }
           }
         })
@@ -151,7 +153,7 @@ export default withApiAuthRequired(async function handler(
         if (value) {
           exitArguments = {
             ...exitArguments,
-            [key]: value
+            [key]: value,
           }
         }
       }

@@ -1,10 +1,10 @@
-import ErrorBoundary from 'src/components/ErrorBoundary/ErrorBoundary'
 import { ComponentProps, ReactElement } from 'react'
+import ErrorBoundary from 'src/components/ErrorBoundary/ErrorBoundary'
 
 const ErrorBoundaryWrapper = (props: ComponentProps<any>): ReactElement => {
-  const handleError = () => {
+  const handleError = (error: any) => {
     // do something
-    console.log('TODO: error happened, use a log here')
+    console.error('ERROR HANDLER', error)
   }
 
   return <ErrorBoundary handleError={handleError} {...props} />
