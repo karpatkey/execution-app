@@ -19,7 +19,7 @@ spec:
         vault.hashicorp.com/agent-inject-status: 'update'
         vault.hashicorp.com/role: 'internal-app'
         vault.hashicorp.com/agent-inject-secret-develop-execution-app: 'internal/data/develop-execution-app'
-        vault.hashicorp.com/agent-inject-template-.env: |
+        vault.hashicorp.com/agent-inject-template-envrc: |
           {{- with secret "internal/data/develop-execution-app" -}}
             {{- range $key, $value := .Data.data }}
               {{ $key }}={{ $value }}
@@ -34,6 +34,9 @@ spec:
             - containerPort: 3000
               protocol: TCP
           env:
+            - name: ENV
+              value: /vault/secrets/envrc
+
             - name: AUTH0_BASE_URL
               value: '{{PR_SUBDOMAIN}}'
 
@@ -49,6 +52,9 @@ spec:
         - name: pulley
           image: registry.digitalocean.com/karpatkey/pulley:main
           imagePullPolicy: Always
+          env:
+            - name: ENV
+              value: /vault/secrets/envrc
 
 ---
 apiVersion: v1
