@@ -19,10 +19,10 @@ spec:
         vault.hashicorp.com/agent-inject-status: 'update'
         vault.hashicorp.com/role: 'internal-app'
         vault.hashicorp.com/agent-inject-secret-develop-execution-app: 'internal/data/develop-execution-app'
-        vault.hashicorp.com/agent-inject-template-develop-execution-app: |
+        vault.hashicorp.com/agent-inject-template-.env: |
           {{- with secret "internal/data/develop-execution-app" -}}
             {{- range $key, $value := .Data.data }}
-              export {{ $key }}={{ $value }}
+              {{ $key }}={{ $value }}
             {{- end }}
           {{- end -}}
     spec:
@@ -30,8 +30,6 @@ spec:
         - name: develop-execution-app-{{PR_NUMBER}}
           image: registry.digitalocean.com/karpatkey/execution-app:pr{{DOCKER_TAG}}
           imagePullPolicy: Always
-          command: ['/bin/sh', '-c']
-          args: ['source /vault/secrets/develop-execution-app && node server.js']
           ports:
             - containerPort: 3000
               protocol: TCP
@@ -51,11 +49,6 @@ spec:
         - name: pulley
           image: registry.digitalocean.com/karpatkey/pulley:main
           imagePullPolicy: Always
-          env:
-            - name: ETHEREUM_RPC_ENDPOINT
-              value: 'https://rpc.mevblocker.io'
-            - name: GNOSIS_RPC_ENDPOINT
-              value: 'https://rpc.gnosischain.com'
 
 ---
 apiVersion: v1
