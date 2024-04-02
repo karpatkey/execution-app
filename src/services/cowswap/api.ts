@@ -11,7 +11,7 @@ export type CowOrderRequest = {
   feeAmount: string
   kind: string
   sellTokenBalance: string
-  signScheme: string
+  signingScheme: string
   partiallyFillable: boolean
   signature: string
   from: string
@@ -45,26 +45,28 @@ function appDataArgs() {
 async function post(chain: Chain, path: string, body: any) {
   const url = endpoint(chain) + path
 
-  console.debug('calling Cowswap tx: ', url, body)
+  console.debug('calling Cowswap tx: ', url, JSON.stringify(body))
   const resp = await fetch(url, {
     method: 'POST',
-    headers: { Accept: 'application/json' },
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify(body),
   })
 
   const throwError = (message: any) => {
-    // console.error(resp)
     throw new Error(`CowswapError: ${message}`)
   }
   switch (resp.status) {
     case 201:
       return await resp.json()
     case 400:
-      throwError('invalid order')
+      throwError(`invalid order ${await resp.text()}`)
     case 403:
-      throwError('Forbidden, your account is deny-listed.')
+      throwError(`Forbidden, your account is deny-listed. ${await resp.text()}`)
     default:
-      throwError(resp.status)
+      throwError(`${resp.status} ${await resp.text()}`)
   }
 }
 
@@ -76,8 +78,8 @@ function endpoint(chain: Chain) {
   if (environment() == 'development') {
     return {
       // there's no env for gnosis testnet actually
-      xdai: 'https://api.cow.fi/chiado',
-      eth: 'https://api.cow.fi/sepoila',
+      xdai: 'https://barn.api.cow.fi/xdai',
+      eth: 'https://barn.api.cow.fi/mainnet',
     }[chain]
   } else {
     return {

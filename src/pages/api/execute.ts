@@ -56,8 +56,6 @@ export default withApiAuthRequired(async function handler(
     decoded: Maybe<any>
   }
 
-  console.log(req.body)
-
   // Get User role, if not found, return an error
   const user = (session as Session).user
   const daos = user?.['http://localhost:3000/roles']
