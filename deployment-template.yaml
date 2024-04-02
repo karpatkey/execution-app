@@ -34,7 +34,7 @@ spec:
             - containerPort: 3000
               protocol: TCP
           env:
-            - name: ENV
+            - name: BASH_ENV
               value: /vault/secrets/envrc
 
             - name: AUTH0_BASE_URL
@@ -53,7 +53,7 @@ spec:
           image: registry.digitalocean.com/karpatkey/pulley:main
           imagePullPolicy: Always
           env:
-            - name: ENV
+            - name: BASH_ENV
               value: /vault/secrets/envrc
 
 ---
