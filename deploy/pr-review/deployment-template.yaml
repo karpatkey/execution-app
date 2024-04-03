@@ -18,9 +18,9 @@ spec:
         vault.hashicorp.com/agent-inject: 'true'
         vault.hashicorp.com/agent-inject-status: 'update'
         vault.hashicorp.com/role: 'internal-app'
-        vault.hashicorp.com/agent-inject-secret-env: 'internal/data/develop-execution-app'
+        vault.hashicorp.com/agent-inject-secret-envrc: 'internal/data/develop-execution-app'
         vault.hashicorp.com/agent-inject-template-envrc: |
-          {{- with secret "internal/data/env" -}}
+          {{- with secret "internal/data/envrc" -}}
             {{- range $key, $value := .Data.data }}
               export {{ $key }}={{ $value }}
             {{- end }}
