@@ -6,29 +6,29 @@ on:
       - develop
     types:
       - closed
-      
+
 jobs:
   delete-pr-deployment:
     runs-on: self-hosted
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up Kubernetes
-      uses: tale/kubectl-action@v1
-      with:
-        base64-kube-config: ${{ secrets.KUBE_CONFIG }}
+      - name: Set up Kubernetes
+        uses: tale/kubectl-action@v1
+        with:
+          base64-kube-config: ${{ secrets.KUBE_CONFIG }}
 
-    - name: Determine Workflow Action
-      id: determine_action
-      run: |
-        PR_NUMBER=${{ github.event.pull_request.number }}
-        echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_ENV
+      - name: Determine Workflow Action
+        id: determine_action
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_ENV
 
-    - name: Run Deployment or Deletion Script
-      run: |
-        ./delete-deployment-script.sh $PR_NUMBER
+      - name: Run Deployment or Deletion Script
+        run: |
+          cd deploy/pr-review
+          delete-deployment-script.sh $PR_NUMBER
 
-    - name: Print PR Number
-      run: |
-        echo "Closed PR Number: ${{ env.PR_NUMBER }}"
-    
+      - name: Print PR Number
+        run: |
+          echo "Closed PR Number: ${{ env.PR_NUMBER }}"

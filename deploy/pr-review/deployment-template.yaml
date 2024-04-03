@@ -53,6 +53,8 @@ spec:
           image: registry.digitalocean.com/karpatkey/pulley:main
           imagePullPolicy: Always
           env:
+            - name: ENVRC
+              value: /vault/secrets/envrc
             - name: ETHEREUM_RPC_ENDPOINT
               value: 'https://rpc.mevblocker.io'
             - name: GNOSIS_RPC_ENDPOINT
