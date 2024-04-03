@@ -50,6 +50,8 @@ spec:
           image: registry.digitalocean.com/karpatkey/pulley:main
           imagePullPolicy: Always
 
+---
+
 apiVersion: v1
 kind: Service
 metadata:
