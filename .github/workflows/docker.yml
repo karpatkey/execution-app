@@ -83,5 +83,6 @@ jobs:
 
       - name: Clean up
         run: |
+          cd deploy/pr-review
           rm deployment-temp.yaml
           rm ingress-temp.yaml
