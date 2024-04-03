@@ -27,7 +27,7 @@ jobs:
       - name: Run Deployment or Deletion Script
         run: |
           cd deploy/pr-review
-          delete-deployment-script.sh $PR_NUMBER
+          ./delete-deployment-script.sh $PR_NUMBER
 
       - name: Print PR Number
         run: |
