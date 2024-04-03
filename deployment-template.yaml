@@ -18,9 +18,9 @@ spec:
         vault.hashicorp.com/agent-inject: 'true'
         vault.hashicorp.com/agent-inject-status: 'update'
         vault.hashicorp.com/role: 'internal-app'
-        vault.hashicorp.com/agent-inject-secret-develop-execution-app: 'internal/data/develop-execution-app'
-        vault.hashicorp.com/agent-inject-template-develop-execution-app: |
-          {{- with secret "internal/data/develop-execution-app" -}}
+        vault.hashicorp.com/agent-inject-secret-env: 'internal/data/develop-execution-app'
+        vault.hashicorp.com/agent-inject-template-envrc: |
+          {{- with secret "internal/data/env" -}}
             {{- range $key, $value := .Data.data }}
               export {{ $key }}={{ $value }}
             {{- end }}
@@ -30,12 +30,13 @@ spec:
         - name: develop-execution-app-{{PR_NUMBER}}
           image: registry.digitalocean.com/karpatkey/execution-app:pr{{DOCKER_TAG}}
           imagePullPolicy: Always
-          command: ['/bin/sh', '-c']
-          args: ['source /vault/secrets/develop-execution-app && node server.js']
           ports:
             - containerPort: 3000
               protocol: TCP
           env:
+            - name: ENVRC
+              value: /vault/secrets/envrc
+
             - name: AUTH0_BASE_URL
               value: '{{PR_SUBDOMAIN}}'
 
@@ -57,7 +58,6 @@ spec:
             - name: GNOSIS_RPC_ENDPOINT
               value: 'https://rpc.gnosischain.com'
 
----
 apiVersion: v1
 kind: Service
 metadata:

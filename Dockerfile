@@ -109,5 +109,7 @@ EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
+RUN echo '/bin/sh -c "[ ! -e $ENVRC ] || command . $ENVRC && node server.js"' > run.sh
+
 # Start the app
-CMD ["node", "server.js"]
+CMD ["/bin/sh", "run.sh"]
