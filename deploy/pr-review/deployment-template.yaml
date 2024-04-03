@@ -20,7 +20,7 @@ spec:
         vault.hashicorp.com/role: 'internal-app'
         vault.hashicorp.com/agent-inject-secret-envrc: 'internal/data/develop-execution-app'
         vault.hashicorp.com/agent-inject-template-envrc: |
-          {{- with secret "internal/data/envrc" -}}
+          {{- with secret "internal/data/develop-execution-app" -}}
             {{- range $key, $value := .Data.data }}
               export {{ $key }}={{ $value }}
             {{- end }}
@@ -51,7 +51,6 @@ spec:
           imagePullPolicy: Always
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:

@@ -111,8 +111,5 @@ ENV HOSTNAME "0.0.0.0"
 
 COPY ./deploy/run_with_envrc.sh .
 
-RUN cat ./run_with_envrc.sh | echo
-
-
 # Start the app
 ENTRYPOINT ["/bin/sh", "./run_with_envrc.sh"]
