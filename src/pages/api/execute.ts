@@ -254,8 +254,8 @@ export default withApiAuthRequired(async function handler(
     }
 
     return res.status(500).json({ error: 'Internal Server Error', status: 500 })
-  } catch (e) {
+  } catch (e: any) {
     console.error(e)
-    throw e
+    return res.status(500).json({ error: `Internal Server Error ${e.message}`, status: 500 })
   }
 })
