@@ -49,6 +49,9 @@ spec:
         - name: pulley
           image: registry.digitalocean.com/karpatkey/pulley:main
           imagePullPolicy: Always
+          env:
+            - name: LOGGER_LEVEL
+              value: debug
 
 ---
 apiVersion: v1
