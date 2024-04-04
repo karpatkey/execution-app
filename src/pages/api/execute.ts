@@ -46,7 +46,10 @@ async function executorEnv(blockchain: string) {
   const chain = { ethereum: 1, gnosis: 100 }[blockchain.toLowerCase()]
   if (!chain) throw new Error(`Invalid blockchain ${blockchain}`)
 
-  const fork = await Pulley.start(chain)
+  let fork: Pulley | null = null
+  if (process.env.MODE != 'production') {
+    fork = await Pulley.start(chain)
+  }
 
   const filtered = filteredObject(process.env, [
     'PATH',
@@ -57,17 +60,20 @@ async function executorEnv(blockchain: string) {
     '*_ROLE',
     '*_DISASSEMBLER_ADDRESS',
     'TENDERLY_*',
+    '*_RPC_ENDPOINT',
   ])
 
-  const env = {
-    ...filtered,
-    LOCAL_FORK_URL: fork.url,
-  }
+  const env = !!fork
+    ? {
+        ...filtered,
+        LOCAL_FORK_URL: fork.url,
+      }
+    : filtered
 
   return {
     env,
     fork,
-    release: () => fork.release(),
+    release: () => fork && fork.release(),
   }
 }
 
