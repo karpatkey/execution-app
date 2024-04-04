@@ -97,6 +97,15 @@ export async function cached(fn: () => Promise<Cache>) {
   return CACHE
 }
 
+function fixPosition(position: any) {
+  position.exec_config.map((c: any) => {
+    // FIX making it boolean because right now
+    // it can be something like "false, with error: Role permissions error: ParameterNotOneOfAllowed()"
+    c.stresstest = c.stresstest == true ? true : false
+  })
+  return position
+}
+
 export async function getDaosConfigs(daos: string[]) {
   const configs = await cached(fetchJsons)
 
@@ -107,6 +116,7 @@ export async function getDaosConfigs(daos: string[]) {
   return configs
     .map((f) => ({
       ...f,
+      positions: f.positions.map(fixPosition),
       dao: DAO_NAME_MAPPER[f.dao] || f.dao,
       blockchain: f.blockchain.toLowerCase(),
     }))
