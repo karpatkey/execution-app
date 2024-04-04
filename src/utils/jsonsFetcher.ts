@@ -103,7 +103,6 @@ function fixPosition(position: any) {
     // it can be something like "false, with error: Role permissions error: ParameterNotOneOfAllowed()"
     c.stresstest = c.stresstest == true ? true : false
   })
-  position.exec_config = position.exec_config.filter((c: any) => c.stresstest)
   return position
 }
 
