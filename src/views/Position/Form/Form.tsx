@@ -46,19 +46,23 @@ const CustomForm = (props: CustomFormProps) => {
 
   const { positionConfig, commonConfig } = getStrategy(state.daosConfigs, position)
 
+  const filteredStrategies = React.useMemo(() => {
+    return positionConfig.filter((strategy) => isActive(strategy, positionConfig))
+  }, [positionConfig])
+
   // If we don't do this, the application will rerender every time
   const defaultValues: DEFAULT_VALUES_TYPE = React.useMemo(() => {
     return {
       blockchain: position?.blockchain ?? null,
       protocol: position?.protocol ?? null,
-      strategy: positionConfig[0]?.function_name?.trim(),
+      strategy: filteredStrategies[0]?.function_name?.trim(),
       percentage: null,
       rewards_address: null,
       max_slippage: null,
       token_out_address: null,
       bpt_address: null,
     }
-  }, [position, positionConfig])
+  }, [position, filteredStrategies])
 
   const {
     formState: { errors, isSubmitting, isValid },
@@ -163,11 +167,10 @@ const CustomForm = (props: CustomFormProps) => {
               <InputRadio
                 name={'strategy'}
                 onChange={handleStrategyChange}
-                options={positionConfig.map((item: PositionConfig) => {
+                options={filteredStrategies.map((item: PositionConfig) => {
                   return {
                     name: item.label,
                     value: item.function_name.trim(),
-                    disabled: !isActive(item, positionConfig),
                     description: item.description,
                   }
                 })}
