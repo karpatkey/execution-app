@@ -12,7 +12,7 @@ async function create(chain: number) {
   if (resp.status == 201) {
     return await resp.json()
   } else {
-    throw new Error('Error creating Pulley fork: ' + resp.body)
+    throw new Error('Error creating Pulley fork: ' + (await resp.text()))
   }
 }
 
