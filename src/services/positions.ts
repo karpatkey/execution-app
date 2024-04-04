@@ -95,7 +95,7 @@ async function getDebankPositions(daos: string[]): Promise<{ data: Position[] }>
           usd_amount: t.price * t.amount,
           positionType: 'token',
           pool_id: t.id,
-          protocol: t.protocol_id,
+          protocol: 'Wallet',
           blockchain: t.chain,
           tokens: [
             {

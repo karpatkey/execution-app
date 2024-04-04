@@ -59,6 +59,7 @@ const CustomForm = (props: CustomFormProps) => {
       percentage: null,
       rewards_address: null,
       max_slippage: null,
+      token_in_address: null,
       token_out_address: null,
       bpt_address: null,
     }
@@ -100,6 +101,12 @@ const CustomForm = (props: CustomFormProps) => {
       // First clear the stage just in case
       dispatch(clearSetup())
 
+      const tokenInAddressLabel =
+        positionConfig
+          ?.find((item: PositionConfig) => item?.function_name === data?.strategy)
+          ?.parameters?.find((item: Config) => item?.name === 'token_in_address')
+          ?.options?.find((item: any) => item?.value === data?.token_in_address)?.label ?? ''
+
       const tokenOutAddressLabel =
         positionConfig
           ?.find((item: PositionConfig) => item?.function_name === data?.strategy)
@@ -120,6 +127,8 @@ const CustomForm = (props: CustomFormProps) => {
         position_name: position.lptokenName,
         rewards_address: data?.rewards_address,
         max_slippage: data?.max_slippage,
+        token_in_address: data?.token_in_address,
+        token_in_address_label: tokenInAddressLabel,
         token_out_address: data?.token_out_address,
         token_out_address_label: tokenOutAddressLabel,
         bpt_address: data?.bpt_address,
@@ -286,7 +295,7 @@ const CustomForm = (props: CustomFormProps) => {
               if (haveOptions) {
                 return (
                   <BoxWrapperColumn gap={2} key={index}>
-                    <Label title={label} />
+                    <Label title={'DUDE' + label} />
                     <InputRadio
                       name={name}
                       control={control}

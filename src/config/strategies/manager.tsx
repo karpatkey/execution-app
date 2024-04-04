@@ -29,6 +29,7 @@ export enum DEFAULT_VALUES_KEYS {
   percentage = 'percentage',
   rewards_address = 'rewards_address',
   max_slippage = 'max_slippage',
+  token_in_address = 'token_in_address',
   token_out_address = 'token_out_address',
   bpt_address = 'bpt_address',
 }
@@ -69,6 +70,9 @@ export const PARAMETERS_CONFIG: {
   },
   [DEFAULT_VALUES_KEYS.max_slippage]: {
     placeholder: '0.00%',
+  },
+  [DEFAULT_VALUES_KEYS.token_in_address]: {
+    placeholder: '0x00000',
   },
   [DEFAULT_VALUES_KEYS.token_out_address]: {
     placeholder: '0x00000',

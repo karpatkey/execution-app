@@ -153,6 +153,7 @@ export default withApiAuthRequired(async function handler(
           exit_arguments: {
             rewards_address: Maybe<string>
             max_slippage: Maybe<number>
+            token_in_address: Maybe<string>
             token_out_address: Maybe<string>
             bpt_address: Maybe<string>
           }
