@@ -295,7 +295,7 @@ const CustomForm = (props: CustomFormProps) => {
               if (haveOptions) {
                 return (
                   <BoxWrapperColumn gap={2} key={index}>
-                    <Label title={'DUDE' + label} />
+                    <Label title={label} />
                     <InputRadio
                       name={name}
                       control={control}
