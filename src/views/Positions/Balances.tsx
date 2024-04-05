@@ -39,7 +39,7 @@ const BalanceGroup = ({ name, tokens }: { name: TokenGroup; tokens: Token[] }) =
                   <Title title={symbol} />
                 </BoxWrapperRow>
                 <AmountValue value={amount} />
-                <USD value={amount * price} />
+                {name !== 'core' ? <USD value={amount * price} /> : null}
               </BoxWrapperRow>
               <Divider />
             </BoxWrapperColumn>
