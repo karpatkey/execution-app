@@ -78,9 +78,11 @@ jobs:
         run: |
           PR_SHA=$(echo "${{ github.event.pull_request.head.sha }}" | cut -c1-7)
 
+          cd deploy/pr-review
           ./deploy-script.sh $PR_SHA
 
       - name: Clean up
         run: |
+          cd deploy/pr-review
           rm deployment-temp.yaml
           rm ingress-temp.yaml

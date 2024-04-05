@@ -53,6 +53,8 @@ export type Strategy = {
   description: string
   rewards_address: Maybe<string>
   max_slippage: Maybe<number>
+  token_in_address: Maybe<string>
+  token_in_address_label: Maybe<string>
   token_out_address: Maybe<string>
   token_out_address_label: Maybe<string>
   bpt_address: Maybe<string>
