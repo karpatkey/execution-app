@@ -107,6 +107,7 @@ export const TransactionDetails = () => {
       bpt_address,
       max_slippage,
       rewards_address,
+      token_in_address,
       token_out_address,
     } = formValue
 
@@ -123,6 +124,7 @@ export const TransactionDetails = () => {
         bpt_address,
         max_slippage,
         rewards_address,
+        token_in_address,
         token_out_address,
       },
     }

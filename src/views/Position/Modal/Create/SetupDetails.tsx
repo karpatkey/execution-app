@@ -56,9 +56,13 @@ const LABEL_MAPPER = {
     label: 'Rewards address',
     order: 8,
   },
+  token_in_address: {
+    label: 'Token in address',
+    order: 9,
+  },
   token_out_address: {
     label: 'Token out address',
-    order: 9,
+    order: 10,
   },
 }
 
@@ -115,7 +119,7 @@ export const SetupDetails = ({ position }: { position: Position }) => {
                       )
                     } else if (key === 'max_slippage') {
                       valueToDisplay = formatPercentage(+value / 100)
-                    } else if (key === 'token_out_address') {
+                    } else if (key == 'token_in_address' || key === 'token_out_address') {
                       valueToDisplay = (
                         <BoxWrapperColumn>
                           <BoxWrapperRow gap={1} sx={{ justifyContent: 'flex-end' }}>
@@ -161,7 +165,7 @@ export const SetupDetails = ({ position }: { position: Position }) => {
                             </IconButton>
                           </BoxWrapperRow>
                           <CustomTypography variant={'body2'}>
-                            {createValue['token_out_address_label' as keyof typeof createValue]}
+                            {createValue[`${key}_label` as keyof typeof createValue]}
                           </CustomTypography>
                         </BoxWrapperColumn>
                       )

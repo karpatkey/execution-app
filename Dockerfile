@@ -109,5 +109,7 @@ EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
+COPY ./deploy/run_with_envrc.sh .
+
 # Start the app
-CMD ["node", "server.js"]
+ENTRYPOINT ["/bin/sh", "./run_with_envrc.sh"]

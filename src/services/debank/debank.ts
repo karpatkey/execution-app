@@ -39,7 +39,7 @@ import pMemoize from 'p-memoize'
 const cache = new ExpiryMap(20 * 60 * 1000)
 const getFromDebank = pMemoize(fetchWallet, { cache })
 
-async function getDebank(path: string, retriesLeft: number = MAX_RETRIES) {
+async function getDebank(path: string, retriesLeft: number = MAX_RETRIES): Promise<any> {
   try {
     const url = `https://pro-openapi.debank.com${path}`
     const headers = { accept: 'application/json', AccessKey: accessKey() }

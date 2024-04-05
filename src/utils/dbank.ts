@@ -1,27 +1,17 @@
 import { spawn } from 'child_process'
 import path from 'path'
 
-interface CommonExecuteReturn {
-  status: number
-  data: Maybe<any>
-  error: Maybe<string>
+interface DBankReturn {
+  data?: Maybe<any>
+  error?: Maybe<string>
 }
 
-export const CommonExecutePromise = (
-  filePath: string,
-  parameters: any,
-  env: Record<string, string>,
-): Promise<CommonExecuteReturn> => {
+export const dBankPromise = (parameters: string[] = []): Promise<DBankReturn> => {
   return new Promise((resolve, reject) => {
     try {
-      const scriptFile = path.resolve(process.cwd(), filePath)
+      const scriptFile = path.resolve(process.cwd(), 'dbank/debank_panic_botton_app.py')
 
-      const childEnv = {
-        NODE_ENV: process.env.NODE_ENV,
-        ...env,
-      }
-
-      const python = spawn(`python3`, [`${scriptFile}`, ...parameters], { env: childEnv })
+      const python = spawn(`python3`, [`${scriptFile}`, ...parameters])
 
       let buffer = ''
       python.stdout.on('data', function (data) {
@@ -34,13 +24,13 @@ export const CommonExecutePromise = (
       })
 
       python.stderr.on('data', function (data) {
-        console.log('STD_ERR', data.toString())
+        console.log(data.toString())
       })
 
       python.on('error', function (data) {
         console.log('DEBUG PROGRAM ERROR:')
         console.error('ERROR: ', data.toString())
-        reject({ status: 500, error: new Error(data.toString()) })
+        reject({ error: data.toString() })
       })
 
       python.on('exit', function (code) {
@@ -53,33 +43,19 @@ export const CommonExecutePromise = (
         console.log('Buffer Before', buffer)
 
         try {
-          //const regex = new RegExp('"value": ([0-9]+)', 'g')
-          //buffer = buffer.replace(regex, '"value": "$1"')
+          const regex = new RegExp('"value": ([0-9]+)', 'g')
+          buffer = buffer.replace(regex, '"value": "$1"')
           response = JSON.parse(buffer)
+          console.log('Buffer After', buffer)
         } catch (e) {
           console.log('Error with buffer, is not a valid json object', e, buffer)
         }
 
-        const {
-          status = 500,
-          tx_data = null, // {"transaction"?: null, "decoded_transaction": null}}
-          sim_data = null,
-          tx_hash = null,
-          message = null,
-        } = response ?? {}
-
-        const body = {
-          status,
-          data: tx_data || sim_data || { tx_hash } || null,
-          error: message || null,
-        }
-
-        resolve(body)
+        resolve({ data: response })
       })
     } catch (error) {
       console.error('ERROR Reject: ', error)
       reject({
-        status: 500,
         error: (error as Error)?.message,
       })
     }

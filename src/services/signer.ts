@@ -52,7 +52,7 @@ export class Signor {
       const signed = await response.json()
 
       if (signed.error) {
-        throw new Error('Web3Signer Error: ' + JSON.stringify(signed.error))
+        throw new Error('Signer Error: ' + JSON.stringify(signed.error))
       }
 
       res = await this.provider.broadcastTransaction(signed.result)

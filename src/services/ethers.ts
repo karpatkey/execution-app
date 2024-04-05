@@ -2,35 +2,35 @@ import { ethers } from 'ethers'
 import { Blockchain } from 'src/config/strategies/manager'
 import { chainId } from './executor/mapper'
 
-export function getEthersProvider(blockchain: Blockchain) {
-  const { main } = {
+export function getEthersProvider(blockchain: Blockchain, env: Record<string, string>) {
+  const { mev } = {
     ethereum: {
       production: {
-        main: process?.env?.ETHEREUM_RPC_ENDPOINT,
-        fallback: process?.env?.ETHEREUM_RPC_ENDPOINT_FALLBACK,
+        mev: process?.env?.ETHEREUM_RPC_ENDPOINT_MEV,
+        // fallback: process?.env?.ETHEREUM_RPC_ENDPOINT_FALLBACK,
       },
       development: {
-        main: `http://${process?.env?.LOCAL_FORK_HOST_ETHEREUM}:${process?.env?.LOCAL_FORK_PORT_ETHEREUM}`,
-        fallback: '',
+        mev: env.LOCAL_FORK_URL,
+        // fallback: '',
       },
       test: {
         main: '',
-        fallback: '',
+        // fallback: '',
       },
     },
     gnosis: {
       production: {
         mev: process?.env?.ETHEREUM_RPC_ENDPOINT_MEV,
-        main: process?.env?.GNOSIS_RPC_ENDPOINT,
-        fallback: process?.env?.GNOSIS_RPC_ENDPOINT_FALLBACK,
+        // main: process?.env?.GNOSIS_RPC_ENDPOINT,
+        // fallback: process?.env?.GNOSIS_RPC_ENDPOINT_FALLBACK,
       },
       development: {
-        main: `http://${process?.env?.LOCAL_FORK_HOST_GNOSIS}:${process?.env?.LOCAL_FORK_PORT_GNOSIS}`,
-        fallback: '',
+        mev: env.LOCAL_FORK_URL,
+        // fallback: '',
       },
       test: {
-        main: '',
-        test: '',
+        mev: '',
+        // test: '',
       },
     },
   }[blockchain][(process.env.MODE || 'development') as 'development' | 'production']
@@ -41,7 +41,7 @@ export function getEthersProvider(blockchain: Blockchain) {
     ethers.JsonRpcApiProviderOptions,
   ]
   // console.log({ main, fallback }, options)
-  const provider = new ethers.JsonRpcProvider(main, ...options)
+  const provider = new ethers.JsonRpcProvider(mev, ...options)
   //   [mev, main, fallback]
   //     .filter((url) => url)
   //     .map((url, idx) => ({

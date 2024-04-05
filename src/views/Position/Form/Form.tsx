@@ -44,21 +44,26 @@ const CustomForm = (props: CustomFormProps) => {
   const { dispatch, state } = useApp()
   const [keyIndex, setKeyIndex] = React.useState(1)
 
-  const { positionConfig, commonConfig } = getStrategy(state.daosConfigs, position)
+  const { positionConfig: allStrategies, commonConfig } = getStrategy(state.daosConfigs, position)
+
+  const strategies = React.useMemo(() => {
+    return allStrategies.filter((strategy) => isActive(strategy, allStrategies))
+  }, [allStrategies])
 
   // If we don't do this, the application will rerender every time
   const defaultValues: DEFAULT_VALUES_TYPE = React.useMemo(() => {
     return {
       blockchain: position?.blockchain ?? null,
       protocol: position?.protocol ?? null,
-      strategy: positionConfig[0]?.function_name?.trim(),
+      strategy: strategies[0]?.function_name?.trim(),
       percentage: null,
       rewards_address: null,
       max_slippage: null,
+      token_in_address: null,
       token_out_address: null,
       bpt_address: null,
     }
-  }, [position, positionConfig])
+  }, [position, strategies])
 
   const {
     formState: { errors, isSubmitting, isValid },
@@ -80,14 +85,14 @@ const CustomForm = (props: CustomFormProps) => {
   // We need to do this, because the react hook form default values are not working properly
   React.useEffect(() => {
     if (defaultValues) {
-      setValue('strategy', positionConfig[0]?.function_name ?? null)
+      setValue('strategy', strategies[0]?.function_name ?? null)
       setValue('percentage', null)
       setValue('rewards_address', null)
       setValue('max_slippage', null)
       setValue('token_out_address', null)
       setValue('bpt_address', null)
     }
-  }, [defaultValues, positionConfig, setValue])
+  }, [defaultValues, strategies, setValue])
 
   const onSubmit: SubmitHandler<any> = React.useCallback(
     async (data: any) => {
@@ -96,8 +101,14 @@ const CustomForm = (props: CustomFormProps) => {
       // First clear the stage just in case
       dispatch(clearSetup())
 
+      const tokenInAddressLabel =
+        strategies
+          ?.find((item: PositionConfig) => item?.function_name === data?.strategy)
+          ?.parameters?.find((item: Config) => item?.name === 'token_in_address')
+          ?.options?.find((item: any) => item?.value === data?.token_in_address)?.label ?? ''
+
       const tokenOutAddressLabel =
-        positionConfig
+        strategies
           ?.find((item: PositionConfig) => item?.function_name === data?.strategy)
           ?.parameters?.find((item: Config) => item?.name === 'token_out_address')
           ?.options?.find((item: any) => item?.value === data?.token_out_address)?.label ?? ''
@@ -110,12 +121,14 @@ const CustomForm = (props: CustomFormProps) => {
         blockchain: position.blockchain,
         protocol: position.protocol,
         description:
-          positionConfig?.find((item: PositionConfig) => item.function_name === data?.strategy)
+          strategies?.find((item: PositionConfig) => item.function_name === data?.strategy)
             ?.description ?? '',
         percentage: data?.percentage,
         position_name: position.lptokenName,
         rewards_address: data?.rewards_address,
         max_slippage: data?.max_slippage,
+        token_in_address: data?.token_in_address,
+        token_in_address_label: tokenInAddressLabel,
         token_out_address: data?.token_out_address,
         token_out_address_label: tokenOutAddressLabel,
         bpt_address: data?.bpt_address,
@@ -125,11 +138,11 @@ const CustomForm = (props: CustomFormProps) => {
 
       dispatch(setSetupStatus('create' as SetupStatus))
     },
-    [positionConfig, dispatch, position],
+    [strategies, dispatch, position],
   )
 
   const specificParameters: Config[] =
-    (positionConfig as PositionConfig[])?.find(
+    (strategies as PositionConfig[])?.find(
       (item: PositionConfig) => item.function_name === watchStrategy,
     )?.parameters ?? []
 
@@ -163,11 +176,10 @@ const CustomForm = (props: CustomFormProps) => {
               <InputRadio
                 name={'strategy'}
                 onChange={handleStrategyChange}
-                options={positionConfig.map((item: PositionConfig) => {
+                options={strategies.map((item: PositionConfig) => {
                   return {
                     name: item.label,
                     value: item.function_name.trim(),
-                    disabled: !isActive(item, positionConfig),
                     description: item.description,
                   }
                 })}
@@ -283,7 +295,7 @@ const CustomForm = (props: CustomFormProps) => {
               if (haveOptions) {
                 return (
                   <BoxWrapperColumn gap={2} key={index}>
-                    <Label title={label} />
+                    <Label title={'DUDE' + label} />
                     <InputRadio
                       name={name}
                       control={control}

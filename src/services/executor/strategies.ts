@@ -25,24 +25,6 @@ const DAO_NAME_MAPPER = {
   GnosisGuild: 'Gnosis Guild',
 } as any
 
-export async function getDaosConfigs(daos: Dao[]) {
-  const configs = await cached(fetchJsons)
-
-  if (!configs) {
-    return []
-  }
-
-  return configs
-    .map((f) => ({
-      ...f,
-      dao: DAO_NAME_MAPPER[f.dao] || f.dao,
-      blockchain: mapBlockchain(f.blockchain),
-    }))
-    .filter((f) => {
-      return daos.includes(f.dao)
-    })
-}
-
 function streamBucketToString<T>(stream: Minio.BucketStream<T>): Promise<T[]> {
   const chunks = [] as T[]
   return new Promise<T[]>((resolve, reject) => {
@@ -119,4 +101,32 @@ async function cached(fn: () => Promise<Cache>) {
 
 function mapBlockchain(blockchain: string) {
   return blockchain.toLowerCase()
+}
+
+function fixPosition(position: any) {
+  position.exec_config.map((c: any) => {
+    // FIX making it boolean because right now
+    // it can be something like "false, with error: Role permissions error: ParameterNotOneOfAllowed()"
+    c.stresstest = c.stresstest == true ? true : false
+  })
+  return position
+}
+
+export async function getDaosConfigs(daos: string[]) {
+  const configs = await cached(fetchJsons)
+
+  if (!configs) {
+    return []
+  }
+
+  return configs
+    .map((f) => ({
+      ...f,
+      positions: f.positions.map(fixPosition),
+      dao: DAO_NAME_MAPPER[f.dao] || f.dao,
+      blockchain: mapBlockchain(f.blockchain),
+    }))
+    .filter((f) => {
+      return daos.includes(f.dao)
+    })
 }

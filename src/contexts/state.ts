@@ -54,6 +54,8 @@ export type Strategy = {
   description: string
   rewards_address: string
   max_slippage: number
+  token_in_address: string
+  token_in_address_label: string
   token_out_address: string
   token_out_address_label: string
   bpt_address: string

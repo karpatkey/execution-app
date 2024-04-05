@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: develop-execution-app-{{PR_NUMBER}}
+  name: develop-execution-app-{{PR_NUMBER}}
+  namespace: agile-pr-review
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: develop-execution-app-{{PR_NUMBER}}
+  template:
+    metadata:
+      labels:
+        app: develop-execution-app-{{PR_NUMBER}}
+      annotations:
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/agent-inject-status: 'update'
+        vault.hashicorp.com/role: 'internal-app'
+        vault.hashicorp.com/agent-inject-secret-envrc: 'internal/data/develop-execution-app'
+        vault.hashicorp.com/agent-inject-template-envrc: |
+          {{- with secret "internal/data/develop-execution-app" -}}
+            {{- range $key, $value := .Data.data }}
+              export {{ $key }}={{ $value }}
+            {{- end }}
+          {{- end -}}
+    spec:
+      containers:
+        - name: develop-execution-app-{{PR_NUMBER}}
+          image: registry.digitalocean.com/karpatkey/execution-app:pr{{DOCKER_TAG}}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          env:
+            - name: AUTH0_BASE_URL
+              value: '{{PR_SUBDOMAIN}}'
+
+            - name: DATA_WAREHOUSE_ENV
+              value: development
+
+            - name: MODE
+              value: development
+
+            - name: PULLEY_URL
+              value: 'http://localhost:4000'
+
+        - name: pulley
+          image: registry.digitalocean.com/karpatkey/pulley:main
+          imagePullPolicy: Always
+          env:
+            - name: LOGGER_LEVEL
+              value: debug
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: develop-execution-app-{{PR_NUMBER}}
+  namespace: agile-pr-review
+spec:
+  ports:
+    - port: 3000
+      name: one
+      protocol: TCP
+      targetPort: 3000
+
+  selector:
+    app: develop-execution-app-{{PR_NUMBER}}

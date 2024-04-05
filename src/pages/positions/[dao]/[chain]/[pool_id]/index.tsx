@@ -45,14 +45,14 @@ const PositionIndex = (props: PositionIndexProps): ReactElement => {
 
   const { dispatch } = useApp()
 
-  const { data: position } = usePosition(dao, chain, pool_id)
+  const { data: position, isFetched } = usePosition(dao, chain, pool_id)
 
   React.useEffect(() => {
     dispatch(addDaosConfigs(daosConfigs))
     dispatch(updateEnvNetworkData(ENV_NETWORK_DATA))
   }, [dispatch, daosConfigs, ENV_NETWORK_DATA])
 
-  if (!position) {
+  if (!isFetched) {
     return <Loading fullPage />
   }
 
