@@ -71,8 +71,8 @@ export class Signor {
   private async impersonate(address: string) {
     if (this.devMode) {
       console.log(`calling impersonate for '${address}'`)
-      this.provider.send('anvil_setBalance', [address, '0x021e19e0c9bab2400000'])
-      this.provider.send('anvil_impersonateAccount', [address])
+      await this.provider.send('anvil_impersonateAccount', [address])
+      await this.provider.send('anvil_setBalance', [address, '0x021e19e0c9bab2400000'])
     }
   }
 
