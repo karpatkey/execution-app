@@ -42,12 +42,15 @@ export class Signor {
       const response = await fetch(signerUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'eth_signTransaction',
-          params: [transaction],
-          id: +new Date(),
-        }),
+        body: JSON.stringify(
+          {
+            jsonrpc: '2.0',
+            method: 'eth_signTransaction',
+            params: [transaction],
+            id: 1,
+          },
+          (_key, value) => (typeof value === 'bigint' ? value.toString() : value),
+        ),
       })
       const signed = await response.json()
 
