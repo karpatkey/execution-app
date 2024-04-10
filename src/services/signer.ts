@@ -1,6 +1,7 @@
-import { JsonRpcProvider } from 'ethers'
-import fs from 'fs'
-import YAML from 'yaml'
+import { JsonRpcProvider, ethers } from 'ethers'
+import { Blockchain, Dao } from 'src/config/strategies/manager'
+import { AnvilTools } from './dev_tools'
+import { getEthersProvider } from './ethers'
 
 type Transaction = Record<string, any>
 
@@ -9,74 +10,87 @@ type Transaction = Record<string, any>
 // const NORMAL_FEE_MULTIPLER = 1.2
 const AGGRESIVE_FEE_MULTIPLER = 2
 
+const TEST_PRIV_KEY = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
+
+function testAddress() {
+  return ethers.computeAddress(TEST_PRIV_KEY)
+}
+
 export class Signor {
   provider: JsonRpcProvider
   devMode: boolean
+  vaultToken?: string
+  env: Record<string, string> | NodeJS.ProcessEnv
+  dao: Dao
+  blockchain: Blockchain
 
-  constructor(provider: JsonRpcProvider) {
-    this.provider = provider
-    this.devMode = process.env.MODE == 'development'
+  constructor({
+    env,
+    dao,
+    blockchain,
+  }: {
+    dao: Dao
+    blockchain: Blockchain
+    env: Record<string, string>
+  }) {
+    this.provider = getEthersProvider(blockchain, env)
+    this.devMode = env.MODE == 'development'
+    this.env = env || process.env
+    this.vaultToken = this.env.VAULT_SIGNER_TOKEN
+    this.dao = dao
+    this.blockchain = blockchain
+  }
+
+  getSignerUrl() {
+    return this.env.VAULT_SIGNER_URL
   }
 
   async sendTransaction(transaction: Transaction) {
-    const signerUrl = getSignerUrl(transaction.chainId)
+    const signerUrl = this.getSignerUrl()
     if (!signerUrl) {
       throw new Error('Missing signer url')
     }
 
+    if (this.devMode) {
+      transaction.from = testAddress()
+      // console.log(transaction.from)
+
+      const anvil = new AnvilTools(this.provider)
+
+      await anvil.assignRole({
+        ...this.getRoleParams(),
+        assignee: transaction.from,
+      })
+    }
+
     transaction = await this.updateGasAndNonce(transaction)
 
-    let res
+    if (!this.vaultToken) throw new Error('Missing config VAULT_SIGNER_TOKEN')
 
-    if (this.devMode) {
-      // const priv = readKeyFromDevFile()
-      // const wallet = new ethers.Wallet(priv, this.provider)
-      this.impersonate(transaction.from)
-      // transaction.from = wallet.address
-      // transaction.nonce = await this.provider.getTransactionCount(wallet.address)
-      // console.log('Rewrote transaction', transaction)
+    // console.log('TRANSACTION', transaction)
 
-      const signer = await this.provider.getSigner(transaction.from)
-      res = await signer.sendTransaction(transaction)
-    } else {
-      const response = await fetch(signerUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(
-          {
-            jsonrpc: '2.0',
-            method: 'eth_signTransaction',
-            params: [transaction],
-            id: 1,
-          },
-          (_key, value) => (typeof value === 'bigint' ? value.toString() : value),
-        ),
-      })
-      const signed = await response.json()
+    const url = `${signerUrl}/accounts/${transaction.from.toLowerCase()}/sign`
+    // console.log(transaction)
+    // console.log(url)
 
-      if (signed.error) {
-        throw new Error('Signer Error: ' + JSON.stringify(signed.error))
-      }
-
-      res = await this.provider.broadcastTransaction(signed.result)
+    const req = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.vaultToken}`,
+      },
+      body: JSON.stringify(transaction, (_key, value) =>
+        typeof value === 'bigint' ? value.toString() : value,
+      ),
     }
-    this.mine()
 
-    return res
-  }
+    const response = await fetch(url, req)
+    const signed = await response.json()
 
-  private async mine() {
-    if (this.devMode) {
-      this.provider.send('anvil_mine', [])
-    }
-  }
+    if (response.status !== 200)
+      throw new Error(`Failed to sign: ${(signed.errors || []).join(', ')}`)
 
-  private async impersonate(address: string) {
-    if (this.devMode) {
-      console.log(`calling impersonate for '${address}'`)
-      await this.provider.send('anvil_impersonateAccount', [address])
-      await this.provider.send('anvil_setBalance', [address, '0x021e19e0c9bab2400000'])
-    }
+    return await this.provider.broadcastTransaction(signed?.data?.signedTx)
   }
 
   private async updateGasAndNonce(transaction: Transaction) {
@@ -98,27 +112,25 @@ export class Signor {
       nonce,
     }
   }
-}
 
-function getSignerUrl(chainId: string) {
-  return (
-    {
-      '1': process.env.WEB3SIGNER_ETHEREUM_URL,
-      '100': process.env.WEB3SIGNER_GNOSIS_URL,
-    }[chainId] ?? ''
-  )
-}
+  private getRoleParams() {
+    let key =
+      {
+        'karpatkey DAO': 'KARPATKEY',
+        'Gnosis DAO': 'GNOSISDAO',
+        'Gnosis Ltd': 'GNOSISLTD',
+        'Balancer LTD': 'BALANCERLTD',
+        'Balancer DAO': 'BALANCERDAO',
+        'CoW DAO': 'COWDAO',
+        'ENS DAO': 'ENSDAO',
+      }[this.dao] || '__'
 
-// Only useful for dev, running web3signer locally
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function readKeyFromDevFile() {
-  // default to the first test key
-  const defaultPK = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
+    key += '_' + this.blockchain.toUpperCase()
 
-  try {
-    const priv = YAML.parse(fs.readFileSync(process.cwd() + '/key.yaml', 'utf8')).privateKey
-    return priv || defaultPK
-  } catch (e) {
-    return defaultPK
+    return {
+      avatar_safe_address: this.env[key + '_AVATAR_SAFE_ADDRESS'] as string,
+      roles_mod_address: this.env[key + '_ROLES_MOD_ADDRESS'] as string,
+      role: this.env[key + '_ROLE'] as unknown as number,
+    }
   }
 }

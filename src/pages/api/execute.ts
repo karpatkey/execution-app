@@ -8,7 +8,6 @@ import {
   getStrategyByPositionId,
 } from 'src/config/strategies/manager'
 import { CowswapSigner } from 'src/services/cowswap'
-import { getEthersProvider } from 'src/services/ethers'
 import { getDaosConfigs } from 'src/services/executor/strategies'
 import { Pulley } from 'src/services/pulley'
 import { Signor } from 'src/services/signer'
@@ -64,6 +63,7 @@ async function executorEnv(blockchain: string) {
     '*_DISASSEMBLER_ADDRESS',
     'TENDERLY_*',
     '*_RPC_ENDPOINT',
+    'VAULT_*',
   ])
 
   const env = !!fork ? { ...filtered, LOCAL_FORK_URL: fork.url } : filtered
@@ -266,8 +266,7 @@ export default withApiAuthRequired(async function handler(
 
         if (!decoded || !transaction) throw new Error('Missing required param')
 
-        const provider = getEthersProvider(blockchain, env.env)
-        const signor = new Signor(provider)
+        const signor = new Signor({ blockchain, dao, env: env.env })
         const txResponse = await signor.sendTransaction(transaction)
 
         const txReceipt = await txResponse.wait()
