@@ -16,7 +16,6 @@ WORKDIR /app
 # Install Python dependencies and build Python packages in the builder stage
 RUN apk --no-cache add \
     python3 \
-    py3-pip \
     python3-dev \
     musl-dev \
     gcc \
@@ -97,6 +96,7 @@ RUN adduser --system --uid 1001 nextjs
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
+RUN npm install sharp@0.33.3
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
