@@ -22,6 +22,9 @@ services:
     build:
       context: .
     container_name: prod
+    environment:
+      - VAULT_SIGNER_URL=http://host.docker.internal:8200/v1/ethereum
+      - VAULT_SIGNER_TOKEN=root
     env_file:
       - .env # Specify the path to your .env file
     ports:
