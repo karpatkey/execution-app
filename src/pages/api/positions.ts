@@ -27,17 +27,14 @@ export default withApiAuthRequired(async function handler(
 
   // Get User role, if not found, return an error
   const user = (session as Session).user
-  const roles = user?.['http://localhost:3000/roles']
+  const daos = user?.['http://localhost:3000/roles']
     ? (user?.['http://localhost:3000/roles'] as unknown as string[])
-    : ['']
-  const dao = roles?.[0] ?? ''
+    : []
 
-  if (!dao) {
+  if (daos.length == 0) {
     res.status(401).json({ data: { status: false, error: new Error('Unauthorized') } })
     return
   }
-
-  const daos = roles
 
   try {
     const { data, error } = await getPositions(daos)

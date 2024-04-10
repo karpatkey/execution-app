@@ -28,11 +28,9 @@ export function createOrder(chain: Chain, args: CowOrderRequest) {
 }
 
 function appDataArgs() {
-  const meta = {
-    appCode: 'santi_the_best',
-  }
+  const meta = { appCode: 'santi_the_best' }
 
-  // It could be that encoding in a deterministic here is required
+  // It could be that encoding in a deterministic way here is required
   const appData = JSON.stringify(meta)
   const appDataHash = keccak256(toUtf8Bytes(appData))
 
@@ -71,7 +69,7 @@ async function post(chain: Chain, path: string, body: any) {
 }
 
 function environment() {
-  return process.env.ENVIRONMENT || 'development'
+  return process.env.MODE || 'development'
 }
 
 function endpoint(chain: Chain) {

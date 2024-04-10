@@ -28,6 +28,10 @@ const LABEL_MAPPER = {
     label: 'Strategy',
     order: 4,
   },
+  dao: {
+    label: 'DAO',
+    order: 0,
+  },
   blockchain: {
     label: 'Blockchain',
     order: 1,
