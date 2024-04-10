@@ -5,9 +5,9 @@ services:
       context: .
       target: dev
     container_name: dev
-    # environment:
-    #   - WEB3SIGNER_ETHEREUM_URL=http://signer-ethereum:9000
-    #   - WEB3SIGNER_GNOSIS_URL=http://signer-gnosis:9001
+    environment:
+      - VAULT_SIGNER_URL=http://host.docker.internal:8200/v1/ethereum
+      - VAULT_SIGNER_TOKEN=root
     env_file:
       - .env # Specify the path to your .env file
     ports:
@@ -22,9 +22,6 @@ services:
     build:
       context: .
     container_name: prod
-    # environment:
-    #   - WEB3SIGNER_ETHEREUM_URL=http://signer-ethereum:9000
-    #   - WEB3SIGNER_GNOSIS_URL=http://signer-gnosis:9001
     env_file:
       - .env # Specify the path to your .env file
     ports:
@@ -37,37 +34,8 @@ services:
       context: ../pulley
     container_name: app-pulley
     environment:
-      - LOGGER_LEVEL=debug
+      - LOGGER_LEVEL=info
     env_file:
       - .env
     ports:
       - '4000:4000'
-
-  # web3signer_ethereum:
-  #   image: consensys/web3signer:develop
-  #   container_name: signer-ethereum
-  #   ports:
-  #     - '9000:9000'
-  #   volumes:
-  #     - ./key.yaml:/home/node/signer/keyFiles/key.yaml
-  #     - ./config.yaml:/home/node/signer/config.yaml
-  #   command:
-  #     - '--config-file=/home/node/signer/config.yaml'
-  #     - '--logging=DEBUG'
-  #     - 'eth1'
-  #     - '--chain-id=1'
-  #
-  # web3signer_gnosis:
-  #   image: consensys/web3signer:develop
-  #   container_name: signer-gnosis
-  #   ports:
-  #     - '9001:9001'
-  #   volumes:
-  #     - ./key.yaml:/home/node/signer/keyFiles/key.yaml
-  #     - ./config.yaml:/home/node/signer/config.yaml
-  #   command:
-  #     - '--config-file=/home/node/signer/config.yaml'
-  #     - '--logging=DEBUG'
-  #     - '--http-listen-port=9001'
-  #     - 'eth1'
-  #     - '--chain-id=100'
