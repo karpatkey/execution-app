@@ -5,7 +5,7 @@ import { getDaosConfigsStatus } from 'src/services/executor/strategies'
 import { getStatus as getPulleyStatus } from 'src/services/pulley'
 
 type Response = {
-  ok: boolean
+  status: 'ok' | 'error'
   error?: string
   statuses?: Record<string, any>
   env?: any
@@ -27,7 +27,7 @@ function filteredEnv() {
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Response>) {
   // Should be a get request
   if (req.method !== 'GET') {
-    return res.status(405).json({ ok: false, error: 'Method not allowed' })
+    return res.status(405).json({ status: 'error', error: 'Method not allowed' })
   }
 
   const session = await getSession(req as any, res as any)
@@ -36,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   // Either user is login or accessToken query param is valid
   if (!session && !validAccessToken) {
-    return res.status(401).json({ ok: false, error: 'Unauthorized' })
+    return res.status(401).json({ status: 'error', error: 'Unauthorized' })
   }
 
   try {
@@ -51,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const status = ok ? 200 : 500
 
     return res.status(status).json({
-      ok: ok,
+      status: ok ? 'ok' : 'error',
       statuses: {
         debank,
         pulley,
@@ -67,5 +67,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     console.error('ERROR Reject: ', error)
   }
 
-  return res.status(500).json({ ok: false, error: 'Internal Server Error' })
+  return res.status(500).json({ status: 'error', error: 'Internal Server Error' })
 }
