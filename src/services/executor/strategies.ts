@@ -148,6 +148,12 @@ export async function getDaosConfigs(daos: string[]) {
 
 type StatusResult = {
   ok: boolean
+  total?: number
+  total_positions?: number
+  total_tests?: number
+  total_passing?: number
+  passing?: number
+  strategies?: any
   error?: string
   meta?: any
 }
@@ -156,9 +162,32 @@ export async function getDaosConfigsStatus(): Promise<StatusResult> {
   const configs = await getDaosConfigs(ALL_DAOS)
   if (configs.length == 0) return { ok: false, error: 'No configs' }
 
+  const all_positions = configs.flatMap((c) => c.positions)
+  const total_positions = all_positions.length
+  const all_tests = all_positions.flatMap((p) => p.exec_config)
+  const total_tests = all_tests.length
+  const total_passing = all_tests.filter((p) => p.stresstest).length
+  const strategies = configs.map((c) => {
+    return {
+      dao: c.dao,
+      blockchain: c.blockchain,
+      positions: c.positions.reduce((poses: any, p: any) => {
+        poses[p.position_id_human_readable] = p.exec_config.reduce((res: any, strat: any) => {
+          res[strat.label] = strat.stresstest || strat.stresstest_error
+          return res
+        }, {})
+        return poses
+      }, {}),
+    }
+  })
+
   const time_since_last_refresh = +new Date() - LAST_REFRESH
   return {
     ok: true,
+    total_positions,
+    total_tests,
+    total_passing,
+    strategies,
     meta: {
       last_refresh_at: LAST_REFRESH,
       last_refresh_at_human:
