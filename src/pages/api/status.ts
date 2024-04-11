@@ -8,6 +8,18 @@ type Response = {
   ok: boolean
   error?: string
   statuses?: Record<string, any>
+  env?: any
+}
+
+function filteredEnv() {
+  const env = process.env as Record<string, string>
+
+  return Object.keys(env)
+    .filter((k) => k.indexOf('_PRIVATE_KEY') == -1)
+    .reduce((obj: any, key: string) => {
+      obj[key] = env[key]
+      return obj
+    }, {})
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Response>) {
@@ -17,10 +29,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   const session = await getSession(req as any, res as any)
-  const accessToken = req.query['accessToken']
+  const accessToken = req.query['TOKEN_SECRET']
+  const validAccessToken = accessToken == process.env.HEALTHZ_TOKEN
 
   // Either user is login or accessToken query param is valid
-  if (!session && accessToken !== process.env.HEALTHZ_TOKEN) {
+  if (!session && !validAccessToken) {
     return res.status(401).json({ ok: false, error: 'Unauthorized' })
   }
 
@@ -42,6 +55,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         pulley,
         strats,
       },
+      ...(validAccessToken
+        ? {
+            env: filteredEnv(),
+          }
+        : {}),
     })
   } catch (error) {
     console.error('ERROR Reject: ', error)
