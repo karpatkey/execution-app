@@ -15,7 +15,7 @@ interface File {
   positions: any
 }
 
-const DAO_NAME_MAPPER = {
+export const DAO_NAME_MAPPER = {
   GnosisDAO: 'Gnosis DAO',
   GnosisLtd: 'Gnosis Ltd',
   karpatkey: 'karpatkey DAO',
@@ -24,6 +24,17 @@ const DAO_NAME_MAPPER = {
   CoW: 'CoW DAO',
   GnosisGuild: 'Gnosis Guild',
 } as any
+
+// Create a mapper for DAOs
+export const REVERSE_DAO_MAPPER = {
+  'Gnosis DAO': 'GnosisDAO',
+  'Gnosis Ltd': 'GnosisLtd',
+  'karpatkey DAO': 'karpatkey',
+  'Balancer DAO': 'BalancerDAO',
+  'ENS DAO': 'ENS',
+  'CoW DAO': 'CoW',
+  'Gnosis Guild': 'GnosisGuild',
+}
 
 function streamBucketToString<T>(stream: Minio.BucketStream<T>): Promise<T[]> {
   const chunks = [] as T[]

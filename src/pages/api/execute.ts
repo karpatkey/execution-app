@@ -8,7 +8,7 @@ import {
   getStrategyByPositionId,
 } from 'src/config/strategies/manager'
 import { CowswapSigner } from 'src/services/cowswap'
-import { getDaosConfigs } from 'src/services/executor/strategies'
+import { REVERSE_DAO_MAPPER, getDaosConfigs } from 'src/services/executor/strategies'
 import { Pulley } from 'src/services/pulley'
 import { Signor } from 'src/services/signer'
 import { CommonExecutePromise } from 'src/utils/execute'
@@ -17,13 +17,6 @@ type Status = {
   data?: Maybe<any>
   status?: Maybe<number>
   error?: Maybe<string>
-}
-
-// Create a mapper for DAOs
-const DAO_MAPPER: Record<string, string> = {
-  'Gnosis DAO': 'GnosisDAO',
-  'Gnosis Ltd': 'GnosisLtd',
-  'karpatkey DAO': 'karpatkey',
 }
 
 function filteredObject(raw: any, allowed: string[]) {
@@ -127,7 +120,7 @@ export default withApiAuthRequired(async function handler(
     if (!blockchain) throw new Error('missing blockchain')
 
     parameters.push('--dao')
-    parameters.push(DAO_MAPPER[dao])
+    parameters.push(REVERSE_DAO_MAPPER[dao])
     parameters.push('--blockchain')
     parameters.push(`${blockchain.toUpperCase()}`)
 
