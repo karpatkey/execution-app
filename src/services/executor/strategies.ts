@@ -83,6 +83,7 @@ let LAST_REFRESH = +new Date() - REFRESH_AFTER
 type Cache = File[] | null
 let CACHE: Cache
 let LAST_TOOK: number | null
+let LAST_ERROR: string | undefined
 
 function invalidCache() {
   return LAST_REFRESH < +new Date() - REFRESH_AFTER
@@ -94,8 +95,10 @@ async function refreshCache(fn: () => Promise<Cache>) {
     try {
       console.log('[Strategies] Refetching json configs')
       CACHE = await fn()
-    } catch (e) {
+      LAST_ERROR = undefined
+    } catch (e: any) {
       console.error('Error fetching strategies files.' + (CACHE ? ' Using outdated version' : ''))
+      LAST_ERROR = e.message
       console.error(e)
     } finally {
       LAST_TOOK = +new Date() - started
@@ -148,6 +151,7 @@ export async function getDaosConfigs(daos: string[]) {
 
 type StatusResult = {
   ok: boolean
+  last_error?: string
   total?: number
   total_positions?: number
   total_tests?: number
@@ -160,7 +164,7 @@ type StatusResult = {
 
 export async function getDaosConfigsStatus(): Promise<StatusResult> {
   const configs = await getDaosConfigs(ALL_DAOS)
-  if (configs.length == 0) return { ok: false, error: 'No configs' }
+  if (configs.length == 0) return { ok: false, error: LAST_ERROR || 'No configs' }
 
   const all_positions = configs.flatMap((c) => c.positions)
   const total_positions = all_positions.length
@@ -181,6 +185,7 @@ export async function getDaosConfigsStatus(): Promise<StatusResult> {
   const time_since_last_refresh = +new Date() - LAST_REFRESH
   return {
     ok: true,
+    last_error: LAST_ERROR,
     total_positions,
     total_tests,
     total_passing,
