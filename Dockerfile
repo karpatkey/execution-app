@@ -48,20 +48,16 @@ FROM node_with_python as dev
 WORKDIR /app
 
 # Set environment variables
-ENV PYTHONUNBUFFERED 1
-ENV PYTHON_PATH=/usr/bin/python3
 
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /usr/lib/python3.11/site-packages/ /usr/lib/python3.11/site-packages/
 
-RUN ls -la .
-
 # Expose port
 EXPOSE 3000
 
 # Start the app
-CMD ["yarn", "dev"]
+ENTRYPOINT ["yarn", "dev"]
 
 # Runner stage
 FROM node_with_python as prod_builder
