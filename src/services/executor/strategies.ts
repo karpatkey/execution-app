@@ -153,7 +153,7 @@ type StatusResult = {
   total_tests?: number
   total_passing?: number
   passing?: number
-  strategies?: any
+  strategies_human?: any
   error?: string
   meta?: any
 }
@@ -167,19 +167,16 @@ export async function getDaosConfigsStatus(): Promise<StatusResult> {
   const all_tests = all_positions.flatMap((p) => p.exec_config)
   const total_tests = all_tests.length
   const total_passing = all_tests.filter((p) => p.stresstest).length
-  const strategies = configs.map((c) => {
-    return {
-      dao: c.dao,
-      blockchain: c.blockchain,
-      positions: c.positions.reduce((poses: any, p: any) => {
-        poses[p.position_id_human_readable] = p.exec_config.reduce((res: any, strat: any) => {
-          res[strat.label] = strat.stresstest || strat.stresstest_error
-          return res
-        }, {})
-        return poses
-      }, {}),
-    }
-  })
+  const strategies_human = configs.reduce((strateses: any, c: any) => {
+    strateses[`${c.dao} on ${c.blockchain}`] = c.positions.reduce((poses: any, p: any) => {
+      poses[p.position_id_human_readable] = p.exec_config.reduce((res: any, strat: any) => {
+        res[strat.label] = strat.stresstest || strat.stresstest_error
+        return res
+      }, {})
+      return poses
+    }, {})
+    return strateses
+  }, {})
 
   const time_since_last_refresh = +new Date() - LAST_REFRESH
   return {
@@ -187,7 +184,7 @@ export async function getDaosConfigsStatus(): Promise<StatusResult> {
     total_positions,
     total_tests,
     total_passing,
-    strategies,
+    strategies_human,
     meta: {
       last_refresh_at: LAST_REFRESH,
       last_refresh_at_human:
