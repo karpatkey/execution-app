@@ -8,11 +8,15 @@ const headers = {
 }
 
 async function create(chain: number) {
-  const resp = await fetch(`${endpoint()}/${chain}/forks`, { method: 'POST', headers })
-  if (resp.status == 201) {
-    return await resp.json()
-  } else {
-    throw new Error('Error creating Pulley fork: ' + (await resp.text()))
+  try {
+    const resp = await fetch(`${endpoint()}/${chain}/forks`, { method: 'POST', headers })
+    if (resp.status == 201) {
+      return await resp.json()
+    } else {
+      throw new Error('RequestError: ' + (await resp.text()))
+    }
+  } catch (e: any) {
+    throw new Error('Error creating Pulley fork: ' + e.message)
   }
 }
 
@@ -24,7 +28,7 @@ async function destroy(id: string) {
 type StatusResponse = {
   ok: boolean
   endpoint: string
-  chainStatuses: any
+  chainStatuses?: any
   error?: string
 }
 
@@ -55,16 +59,24 @@ async function checkForkStatus(pulley: Pulley) {
 }
 
 export async function getStatus(): Promise<StatusResponse> {
-  const [eth, xdai] = await Promise.all([1, 100].map(Pulley.start))
+  try {
+    const [eth, xdai] = await Promise.all([1, 100].map(Pulley.start))
 
-  const chainStatuses = await Promise.all([eth, xdai].map((p) => checkForkStatus(p)))
-  await Promise.all([eth, xdai].map((p) => p.release()))
+    const chainStatuses = await Promise.all([eth, xdai].map((p) => checkForkStatus(p)))
+    await Promise.all([eth, xdai].map((p) => p.release()))
 
-  const ok = !chainStatuses.find((c) => !c.ok)
-  return {
-    ok: ok,
-    endpoint: endpoint(),
-    chainStatuses,
+    const ok = !chainStatuses.find((c) => !c.ok)
+    return {
+      ok: ok,
+      endpoint: endpoint(),
+      chainStatuses,
+    }
+  } catch (e: any) {
+    return {
+      ok: false,
+      error: e.message,
+      endpoint: endpoint(),
+    }
   }
 }
 
