@@ -236,7 +236,11 @@ export async function getStatus(): Promise<DebankStatusResp> {
   try {
     const units = await getDebank('/v1/account/units')
 
+    if (units.message) throw new Error(units.message)
+
     const balance = units.balance
+    if (!units.balance) throw new Error('No balance?')
+
     if (balance < UNITS_THRESHOLD) {
       return {
         ok: false,
