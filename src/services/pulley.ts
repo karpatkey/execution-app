@@ -36,11 +36,13 @@ async function checkForkStatus(pulley: Pulley) {
     const finished = +new Date()
 
     const ok = resChainId.result == pulley.chain
+    const took = finished - started
     return {
       ok,
       pulley,
       blockNumber: resBlockNumber.result,
-      took: finished - started,
+      took,
+      took_human: `${took / 1000}s`,
     }
   } catch (e: any) {
     console.error(e)
