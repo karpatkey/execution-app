@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const session = await getSession(req as any, res as any)
   const accessToken = req.query['TOKEN_SECRET']
-  const validAccessToken = accessToken == process.env.HEALTHZ_TOKEN
+  const validAccessToken = process.env.HEALTHZ_TOKEN && accessToken == process.env.HEALTHZ_TOKEN
 
   // Either user is login or accessToken query param is valid
   if (!session && !validAccessToken) {
