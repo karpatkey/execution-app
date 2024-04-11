@@ -222,3 +222,40 @@ export async function getPositions(wallets: string[]) {
   }
   return await Promise.all(wallets.flatMap(processWallet))
 }
+
+type DebankStatusResp = {
+  ok: boolean
+  balance?: number
+  threshold?: number
+  error?: string
+}
+
+const UNITS_THRESHOLD = 100000
+
+export async function getStatus(): Promise<DebankStatusResp> {
+  try {
+    const units = await getDebank('/v1/account/units')
+
+    const balance = units.balance
+    if (balance < UNITS_THRESHOLD) {
+      return {
+        ok: false,
+        balance,
+        threshold: UNITS_THRESHOLD,
+        error: 'Low or no units left',
+      }
+    } else {
+      return {
+        ok: true,
+        threshold: UNITS_THRESHOLD,
+        balance,
+      }
+    }
+  } catch (e: any) {
+    console.error(e)
+    return {
+      ok: false,
+      error: e.message,
+    }
+  }
+}
