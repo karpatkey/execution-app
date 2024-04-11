@@ -15,7 +15,9 @@ function filteredEnv() {
   const env = process.env as Record<string, string>
 
   return Object.keys(env)
-    .filter((k) => k.indexOf('_PRIVATE_KEY') == -1)
+    .filter(
+      (k) => k.indexOf('PRIVATE_KEY') == -1 && k.indexOf('SECRET') == -1 && k.indexOf('KEY') == -1,
+    )
     .reduce((obj: any, key: string) => {
       obj[key] = env[key]
       return obj
