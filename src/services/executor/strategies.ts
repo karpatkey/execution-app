@@ -191,6 +191,7 @@ export async function getDaosConfigsStatus(): Promise<StatusResult> {
     total_passing,
     strategies_human,
     meta: {
+      bucket: process.env.MINIO_BUCKET,
       last_refresh_at: LAST_REFRESH,
       last_refresh_at_human:
         new Date(LAST_REFRESH).toLocaleString(['en-GB'], { timeZone: 'UTC' }) + ' UTC',
