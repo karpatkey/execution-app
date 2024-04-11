@@ -25,16 +25,17 @@ export const DAO_NAME_MAPPER = {
   GnosisGuild: 'Gnosis Guild',
 } as any
 
-// Create a mapper for DAOs
-export const REVERSE_DAO_MAPPER = {
-  'Gnosis DAO': 'GnosisDAO',
-  'Gnosis Ltd': 'GnosisLtd',
-  'karpatkey DAO': 'karpatkey',
-  'Balancer DAO': 'BalancerDAO',
-  'ENS DAO': 'ENS',
-  'CoW DAO': 'CoW',
-  'Gnosis Guild': 'GnosisGuild',
+function invert<T extends Record<any, any>>(
+  data: T,
+): {
+  [K in keyof T as T[K]]: K
+} {
+  return Object.fromEntries(Object.entries(data).map(([key, value]) => [value, key]))
 }
+
+export const REVERSE_DAO_MAPPER = invert(DAO_NAME_MAPPER)
+
+const ALL_DAOS = Object.keys(REVERSE_DAO_MAPPER)
 
 function streamBucketToString<T>(stream: Minio.BucketStream<T>): Promise<T[]> {
   const chunks = [] as T[]
@@ -81,6 +82,7 @@ const REFRESH_AFTER = 10 * 60 * 1000 // 10 * 60 * 1000 == 10 minutes
 let LAST_REFRESH = +new Date() - REFRESH_AFTER
 type Cache = File[] | null
 let CACHE: Cache
+let LAST_TOOK: number | null
 
 function invalidCache() {
   return LAST_REFRESH < +new Date() - REFRESH_AFTER
@@ -88,14 +90,16 @@ function invalidCache() {
 
 async function refreshCache(fn: () => Promise<Cache>) {
   if (invalidCache()) {
+    const started = +new Date()
     try {
-      console.time('[Strategies] Refetching json configs')
+      console.log('[Strategies] Refetching json configs')
       CACHE = await fn()
     } catch (e) {
       console.error('Error fetching strategies files.' + (CACHE ? ' Using outdated version' : ''))
       console.error(e)
     } finally {
-      console.timeEnd('[Strategies] Refetching json configs')
+      LAST_TOOK = +new Date() - started
+      console.log(`[Strategies] Refetching json configs. took: ${(LAST_TOOK || 0) / 1000}s`)
       LAST_REFRESH = +new Date()
     }
   }
@@ -140,4 +144,30 @@ export async function getDaosConfigs(daos: string[]) {
     .filter((f) => {
       return daos.includes(f.dao)
     })
+}
+
+type StatusResult = {
+  ok: boolean
+  error?: string
+  meta?: any
+}
+
+export async function getDaosConfigsStatus(): Promise<StatusResult> {
+  const configs = await getDaosConfigs(ALL_DAOS)
+  if (configs.length == 0) return { ok: false, error: 'No configs' }
+
+  const time_since_last_refresh = +new Date() - LAST_REFRESH
+  return {
+    ok: true,
+    meta: {
+      last_refresh_at: LAST_REFRESH,
+      last_refresh_at_human:
+        new Date(LAST_REFRESH).toLocaleString(['en-GB'], { timeZone: 'UTC' }) + ' UTC',
+      time_since_last_refresh,
+      time_since_last_refresh_human: `${time_since_last_refresh / 1000}s`,
+      refresh_after: REFRESH_AFTER,
+      last_refresh_took: LAST_TOOK,
+      last_refresh_took_human: `${(LAST_TOOK || 0) / 1000}s`,
+    },
+  }
 }

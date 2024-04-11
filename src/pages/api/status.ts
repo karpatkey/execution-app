@@ -1,6 +1,7 @@
 import { getSession } from '@auth0/nextjs-auth0'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getStatus as getDebankStatus } from 'src/services/debank/debank'
+import { getDaosConfigsStatus } from 'src/services/executor/strategies'
 import { getStatus as getPulleyStatus } from 'src/services/pulley'
 
 type Response = {
@@ -24,20 +25,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   try {
-    const debank = getDebankStatus()
-    const pulley = getPulleyStatus()
+    const [debank, pulley, strats] = await Promise.all([
+      getDebankStatus(),
+      getPulleyStatus(),
+      getDaosConfigsStatus(),
+    ])
 
-    const [debankResp, pulleyResp] = await Promise.all([debank, pulley])
-
-    const ok = ![debankResp, pulleyResp].find((status: any) => !status.ok)
+    const ok = ![debank, pulley, strats].find((status: any) => !status.ok)
 
     const status = ok ? 200 : 500
 
     return res.status(status).json({
       ok: ok,
       statuses: {
-        debank: debankResp,
-        pulley: pulleyResp,
+        debank,
+        pulley,
+        strats,
       },
     })
   } catch (error) {
