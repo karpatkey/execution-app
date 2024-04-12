@@ -16,11 +16,84 @@ function testAddress() {
   return ethers.computeAddress(TEST_PRIV_KEY)
 }
 
+type StatusResponse = {
+  ok: boolean
+  error?: string
+  accounts?: any
+}
+
+type Env = Record<string, string> | NodeJS.ProcessEnv
+
+export async function getStatus(): Promise<StatusResponse> {
+  try {
+    const res = await callVaultEthsigner(
+      { method: 'GET', path: '/accounts?list=true' },
+      process.env,
+    )
+
+    if (!res.data || !res.data.keys || res.data.keys.length == 0) {
+      return {
+        ok: false,
+        error: 'No keys imported',
+      }
+    }
+
+    return {
+      ok: true,
+      accounts: res.data.keys,
+    }
+  } catch (error: any) {
+    console.error(error)
+
+    return {
+      ok: false,
+      error: error.message,
+    }
+  }
+}
+
+async function callVaultEthsigner(request: Record<string, any>, env: Env) {
+  const signerUrl = env.VAULT_SIGNER_URL
+  const vaultToken = env.VAULT_SIGNER_TOKEN
+
+  if (!signerUrl && !vaultToken) throw new Error('Signer: Missing vault signer configs')
+  if (!signerUrl) throw new Error('Signer: Missing signer url')
+  if (!vaultToken) throw new Error('Signer: Missing config VAULT_SIGNER_TOKEN')
+
+  const url = signerUrl + request.path
+
+  const body = request.body
+    ? JSON.stringify(request.body, (_key, value) =>
+        typeof value === 'bigint' ? value.toString() : value,
+      )
+    : undefined
+
+  const req = {
+    method: request.method || 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${vaultToken}`,
+    },
+    body,
+  }
+
+  const response = await fetch(url, req)
+  const res = await response.json()
+
+  if (response.status !== 200 || (res.errors || []).length > 0) {
+    throw new Error(
+      `Signer Request failed: url=${url} status=${response.status} errors=[${(res.errors || []).join(', ')}]`,
+    )
+  }
+
+  return res
+}
+
 export class Signor {
   provider: JsonRpcProvider
   devMode: boolean
   vaultToken?: string
-  env: Record<string, string> | NodeJS.ProcessEnv
+  env: Env
   dao: Dao
   blockchain: Blockchain
 
@@ -46,17 +119,10 @@ export class Signor {
   }
 
   async sendTransaction(transaction: Transaction) {
-    const signerUrl = this.getSignerUrl()
-    if (!signerUrl) {
-      throw new Error('Missing signer url')
-    }
-
     if (this.devMode) {
       transaction.from = testAddress()
-      // console.log(transaction.from)
 
       const anvil = new AnvilTools(this.provider)
-
       await anvil.assignRole({
         ...this.getRoleParams(),
         assignee: transaction.from,
@@ -65,32 +131,10 @@ export class Signor {
 
     transaction = await this.updateGasAndNonce(transaction)
 
-    if (!this.vaultToken) throw new Error('Missing config VAULT_SIGNER_TOKEN')
+    const path = `/accounts/${transaction.from.toLowerCase()}/sign`
+    const resp = await callVaultEthsigner({ path, body: transaction }, this.env)
 
-    // console.log('TRANSACTION', transaction)
-
-    const url = `${signerUrl}/accounts/${transaction.from.toLowerCase()}/sign`
-    // console.log(transaction)
-    // console.log(url)
-
-    const req = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.vaultToken}`,
-      },
-      body: JSON.stringify(transaction, (_key, value) =>
-        typeof value === 'bigint' ? value.toString() : value,
-      ),
-    }
-
-    const response = await fetch(url, req)
-    const signed = await response.json()
-
-    if (response.status !== 200)
-      throw new Error(`Failed to sign: ${(signed.errors || []).join(', ')}`)
-
-    return await this.provider.broadcastTransaction(signed?.data?.signedTx)
+    return await this.provider.broadcastTransaction(resp?.data?.signedTx)
   }
 
   private async updateGasAndNonce(transaction: Transaction) {

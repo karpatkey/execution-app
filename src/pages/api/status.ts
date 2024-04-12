@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getStatus as getDebankStatus } from 'src/services/debank/debank'
 import { getDaosConfigsStatus } from 'src/services/executor/strategies'
 import { getStatus as getPulleyStatus } from 'src/services/pulley'
+import { getStatus as getSignerStatus } from 'src/services/signer'
 
 type Response = {
   status: 'ok' | 'error'
@@ -40,13 +41,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   try {
-    const [debank, pulley, strats] = await Promise.all([
+    const [debank, pulley, strats, signer] = await Promise.all([
       getDebankStatus(),
       getPulleyStatus(),
       getDaosConfigsStatus(),
+      getSignerStatus(),
     ])
 
-    const ok = ![debank, pulley, strats].find((status: any) => !status.ok)
+    const ok = ![debank, pulley, strats, signer].find((status: any) => !status.ok)
 
     const status = ok ? 200 : 500
 
@@ -56,6 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         debank,
         pulley,
         strats,
+        signer,
       },
       ...(validAccessToken
         ? {
@@ -63,9 +66,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           }
         : {}),
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('ERROR Reject: ', error)
+    return res
+      .status(500)
+      .json({ status: 'error', error: `Internal Server Error ${error.message}` })
   }
-
-  return res.status(500).json({ status: 'error', error: 'Internal Server Error' })
 }
