@@ -6,5 +6,5 @@ const bc = 'ethereum' as any
 
 ;(async function () {
   const signer = new CowswapSigner(bc, decoded)
-  return await signer.moooIt()
+  return await signer.createOrder()
 })().then((r) => console.log(r))

@@ -7,7 +7,6 @@ import {
   getDAOFilePath,
   getStrategyByPositionId,
 } from 'src/config/strategies/manager'
-import { CowswapSigner } from 'src/services/cowswap'
 import { REVERSE_DAO_MAPPER, getDaosConfigs } from 'src/services/executor/strategies'
 import { Pulley } from 'src/services/pulley'
 import { Signor } from 'src/services/signer'
@@ -265,10 +264,12 @@ export default withApiAuthRequired(async function handler(
         const txReceipt = await txResponse.wait()
 
         if (txReceipt?.status == 1) {
-          const cowsigner = new CowswapSigner(blockchain, decoded)
-          if (cowsigner.needsMooofirmation()) {
-            await cowsigner.moooIt()
-          }
+          // TODO cleanup Roles royce creates the order now so we don't need this
+          //
+          // const cowsigner = new CowswapSigner(blockchain, decoded)
+          // if (cowsigner.isCowswap()) {
+          //   await cowsigner.createOrder()
+          // }
 
           return res.status(200).json({ data: { tx_hash: txResponse.hash } })
         } else {

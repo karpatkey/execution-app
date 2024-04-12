@@ -53,7 +53,7 @@ export class CowswapSigner {
     this.decodedTx = decodedTransaction
   }
 
-  needsMooofirmation() {
+  isCowswap() {
     return this.getOrders().length > 0
   }
 
@@ -61,7 +61,7 @@ export class CowswapSigner {
     return this.decodedTx.filter((step) => step.name == 'signOrder')
   }
 
-  async moooIt() {
+  async createOrder() {
     return await Promise.all(this.getOrders().map(this.processOrder.bind(this)))
   }
 
