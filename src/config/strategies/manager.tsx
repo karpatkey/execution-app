@@ -8,18 +8,11 @@ export type Dao =
 
 export type Blockchain = 'gnosis' | 'ethereum'
 
-export type ExecutionType = 'execute' | 'simulate' | 'transaction_builder'
-
 export type DaoMapperType = {
   name: Dao
   blockchain: Blockchain
   config: any
 }
-
-const EXECUTE_FILE_PATH = 'roles_royce/roles_royce/applications/execution_app/execute.py'
-const SIMULATE_FILE_PATH = 'roles_royce/roles_royce/applications/execution_app/simulate.py'
-const TRANSACTION_BUILDER_FILE_PATH =
-  'roles_royce/roles_royce/applications/execution_app/transaction_builder.py'
 
 export enum DEFAULT_VALUES_KEYS {
   dao = 'dao',
@@ -131,15 +124,4 @@ export const getStrategyByPositionId = (
     commonConfig: daoItem?.general_parameters ?? [],
     positionConfig: position?.exec_config ?? [],
   } as ExecConfig
-}
-
-export const getDAOFilePath = (executionType: ExecutionType) => {
-  switch (executionType) {
-    case 'execute':
-      return EXECUTE_FILE_PATH
-    case 'simulate':
-      return SIMULATE_FILE_PATH
-    case 'transaction_builder':
-      return TRANSACTION_BUILDER_FILE_PATH
-  }
 }

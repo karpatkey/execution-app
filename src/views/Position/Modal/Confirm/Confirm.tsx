@@ -77,14 +77,13 @@ export const Confirm = ({ handleClose }: ConfirmProps) => {
       dispatch(setSetupStatus('confirm' as SetupStatus))
 
       const parameters = {
-        execution_type: 'execute',
         transaction: transaction,
         decoded: transactionBuildValue?.decodedTransaction,
         blockchain,
         dao,
       }
 
-      const response = await fetch('/api/execute', {
+      const response = await fetch('/api/tx/execute', {
         method: 'POST',
         headers: {
           Accept: 'application/json',

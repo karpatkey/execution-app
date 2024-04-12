@@ -69,13 +69,12 @@ export const Tenderly = () => {
       dispatch(setSetupSimulationStatus('loading' as SetupItemStatus))
 
       const parameters = {
-        execution_type: 'simulate',
         transaction: transaction,
         blockchain,
         dao,
       }
 
-      const response = await fetch('/api/execute', {
+      const response = await fetch('/api/tx/simulate', {
         method: 'POST',
         headers: {
           Accept: 'application/json',

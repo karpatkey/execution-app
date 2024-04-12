@@ -7,19 +7,46 @@ interface CommonExecuteReturn {
   error: Maybe<string>
 }
 
-export const CommonExecutePromise = (
-  filePath: string,
+const EXECUTE_FILE_PATH = 'roles_royce/roles_royce/applications/execution_app/execute.py'
+const SIMULATE_FILE_PATH = 'roles_royce/roles_royce/applications/execution_app/simulate.py'
+const TRANSACTION_BUILDER_FILE_PATH =
+  'roles_royce/roles_royce/applications/execution_app/transaction_builder.py'
+
+export type ExecutionType = 'execute' | 'simulate' | 'transaction_builder'
+export enum Script {
+  Build,
+  Simulate,
+  Execute,
+}
+
+export const getScriptFilePath = (script: Script) => {
+  switch (script) {
+    case Script.Execute:
+      return EXECUTE_FILE_PATH
+    case Script.Simulate:
+      return SIMULATE_FILE_PATH
+    case Script.Build:
+      return TRANSACTION_BUILDER_FILE_PATH
+  }
+}
+
+export function runScript(
+  script: Script,
   parameters: any,
   env: Record<string, string>,
-): Promise<CommonExecuteReturn> => {
+): Promise<CommonExecuteReturn> {
   return new Promise((resolve, reject) => {
     try {
+      const filePath = getScriptFilePath(script)
       const scriptFile = path.resolve(process.cwd(), filePath)
 
       const childEnv = {
         NODE_ENV: process.env.NODE_ENV,
         ...env,
       }
+
+      console.log('Executing', [filePath, ...parameters].join(' '))
+      const started = +new Date()
 
       const python = spawn(`python3`, [`${scriptFile}`, ...parameters], { env: childEnv })
 
@@ -74,6 +101,7 @@ export const CommonExecutePromise = (
           error: message || null,
         }
 
+        console.log(`script took: ${(+new Date() - started) / 1000}s`)
         resolve(body)
       })
     } catch (error) {

@@ -94,7 +94,6 @@ async function refreshCache(fn: () => Promise<Cache>) {
   if (invalidCache()) {
     const started = +new Date()
     try {
-      console.log('[Strategies] Refetching json configs')
       CACHE = await fn()
       LAST_ERROR = undefined
     } catch (e: any) {
@@ -103,7 +102,7 @@ async function refreshCache(fn: () => Promise<Cache>) {
       console.error(e)
     } finally {
       LAST_TOOK = +new Date() - started
-      console.log(`[Strategies] Refetching json configs. took: ${(LAST_TOOK || 0) / 1000}s`)
+      console.log(`[Strategies] Refetched json configs. took: ${(LAST_TOOK || 0) / 1000}s`)
       LAST_REFRESH = +new Date()
     }
   }

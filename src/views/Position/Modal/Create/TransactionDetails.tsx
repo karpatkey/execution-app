@@ -112,7 +112,6 @@ export const TransactionDetails = () => {
     } = formValue
 
     const parameters = {
-      execution_type: 'transaction_builder',
       dao,
       pool_id,
       strategy,
@@ -132,7 +131,7 @@ export const TransactionDetails = () => {
     const postData = async (data: any) => {
       try {
         dispatch(setSetupTransactionBuildStatus('loading' as SetupItemStatus))
-        const response = await fetch('/api/execute', {
+        const response = await fetch('/api/tx/build', {
           method: 'POST',
           headers: {
             Accept: 'application/json',
