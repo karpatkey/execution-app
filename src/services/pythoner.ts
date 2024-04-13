@@ -7,12 +7,6 @@ interface CommonExecuteReturn {
   error: Maybe<string>
 }
 
-const EXECUTE_FILE_PATH = 'roles_royce/roles_royce/applications/execution_app/execute.py'
-const SIMULATE_FILE_PATH = 'roles_royce/roles_royce/applications/execution_app/simulate.py'
-const TRANSACTION_BUILDER_FILE_PATH =
-  'roles_royce/roles_royce/applications/execution_app/transaction_builder.py'
-
-export type ExecutionType = 'execute' | 'simulate' | 'transaction_builder'
 export enum Script {
   Build,
   Simulate,
@@ -20,13 +14,14 @@ export enum Script {
 }
 
 export const getScriptFilePath = (script: Script) => {
+  const base = 'roles_royce/roles_royce/applications/execution_app'
   switch (script) {
     case Script.Execute:
-      return EXECUTE_FILE_PATH
+      return base + '/execute.py'
     case Script.Simulate:
-      return SIMULATE_FILE_PATH
+      return base + '/simulate.py'
     case Script.Build:
-      return TRANSACTION_BUILDER_FILE_PATH
+      return base + '/transaction_builder.py'
   }
 }
 
