@@ -13,18 +13,18 @@ type Status = {
 }
 
 type Params = {
-  blockchain: Maybe<Blockchain>
-  dao: Maybe<Dao>
-  strategy: Maybe<string>
-  percentage: Maybe<number>
-  pool_id: Maybe<string>
-  protocol: Maybe<string>
-  exit_arguments: {
-    rewards_address: Maybe<string>
-    max_slippage: Maybe<number>
-    token_in_address: Maybe<string>
-    token_out_address: Maybe<string>
-    bpt_address: Maybe<string>
+  blockchain?: Blockchain
+  dao?: Dao
+  strategy?: string
+  percentage?: number
+  pool_id?: string
+  protocol?: string
+  exit_arguments?: {
+    rewards_address?: string
+    max_slippage?: number
+    token_in_address?: string
+    token_out_address?: string
+    bpt_address?: string
   }
 }
 
@@ -70,15 +70,13 @@ export default withApiAuthRequired(async function handler(
 
       const args = new Map()
       execConfig?.parameters?.forEach((parameter) => {
-        if (parameter.type === 'constant') {
-          args.set(parameter.name, parameter.value)
-        }
+        if (parameter.type === 'constant') args.set(parameter.name, parameter.value)
       })
-      // Add the rest of the parameters if needed
-      // User provided arguments
-      Object.entries(exit_arguments).forEach(([key, value]) => {
+      // Add the rest of the parameters if needed. User provided arguments
+      Object.entries(exit_arguments || {}).forEach(([key, value]) => {
         if (value) args.set(key, value)
       })
+
       if (args.size > 0) {
         const argParam = JSON.stringify([Object.fromEntries(args.entries())])
         parameters.push('--exit-arguments', argParam)
