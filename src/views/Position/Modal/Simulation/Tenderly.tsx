@@ -85,7 +85,7 @@ export const Tenderly = () => {
 
       const body = await response.json()
 
-      const { status, data = {} } = body
+      const { status, sim_data = {} } = body
 
       if (status === 500) {
         const errorMessage =
@@ -93,7 +93,7 @@ export const Tenderly = () => {
         throw new Error(errorMessage)
       }
 
-      const { share_url: shareUrl, error_message: simulationErrorMessage } = data ?? {}
+      const { share_url: shareUrl, error_message: simulationErrorMessage } = sim_data ?? {}
 
       if (shareUrl) {
         dispatch(setSetupSimulation({ shareUrl, simulationErrorMessage }))

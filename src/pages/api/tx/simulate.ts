@@ -3,8 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { Blockchain, Dao } from 'src/config/strategies/manager'
 import { authorizedDao } from 'src/services/autorizer'
 import { executorEnv } from 'src/services/executor/env'
-import { REVERSE_DAO_MAPPER } from 'src/services/executor/strategies'
-import { Script, runScript } from 'src/services/pythoner'
+import { RolesApi } from 'src/services/rolesapi'
 
 type Status = {
   data?: Maybe<any>
@@ -34,19 +33,13 @@ export default withApiAuthRequired(async function handler(
     if (!dao) throw new Error('missing dao')
     if (!blockchain) throw new Error('missing blockchain')
 
-    const parameters: string[] = [
-      ['--dao', REVERSE_DAO_MAPPER[dao]],
-      ['--blockchain', `${blockchain.toUpperCase()}`],
-      ['--transaction', `${JSON.stringify(transaction)}`],
-    ].flat()
-
     const env = await executorEnv(blockchain)
 
     try {
-      // Execute the transaction builder
-      const scriptResponse = await runScript(Script.Simulate, parameters, env.env)
+      const api = new RolesApi(dao, blockchain, env.fork?.url)
+      const response = await api.simulateTransaction(transaction)
 
-      return res.status(200).json(scriptResponse)
+      return res.status(response.status || 400).json(response)
     } finally {
       env.release()
     }

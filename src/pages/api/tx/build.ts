@@ -3,8 +3,8 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { Blockchain, Dao, getStrategyByPositionId } from 'src/config/strategies/manager'
 import { authorizedDao } from 'src/services/autorizer'
 import { executorEnv } from 'src/services/executor/env'
-import { REVERSE_DAO_MAPPER, getDaosConfigs } from 'src/services/executor/strategies'
-import { Script, runScript } from 'src/services/pythoner'
+import { getDaosConfigs } from 'src/services/executor/strategies'
+import { RolesApi } from 'src/services/rolesapi'
 
 type Status = {
   data?: Maybe<any>
@@ -49,17 +49,10 @@ export default withApiAuthRequired(async function handler(
 
     if (!dao) throw new Error('missing dao')
     if (!blockchain) throw new Error('missing blockchain')
+    if (!percentage) throw new Error('missing percentage')
     if (!pool_id || !protocol || !strategy) {
       return res.status(500).json({ status: 500, error: 'Missing params' })
     }
-
-    const parameters: string[] = [
-      ['--dao', REVERSE_DAO_MAPPER[dao]],
-      ['--blockchain', `${blockchain.toUpperCase()}`],
-      ['--percentage', `${percentage}`],
-      ['--exit-strategy', `${strategy}`],
-      ['--protocol', `${protocol}`],
-    ].flat()
 
     const daosConfigs = await getDaosConfigs(dao ? [dao] : [])
     const env = await executorEnv(blockchain)
@@ -77,15 +70,12 @@ export default withApiAuthRequired(async function handler(
         if (value) args.set(key, value)
       })
 
-      if (args.size > 0) {
-        const argParam = JSON.stringify([Object.fromEntries(args.entries())])
-        parameters.push('--exit-arguments', argParam)
-      }
-
+      const argsParams = Object.fromEntries(args.entries())
       // Execute the transaction builder
-      const scriptResponse = await runScript(Script.Build, parameters, env.env)
+      const api = new RolesApi(dao, blockchain, env.fork?.url)
+      const response = await api.buildTransaction(protocol, strategy, percentage, [argsParams])
 
-      return res.status(200).json(scriptResponse)
+      return res.status(response.status || 400).json(response)
     } finally {
       env.release()
     }

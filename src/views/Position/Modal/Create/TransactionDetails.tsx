@@ -144,7 +144,7 @@ export const TransactionDetails = () => {
 
         const { status, error: executeError } = body
 
-        const { transaction, decoded_transaction: decodedTransaction } = body?.data ?? {}
+        const { transaction, decoded_transaction: decodedTransaction } = body?.tx_data ?? {}
 
         // check if response is 422
         if (status === 422) {
