@@ -185,7 +185,6 @@ export const Confirm = ({ handleClose }: ConfirmProps) => {
             {txHash && !isLoading && (
               <Button
                 variant="contained"
-                size="small"
                 onClick={() => {
                   // open transaction hash in an explorer, if is ethereum in etherscan, if is gnosis in gnosisscan
                   const txUrl =
@@ -199,17 +198,17 @@ export const Confirm = ({ handleClose }: ConfirmProps) => {
               </Button>
             )}
             {confirmStatus !== ('success' as SetupItemStatus) && !isLoading && (
-              <Button variant="contained" size="small" onClick={() => handleClose()}>
+              <Button variant="contained" color="error" onClick={() => handleClose()}>
                 Cancel
               </Button>
             )}
             {confirmStatus !== ('success' as SetupItemStatus) && !isLoading && (
-              <Button variant="contained" disabled={isDisabled} size="small" onClick={onExecute}>
+              <Button variant="contained" disabled={isDisabled} onClick={onExecute}>
                 Execute
               </Button>
             )}
             {confirmStatus === ('success' as SetupItemStatus) && !isLoading && (
-              <Button variant="contained" size="small" component={Link} href={`/positions`}>
+              <Button variant="contained" component={Link} href={`/positions`}>
                 Finish
               </Button>
             )}

@@ -152,7 +152,7 @@ export const Tenderly = () => {
           {shareUrl && !isLoading && (
             <Button
               variant="contained"
-              size="small"
+              color="secondary"
               onClick={() => window.open(shareUrl, '_blank')}
             >
               View Tenderly simulation report
@@ -160,7 +160,7 @@ export const Tenderly = () => {
           )}
 
           {showSimulateButton && (
-            <Button variant="contained" size="small" onClick={onSimulate}>
+            <Button variant="contained" color="secondary" onClick={onSimulate}>
               Try again
             </Button>
           )}
