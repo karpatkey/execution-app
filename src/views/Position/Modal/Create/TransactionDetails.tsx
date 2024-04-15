@@ -33,38 +33,14 @@ import { SetupItemStatus, SetupStatus, TransactionBuild } from 'src/contexts/sta
 import { shortenAddress } from 'src/utils/string'
 
 const LABEL_MAPPER = {
-  value: {
-    label: 'Value',
-    order: 1,
-  },
-  chainId: {
-    label: 'Chain Id',
-    order: 2,
-  },
-  gas: {
-    label: 'Gas',
-    order: 3,
-  },
-  maxFeePerGas: {
-    label: 'Max fee per gas',
-    order: 4,
-  },
-  maxPriorityFeePerGas: {
-    label: 'Max priority fee per gas',
-    order: 5,
-  },
-  nonce: {
-    label: 'Nonce',
-    order: 6,
-  },
-  to: {
-    label: 'To',
-    order: 7,
-  },
-  from: {
-    label: 'From',
-    order: 8,
-  },
+  value: { label: 'Value', order: 1 },
+  chainId: { label: 'Chain Id', order: 2 },
+  gas: { label: 'Gas', order: 3 },
+  maxFeePerGas: { label: 'Max fee per gas', order: 4 },
+  maxPriorityFeePerGas: { label: 'Max priority fee per gas', order: 5 },
+  nonce: { label: 'Nonce', order: 6 },
+  to: { label: 'To', order: 7 },
+  from: { label: 'From', order: 8 },
 }
 
 const WaitingDecodingTransaction = () => {
@@ -96,35 +72,20 @@ export const TransactionDetails = () => {
       return
     }
 
-    const {
-      name: strategy,
-      percentage,
-      dao,
-      position_name,
-      pool_id,
-      protocol,
-      blockchain,
-      bpt_address,
-      max_slippage,
-      rewards_address,
-      token_in_address,
-      token_out_address,
-    } = formValue
-
     const parameters = {
-      dao,
-      pool_id,
-      strategy,
-      percentage,
-      position_name,
-      protocol,
-      blockchain,
+      dao: formValue.dao,
+      pool_id: formValue.pool_id,
+      strategy: formValue.name,
+      percentage: formValue.percentage,
+      position_name: formValue.position_name,
+      protocol: formValue.protocol,
+      blockchain: formValue.blockchain,
       exit_arguments: {
-        bpt_address,
-        max_slippage,
-        rewards_address,
-        token_in_address,
-        token_out_address,
+        bpt_address: formValue.bpt_address,
+        max_slippage: formValue.max_slippage,
+        rewards_address: formValue.rewards_address,
+        token_in_address: formValue.token_in_address,
+        token_out_address: formValue.token_out_address,
       },
     }
 
@@ -146,35 +107,6 @@ export const TransactionDetails = () => {
 
         const { transaction, decoded_transaction: decodedTransaction } = body?.tx_data ?? {}
 
-        // check if response is 422
-        if (status === 422) {
-          // Allow to simulate, but not execute transaction
-          const errorMessage =
-            typeof body?.error === 'string' ? body?.error : 'Error decoding transaction'
-          setError(new Error(errorMessage))
-
-          dispatch(setSetupTransactionCheck(false))
-          dispatch(setSetupTransactionCheckStatus('failed' as SetupItemStatus))
-          dispatch(
-            setSetupTransactionBuild({ transaction, decodedTransaction } as TransactionBuild),
-          )
-          dispatch(setSetupTransactionBuildStatus('success' as SetupItemStatus))
-          dispatch(setSetupStatus('transaction_check' as SetupStatus))
-        }
-
-        if (status === 500 || response?.status === 401) {
-          // Don't allow to simulate or execute transaction
-          const errorMessage =
-            typeof body?.error === 'string' ? body?.error : 'Error decoding transaction'
-          setError(new Error(errorMessage))
-          dispatch(setSetupTransactionCheck(false))
-          dispatch(setSetupTransactionCheckStatus('failed' as SetupItemStatus))
-          dispatch(
-            setSetupTransactionBuild({ transaction, decodedTransaction } as TransactionBuild),
-          )
-          dispatch(setSetupTransactionBuildStatus('failed' as SetupItemStatus))
-        }
-
         if (status === 200) {
           if (executeError) {
             setError(new Error(executeError))
@@ -191,6 +123,17 @@ export const TransactionDetails = () => {
             dispatch(setSetupTransactionBuildStatus('success' as SetupItemStatus))
             dispatch(setSetupStatus('transaction_check' as SetupStatus))
           }
+        } else {
+          // Don't allow to simulate or execute transaction
+          const errorMessage =
+            typeof body?.error === 'string' ? body?.error : 'Error decoding transaction'
+          setError(new Error(errorMessage))
+          dispatch(setSetupTransactionCheck(false))
+          dispatch(setSetupTransactionCheckStatus('failed' as SetupItemStatus))
+          dispatch(
+            setSetupTransactionBuild({ transaction, decodedTransaction } as TransactionBuild),
+          )
+          dispatch(setSetupTransactionBuildStatus('failed' as SetupItemStatus))
         }
       } catch (error) {
         console.error('Error fetching data:', error)
@@ -210,21 +153,14 @@ export const TransactionDetails = () => {
     if (!transaction) return []
 
     return Object.keys(transaction)
-      .filter((key) => LABEL_MAPPER[key as keyof typeof LABEL_MAPPER])
-      .sort((a, b) => {
-        return (
-          LABEL_MAPPER[a as keyof typeof LABEL_MAPPER].order -
-          LABEL_MAPPER[b as keyof typeof LABEL_MAPPER].order
-        )
-      })
-      .map((key) => {
-        return {
-          key,
-          label: LABEL_MAPPER[key as keyof typeof LABEL_MAPPER].label,
-          value: transaction[key as keyof typeof transaction],
-        }
-      })
-      .filter(({ value }) => value)
+      .map((key) => ({ key, label: LABEL_MAPPER[key as keyof typeof LABEL_MAPPER] }))
+      .filter((o) => o.label)
+      .sort((a, b) => a.label.order - b.label.order)
+      .map((o) => ({
+        key: o.key,
+        label: o.label.label,
+        value: transaction[o.key as keyof typeof transaction],
+      }))
   }, [transactionBuildValue])
 
   const handleChange = (panel: any) => (_event: any, newExpanded: any) => {
