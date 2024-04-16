@@ -1,7 +1,15 @@
 import { BigQuery } from '@google-cloud/bigquery'
-import { DATA_WAREHOUSE_ENV, GOOGLE_CREDS, GOOGLE_PROJECT_ID } from 'src/config/constants'
+const GOOGLE_PROJECT_ID = process.env.GOOGLE_PROJECT_ID
+const GOOGLE_CREDS = {
+  client_id: process.env.GOOGLE_CLIENT_ID,
+  client_email: process.env.GOOGLE_CLIENT_EMAIL,
+  project_id: GOOGLE_PROJECT_ID,
+  private_key: process.env?.GOOGLE_PRIVATE_KEY?.replace(new RegExp('\\\\n', 'g'), '\n'),
+}
 
 type DataWarehouseEnvironment = 'production' | 'development'
+const DATA_WAREHOUSE_ENV: DataWarehouseEnvironment =
+  process.env.DATA_WAREHOUSE_ENV == 'development' ? 'development' : 'production'
 
 const REPORTS_DATASET = {
   development: {
@@ -32,8 +40,7 @@ export class DataWarehouse {
   }
 
   async getPositions(DAOs?: string[]) {
-    const table =
-      REPORTS_DATASET[DATA_WAREHOUSE_ENV as unknown as DataWarehouseEnvironment]['getPositions']
+    const table = REPORTS_DATASET[DATA_WAREHOUSE_ENV]['getPositions']
 
     let viewQuery = `SELECT * FROM  \`karpatkey-data-warehouse.${table}\``
 
@@ -47,8 +54,7 @@ export class DataWarehouse {
   }
 
   async getPositionById(id: string) {
-    const table =
-      REPORTS_DATASET[DATA_WAREHOUSE_ENV as unknown as DataWarehouseEnvironment]['getPositions']
+    const table = REPORTS_DATASET[DATA_WAREHOUSE_ENV]['getPositions']
     const viewQuery = `SELECT * FROM  \`karpatkey-data-warehouse.${table}\` where position_id = @id`
 
     return await this.executeCommonJobQuery(viewQuery, { id })

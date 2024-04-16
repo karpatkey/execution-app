@@ -23,6 +23,7 @@ export const DAO_NAME_MAPPER = {
   ENS: 'ENS DAO',
   CoW: 'CoW DAO',
   GnosisGuild: 'Gnosis Guild',
+  TestSafeDAO: 'TestSafeDAO',
 } as any
 
 function invert<T extends Record<any, any>>(

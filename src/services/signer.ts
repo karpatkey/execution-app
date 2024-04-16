@@ -167,6 +167,7 @@ export class Signor {
         'Balancer DAO': 'BALANCERDAO',
         'CoW DAO': 'COWDAO',
         'ENS DAO': 'ENSDAO',
+        TestSafeDAO: 'TESTSAFEDAO',
       }[this.dao] || '__'
 
     key += '_' + this.blockchain.toUpperCase()
