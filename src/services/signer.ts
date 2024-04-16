@@ -139,6 +139,7 @@ export class Signor {
   private async updateGasAndNonce(transaction: Transaction) {
     const gasStrategyFeeMultiplier = AGGRESIVE_FEE_MULTIPLER
 
+    // TODO review this with Santi or Richard
     const latestBlock = await this.provider.getBlock('latest')
     const baseFeePerGas = Number(latestBlock?.baseFeePerGas || 1)
     const feeData = await this.provider.getFeeData()
