@@ -62,9 +62,7 @@ async function callVaultEthsigner(request: Record<string, any>, env: Env) {
   const url = signerUrl + request.path
 
   const body = request.body
-    ? JSON.stringify(request.body, (_key, value) =>
-        typeof value === 'bigint' ? value.toString() : value,
-      )
+    ? JSON.stringify(request.body, (_, v) => (typeof v === 'bigint' ? v.toString() : v))
     : undefined
 
   const req = {
