@@ -34,19 +34,21 @@ services:
   rolesapi:
     build:
       context: ../roles_royce
-      dockerfile: ../roles_royce/docker/Dockerfile.api
+      dockerfile: ../roles_royce/docker/Dockerfile.bots
     container_name: rolesapi
+    environment:
+      - APP=execution_app
     env_file:
       - .env
     ports:
-      - '4001:80'
+      - '4001:8080'
 
   pulley:
     build:
       context: ../pulley
     container_name: app-pulley
     environment:
-      - LOGGER_LEVEL=info
+      - LOGGER_LEVEL=debug
     env_file:
       - .env
     ports:
