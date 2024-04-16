@@ -160,16 +160,8 @@ export class Signor {
 
   private getRoleParams() {
     let key =
-      {
-        'karpatkey DAO': 'KARPATKEY',
-        'Gnosis DAO': 'GNOSISDAO',
-        'Gnosis Ltd': 'GNOSISLTD',
-        'Balancer LTD': 'BALANCERLTD',
-        'Balancer DAO': 'BALANCERDAO',
-        'CoW DAO': 'COWDAO',
-        'ENS DAO': 'ENSDAO',
-        TestSafeDAO: 'TESTSAFEDAO',
-      }[this.dao] || '__'
+      new Map([['karpatkey DAO', 'KARPATKEY']]).get(this.dao) ||
+      this.dao.replaceAll(' ', '').toUpperCase()
 
     key += '_' + this.blockchain.toUpperCase()
 
