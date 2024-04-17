@@ -1,4 +1,4 @@
-import { Session, getSession, withApiAuthRequired } from '@auth0/nextjs-auth0'
+import { withApiAuthRequired } from '@auth0/nextjs-auth0'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import {
   Blockchain,
@@ -7,6 +7,7 @@ import {
   getDAOFilePath,
   getStrategyByPositionId,
 } from 'src/config/strategies/manager'
+import { authorizedDao } from 'src/services/autorizer'
 import { REVERSE_DAO_MAPPER, getDaosConfigs } from 'src/services/executor/strategies'
 import { Pulley } from 'src/services/pulley'
 import { Signor } from 'src/services/signer'
@@ -73,18 +74,7 @@ export default withApiAuthRequired(async function handler(
 ) {
   try {
     // Should be a post request
-    if (req.method !== 'POST') {
-      res.status(405).json({ error: 'Method not allowed' })
-      return
-    }
-
-    const session = await getSession(req as any, res as any)
-
-    // Validate session here
-    if (!session) {
-      res.status(401).json({ error: 'Unauthorized' })
-      return
-    }
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
     // Get common parameters from the body
     const {
@@ -97,21 +87,8 @@ export default withApiAuthRequired(async function handler(
       dao: Maybe<Dao>
     }
 
-    // Get User role, if not found, return an error
-    const user = (session as Session).user
-    const daos = user?.['http://localhost:3000/roles']
-      ? (user?.['http://localhost:3000/roles'] as unknown as string[])
-      : []
-
-    if (!daos) {
-      res.status(401).json({ error: 'Unauthorized' })
-      return
-    }
-
-    if (dao && !daos.includes(dao)) {
-      res.status(401).json({ error: 'Unauthorized' })
-      return
-    }
+    const { error } = await authorizedDao({ req, res }, dao)
+    if (error) return res.status(401).json({ data: { status: false, error } })
 
     const parameters: any[] = []
 

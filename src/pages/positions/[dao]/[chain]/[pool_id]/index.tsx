@@ -1,4 +1,3 @@
-import { getSession, Session } from '@auth0/nextjs-auth0'
 import { withPageAuthRequired } from '@auth0/nextjs-auth0/client'
 import Button from '@mui/material/Button'
 import { NextApiRequest, NextApiResponse } from 'next'
@@ -11,6 +10,7 @@ import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 import { useApp } from 'src/contexts/app.context'
 import { addDaosConfigs, updateEnvNetworkData } from 'src/contexts/reducers'
 import { Position } from 'src/contexts/state'
+import { authorizedDao } from 'src/services/autorizer'
 import { Dao, getDaosConfigs } from 'src/services/executor/strategies'
 import PositionDetail from 'src/views/Position/WrappedPosition'
 
@@ -79,24 +79,9 @@ const getServerSideProps = async (context: {
   res: NextApiResponse
   params: { dao: string; chain: string; pool_id: string }
 }) => {
-  const { req, res, params: { dao = '', chain = '', pool_id = '' } = {} } = context
-  const session = await getSession(req as any, res as any)
-
-  if (!session) {
-    return {
-      props: {
-        daos: [],
-        dao,
-        chain,
-        pool_id,
-      },
-    }
-  }
-
-  const user = (session as Session).user
-  const daos = user?.['http://localhost:3000/roles']
-    ? (user?.['http://localhost:3000/roles'] as unknown as string[])
-    : []
+  const { params: { dao = '', chain = '', pool_id = '' } = {} } = context
+  const { error, daos } = await authorizedDao(context, dao)
+  if (error) return { props: { daos: [], dao, chain, pool_id } }
 
   const ENV_NETWORK_DATA = {
     MODE: process?.env?.MODE ?? 'development',
@@ -109,7 +94,6 @@ const getServerSideProps = async (context: {
   }
 
   const daosConfigs = await getDaosConfigs(daos as Dao[])
-
   return {
     props: {
       daos: daos,
