@@ -1,7 +1,7 @@
 import { withApiAuthRequired } from '@auth0/nextjs-auth0'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Blockchain, Dao } from 'src/config/strategies/manager'
-import { authorizedDao } from 'src/services/autorizer'
+import { authorizedDao } from 'src/services/authorizer'
 import { executorEnv } from 'src/services/executor/env'
 import { RolesApi } from 'src/services/rolesapi'
 
