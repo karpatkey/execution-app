@@ -1,7 +1,6 @@
 import { JsonRpcProvider, ethers } from 'ethers'
 import { Blockchain, Dao } from 'src/config/strategies/manager'
 import { AnvilTools } from './dev_tools'
-import { getEthersProvider } from './ethers'
 
 type Transaction = Record<string, any>
 
@@ -101,12 +100,14 @@ export class Signor {
     env,
     dao,
     blockchain,
+    provider,
   }: {
     dao: Dao
     blockchain: Blockchain
     env: Record<string, string>
+    provider: JsonRpcProvider
   }) {
-    this.provider = getEthersProvider(blockchain, env)
+    this.provider = provider
     this.devMode = env.MODE == 'development'
     this.env = env || process.env
     this.vaultToken = this.env.VAULT_SIGNER_TOKEN

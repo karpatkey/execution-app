@@ -8,6 +8,7 @@ import {
   getStrategyByPositionId,
 } from 'src/config/strategies/manager'
 import { authorizedDao } from 'src/services/autorizer'
+import { getEthersProvider } from 'src/services/ethers'
 import { REVERSE_DAO_MAPPER, getDaosConfigs } from 'src/services/executor/strategies'
 import { Pulley } from 'src/services/pulley'
 import { Signor } from 'src/services/signer'
@@ -238,7 +239,8 @@ export default withApiAuthRequired(async function handler(
 
         if (!decoded || !transaction) throw new Error('Missing required param')
 
-        const signor = new Signor({ blockchain, dao, env: env.env })
+        const provider = await getEthersProvider(blockchain, env.env)
+        const signor = new Signor({ blockchain, dao, provider, env: env.env })
         const txResponse = await signor.sendTransaction(transaction)
 
         const txReceipt = await txResponse.wait()
