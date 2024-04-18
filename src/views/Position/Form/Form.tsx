@@ -10,7 +10,6 @@ import CustomTypography from 'src/components/CustomTypography'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 import {
   Config,
-  DEFAULT_VALUES_KEYS,
   DEFAULT_VALUES_TYPE,
   PARAMETERS_CONFIG,
   PositionConfig,
@@ -276,9 +275,7 @@ const CustomForm = (props: CustomFormProps) => {
                       }}
                       minValue={0}
                       maxValue={max || 100}
-                      placeholder={
-                        PARAMETERS_CONFIG[name as DEFAULT_VALUES_KEYS].placeholder as string
-                      }
+                      placeholder={PARAMETERS_CONFIG[name].placeholder}
                       errors={errors}
                       onChange={onChange}
                     />
