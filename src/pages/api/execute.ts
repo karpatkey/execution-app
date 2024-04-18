@@ -21,6 +21,9 @@ type Status = {
 
 function filteredObject(raw: any, allowed: string[]) {
   function match(key: string, rule: string) {
+    if (rule[0] == '*' && rule[rule.length - 1] == '*') {
+      return key.includes(rule.substring(1, rule.length - 1))
+    }
     if (rule[0] == '*') {
       return key.endsWith(rule.substring(1))
     }
@@ -55,9 +58,7 @@ async function executorEnv(blockchain: string) {
     '*_ROLE',
     '*_DISASSEMBLER_ADDRESS',
     'TENDERLY_*',
-    '*_RPC_ENDPOINT',
-    '*_RPC_ENDPOINT_MEV',
-    '*_RPC_ENDPOINT_FALLBACK',
+    '*_RPC_ENDPOINT*',
     'VAULT_*',
   ])
 
