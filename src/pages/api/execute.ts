@@ -56,6 +56,8 @@ async function executorEnv(blockchain: string) {
     '*_DISASSEMBLER_ADDRESS',
     'TENDERLY_*',
     '*_RPC_ENDPOINT',
+    '*_RPC_ENDPOINT_MEV',
+    '*_RPC_ENDPOINT_FALLBACK',
     'VAULT_*',
   ])
 
