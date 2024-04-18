@@ -58,20 +58,13 @@ export class RolesApi {
     })
   }
 
-  async checkTransaction(
-    protocol: Protocol,
-    strategy: Strategy,
-    percentage: number,
-    args: StrategyArguments[],
-  ) {
+  async checkTransaction(protocol: Protocol, tx_transactables: any[]) {
     return await request('/check', {
       rpc_url: this.rpc_url,
       dao: this.dao,
       blockchain: this.blockchain,
       protocol,
-      strategy,
-      percentage,
-      arguments: args,
+      tx_transactables,
     })
   }
 

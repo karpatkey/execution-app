@@ -2,7 +2,6 @@ import { withApiAuthRequired } from '@auth0/nextjs-auth0'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Blockchain, Dao, getStrategyByPositionId } from 'src/config/strategies/manager'
 import { authorizedDao } from 'src/services/authorizer'
-import { executorEnv } from 'src/services/executor/env'
 import { getDaosConfigs } from 'src/services/executor/strategies'
 import { RolesApi } from 'src/services/rolesapi'
 
@@ -55,30 +54,25 @@ export default withApiAuthRequired(async function handler(
     }
 
     const daosConfigs = await getDaosConfigs(dao ? [dao] : [])
-    const env = await executorEnv(blockchain)
 
-    try {
-      const { positionConfig } = getStrategyByPositionId(daosConfigs, dao, blockchain, pool_id)
-      const execConfig = positionConfig.find((c) => c.function_name === strategy)
+    const { positionConfig } = getStrategyByPositionId(daosConfigs, dao, blockchain, pool_id)
+    const execConfig = positionConfig.find((c) => c.function_name === strategy)
 
-      const args = new Map()
-      execConfig?.parameters?.forEach((parameter) => {
-        if (parameter.type === 'constant') args.set(parameter.name, parameter.value)
-      })
-      // Add the rest of the parameters if needed. User provided arguments
-      Object.entries(exit_arguments || {}).forEach(([key, value]) => {
-        if (value) args.set(key, value)
-      })
+    const args = new Map()
+    execConfig?.parameters?.forEach((parameter) => {
+      if (parameter.type === 'constant') args.set(parameter.name, parameter.value)
+    })
+    // Add the rest of the parameters if needed. User provided arguments
+    Object.entries(exit_arguments || {}).forEach(([key, value]) => {
+      if (value) args.set(key, value)
+    })
 
-      const argsParams = Object.fromEntries(args.entries())
-      // Execute the transaction builder
-      const api = new RolesApi(dao, blockchain, env.fork?.url)
-      const response = await api.buildTransaction(protocol, strategy, percentage, [argsParams])
+    const argsParams = Object.fromEntries(args.entries())
+    // Execute the transaction builder
+    const api = new RolesApi(dao, blockchain)
+    const response = await api.buildTransaction(protocol, strategy, percentage, [argsParams])
 
-      return res.status(response.status || 400).json(response)
-    } finally {
-      env.release()
-    }
+    return res.status(response.status || 400).json(response)
   } catch (e: any) {
     console.error(e)
     return res.status(500).json({ error: `Internal Server Error ${e.message}`, status: 500 })
