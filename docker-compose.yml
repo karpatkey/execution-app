@@ -49,6 +49,8 @@ services:
     container_name: app-pulley
     environment:
       - LOGGER_LEVEL=debug
+      - PULLEY_SECONDS_TO_REFRESH=300
+      - PULLEY_SECONDS_TO_IDLE_TIMEOUT=90
     env_file:
       - .env
     ports:
