@@ -5,7 +5,7 @@ import { ReactElement } from 'react'
 import PageLayout from 'src/components/Layout/Layout'
 import { useApp } from 'src/contexts/app.context'
 import { addDAOs, addDaosConfigs } from 'src/contexts/reducers'
-import { authorizedDao } from 'src/services/autorizer'
+import { authorizedDao } from 'src/services/authorizer'
 import { Dao, getDaosConfigs } from 'src/services/executor/strategies'
 import WrapperPositions from 'src/views/Positions/WrapperPositions'
 

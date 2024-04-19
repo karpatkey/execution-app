@@ -7,7 +7,7 @@ import {
   getDAOFilePath,
   getStrategyByPositionId,
 } from 'src/config/strategies/manager'
-import { authorizedDao } from 'src/services/autorizer'
+import { authorizedDao } from 'src/services/authorizer'
 import { getEthersProvider } from 'src/services/ethers'
 import { REVERSE_DAO_MAPPER, getDaosConfigs } from 'src/services/executor/strategies'
 import { Pulley } from 'src/services/pulley'

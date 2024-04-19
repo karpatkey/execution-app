@@ -10,7 +10,7 @@ import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 import { useApp } from 'src/contexts/app.context'
 import { addDaosConfigs, updateEnvNetworkData } from 'src/contexts/reducers'
 import { Position } from 'src/contexts/state'
-import { authorizedDao } from 'src/services/autorizer'
+import { authorizedDao } from 'src/services/authorizer'
 import { Dao, getDaosConfigs } from 'src/services/executor/strategies'
 import PositionDetail from 'src/views/Position/WrappedPosition'
 

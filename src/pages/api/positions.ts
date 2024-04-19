@@ -1,6 +1,6 @@
 import { withApiAuthRequired } from '@auth0/nextjs-auth0'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { authorizedDao } from 'src/services/autorizer'
+import { authorizedDao } from 'src/services/authorizer'
 import { getPositions } from 'src/services/positions'
 
 type Status = {
