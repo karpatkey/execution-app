@@ -2,30 +2,31 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-    # cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     # nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-buffering: 'on'
-    nginx.ingress.kubernetes.io/proxy-buffer-size: '16k' # Adjust buffer size as needed
-    nginx.ingress.kubernetes.io/proxy-buffers-number: '4'
+    nginx.ingress.kubernetes.io/proxy-buffering: "on"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "360"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "360"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "360"
   name: develop-execution-app-ingress-{{PR_NUMBER}}
   namespace: agile-pr-review
 spec:
   # ingressClassName: nginx
   rules:
-    - host: { { PR_SUBDOMAIN } }
-      http:
-        paths:
-          - backend:
-              service:
-                name: develop-execution-app-{{PR_NUMBER}}
-                port:
-                  number: 3000
-            pathType: ImplementationSpecific
+  - host: {{PR_SUBDOMAIN}}
+    http:
+      paths:
+      - backend:
+          service:
+            name: develop-execution-app-{{PR_NUMBER}}
+            port:
+              number: 3000
+        pathType: ImplementationSpecific
 
-  # tls:
-  # - hosts:
-  #   - {{PR_SUBDOMAIN}}
-  #   secretName: {{PR_SUBDOMAIN}}-tls
+  tls:
+  - hosts:
+    - {{PR_SUBDOMAIN}}
+    secretName: {{PR_SUBDOMAIN}}-tls
