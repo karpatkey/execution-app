@@ -5,19 +5,20 @@ export enum Status {
   Finished = 'Finished',
 }
 
+export type AppBlockchain = 'ethereum' | 'gnosis'
+
 export type Token = {
   symbol: string
   as: 'supply' | 'borrow' | 'reward' | 'other' | 'core'
   amount: number
   price: number
-  // updatedAt: number
 }
 
 export type Position = {
   dao: string
   pool_id: string
   protocol: string
-  blockchain: string
+  blockchain: AppBlockchain
   lptoken_address: string
   lptokenName: string
   positionType?: string
@@ -51,17 +52,17 @@ export type Strategy = {
   name: string
   pool_id: string
   description: string
-  rewards_address: Maybe<string>
-  max_slippage: Maybe<number>
-  token_in_address: Maybe<string>
-  token_in_address_label: Maybe<string>
-  token_out_address: Maybe<string>
-  token_out_address_label: Maybe<string>
-  bpt_address: Maybe<string>
-  percentage: Maybe<number>
-  blockchain: Maybe<string>
-  protocol: Maybe<string>
-  position_name: Maybe<string>
+  rewards_address: string
+  max_slippage: number
+  token_in_address: string
+  token_in_address_label: string
+  token_out_address: string
+  token_out_address_label: string
+  bpt_address: string
+  percentage: number
+  blockchain: AppBlockchain
+  protocol: string
+  position_name: string
 }
 
 export type TransactionBuild = {

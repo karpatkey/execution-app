@@ -59,7 +59,7 @@ class DisabledAdapter implements Adapter {
   }
 }
 
-const MIN_USD_AMOUNT = 5000
+const MIN_USD_AMOUNT = process.env.AXA_MIN_USD_AMOUNT || 5000
 
 async function getDebankPositions(daos: string[]): Promise<{ data: Position[] }> {
   const dwallets = daos.map((dao) => ({ dao, wallets: daoWallets(dao) }))

@@ -5,7 +5,7 @@ import EmptyData from 'src/components/EmptyData'
 import { useApp } from 'src/contexts/app.context'
 import { PositionWithStrategies } from 'src/contexts/state'
 import { usePositions } from 'src/queries/positions'
-import { getStrategy } from 'src/utils/strategies'
+import { getStrategy } from 'src/services/strategies'
 import Card from 'src/views/Positions/Card'
 
 const List = () => {

@@ -1,10 +1,12 @@
-version: '3'
 services:
   dev:
     build:
       context: .
       target: dev
     container_name: dev
+    environment:
+      - VAULT_SIGNER_URL=http://host.docker.internal:8200/v1/ethereum
+      - VAULT_SIGNER_TOKEN=root
     env_file:
       - .env # Specify the path to your .env file
     ports:
@@ -19,6 +21,9 @@ services:
     build:
       context: .
     container_name: prod
+    environment:
+      - VAULT_SIGNER_URL=http://host.docker.internal:8200/v1/ethereum
+      - VAULT_SIGNER_TOKEN=root
     env_file:
       - .env # Specify the path to your .env file
     ports:
@@ -29,7 +34,9 @@ services:
   pulley:
     build:
       context: ../pulley
-    container_name: pulley
+    container_name: app-pulley
+    environment:
+      - LOGGER_LEVEL=info
     env_file:
       - .env
     ports:

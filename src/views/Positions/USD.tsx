@@ -10,7 +10,7 @@ export const USD = ({ value }: USDProps) => {
     const USDollar = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
-      maximumFractionDigits: 0,
+      maximumFractionDigits: value > 1 ? 0 : 2,
     })
 
     return USDollar.format(+value)

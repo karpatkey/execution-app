@@ -1,15 +1,18 @@
-import { Session, getSession, withApiAuthRequired } from '@auth0/nextjs-auth0'
+import { withApiAuthRequired } from '@auth0/nextjs-auth0'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import {
-  BLOCKCHAIN,
-  DAO,
-  EXECUTION_TYPE,
+  Blockchain,
+  Dao,
+  ExecutionType,
   getDAOFilePath,
   getStrategyByPositionId,
 } from 'src/config/strategies/manager'
+import { authorizedDao } from 'src/services/authorizer'
+import { getEthersProvider } from 'src/services/ethers'
+import { REVERSE_DAO_MAPPER, getDaosConfigs } from 'src/services/executor/strategies'
 import { Pulley } from 'src/services/pulley'
+import { Signor } from 'src/services/signer'
 import { CommonExecutePromise } from 'src/utils/execute'
-import { getDaosConfigs } from 'src/utils/jsonsFetcher'
 
 type Status = {
   data?: Maybe<any>
@@ -17,15 +20,11 @@ type Status = {
   error?: Maybe<string>
 }
 
-// Create a mapper for DAOs
-const DAO_MAPPER: Record<string, string> = {
-  'Gnosis DAO': 'GnosisDAO',
-  'Gnosis Ltd': 'GnosisLtd',
-  'karpatkey DAO': 'karpatkey',
-}
-
 function filteredObject(raw: any, allowed: string[]) {
   function match(key: string, rule: string) {
+    if (rule[0] == '*' && rule[rule.length - 1] == '*') {
+      return key.includes(rule.substring(1, rule.length - 1))
+    }
     if (rule[0] == '*') {
       return key.endsWith(rule.substring(1))
     }
@@ -60,15 +59,11 @@ async function executorEnv(blockchain: string) {
     '*_ROLE',
     '*_DISASSEMBLER_ADDRESS',
     'TENDERLY_*',
-    '*_RPC_ENDPOINT',
+    '*_RPC_ENDPOINT*',
+    'VAULT_*',
   ])
 
-  const env = !!fork
-    ? {
-        ...filtered,
-        LOCAL_FORK_URL: fork.url,
-      }
-    : filtered
+  const env = !!fork ? { ...filtered, LOCAL_FORK_URL: fork.url } : filtered
 
   return {
     env,
@@ -83,18 +78,7 @@ export default withApiAuthRequired(async function handler(
 ) {
   try {
     // Should be a post request
-    if (req.method !== 'POST') {
-      res.status(405).json({ error: 'Method not allowed' })
-      return
-    }
-
-    const session = await getSession(req as any, res as any)
-
-    // Validate session here
-    if (!session) {
-      res.status(401).json({ error: 'Unauthorized' })
-      return
-    }
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
     // Get common parameters from the body
     const {
@@ -102,27 +86,13 @@ export default withApiAuthRequired(async function handler(
       blockchain,
       dao = '',
     } = req.body as {
-      execution_type: EXECUTION_TYPE
-      blockchain: Maybe<BLOCKCHAIN>
-      dao: Maybe<DAO>
+      execution_type: ExecutionType
+      blockchain: Maybe<Blockchain>
+      dao: Maybe<Dao>
     }
 
-    // Get User role, if not found, return an error
-    const user = (session as Session).user
-    const roles = user?.['http://localhost:3000/roles']
-      ? (user?.['http://localhost:3000/roles'] as unknown as string[])
-      : []
-
-    const DAOs = roles
-    if (!DAOs) {
-      res.status(401).json({ error: 'Unauthorized' })
-      return
-    }
-
-    if (dao && !DAOs.includes(dao)) {
-      res.status(401).json({ error: 'Unauthorized' })
-      return
-    }
+    const { error } = await authorizedDao({ req, res }, dao)
+    if (error) return res.status(401).json({ data: { status: false, error } })
 
     const parameters: any[] = []
 
@@ -130,13 +100,13 @@ export default withApiAuthRequired(async function handler(
     if (!blockchain) throw new Error('missing blockchain')
 
     parameters.push('--dao')
-    parameters.push(DAO_MAPPER[dao])
+    parameters.push(REVERSE_DAO_MAPPER[dao])
     parameters.push('--blockchain')
     parameters.push(`${blockchain.toUpperCase()}`)
 
-    const daosConfigs = await getDaosConfigs([dao || ''])
+    const daosConfigs = await getDaosConfigs(dao ? [dao] : [])
 
-    const filePath = getDAOFilePath(execution_type as EXECUTION_TYPE)
+    const filePath = getDAOFilePath(execution_type as ExecutionType)
 
     const env = await executorEnv(blockchain)
 
@@ -185,8 +155,8 @@ export default withApiAuthRequired(async function handler(
         if (protocol) {
           const { positionConfig } = getStrategyByPositionId(
             daosConfigs,
-            dao as DAO,
-            blockchain as unknown as BLOCKCHAIN,
+            dao as Dao,
+            blockchain as unknown as Blockchain,
             pool_id || '',
           )
           const positionConfigItemFound = positionConfig?.find(
@@ -233,7 +203,7 @@ export default withApiAuthRequired(async function handler(
       }
     }
 
-    if (execution_type === 'simulate' || execution_type === 'execute') {
+    if (execution_type === 'simulate') {
       try {
         // Build de arguments for the transaction builder
 
@@ -252,6 +222,41 @@ export default withApiAuthRequired(async function handler(
         const { status, data, error } = await CommonExecutePromise(filePath, parameters, env.env)
 
         return res.status(200).json({ data, error, status })
+      } catch (error) {
+        console.error('ERROR Reject: ', error)
+        return res.status(500).json({ error: (error as Error)?.message, status: 500 })
+      } finally {
+        env.release()
+      }
+    }
+
+    if (execution_type === 'execute') {
+      try {
+        const { transaction, decoded } = req.body as {
+          transaction: Maybe<any>
+          decoded: Maybe<any>
+        }
+
+        if (!decoded || !transaction) throw new Error('Missing required param')
+
+        const provider = await getEthersProvider(blockchain, env.env)
+        const signor = new Signor({ blockchain, dao, provider, env: env.env })
+        const txResponse = await signor.sendTransaction(transaction)
+
+        const txReceipt = await txResponse.wait()
+
+        if (txReceipt?.status == 1) {
+          // TODO cleanup Roles royce creates the order now so we don't need this
+          //
+          // const cowsigner = new CowswapSigner(blockchain, decoded)
+          // if (cowsigner.isCowswap()) {
+          //   await cowsigner.createOrder()
+          // }
+
+          return res.status(200).json({ data: { tx_hash: txResponse.hash } })
+        } else {
+          throw new Error('Failed transaction receipt')
+        }
       } catch (error) {
         console.error('ERROR Reject: ', error)
         return res.status(500).json({ error: (error as Error)?.message, status: 500 })

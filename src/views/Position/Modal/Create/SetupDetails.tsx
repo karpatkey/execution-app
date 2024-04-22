@@ -28,6 +28,10 @@ const LABEL_MAPPER = {
     label: 'Strategy',
     order: 4,
   },
+  dao: {
+    label: 'DAO',
+    order: 0,
+  },
   blockchain: {
     label: 'Blockchain',
     order: 1,
@@ -148,8 +152,7 @@ export const SetupDetails = ({ position }: { position: Position }) => {
                               color="inherit"
                               onClick={() => {
                                 const url =
-                                  createValue &&
-                                  (createValue as Strategy)?.blockchain === 'Ethereum'
+                                  createValue && (createValue as Strategy)?.blockchain == 'ethereum'
                                     ? `https://etherscan.io/address/${value}`
                                     : `https://gnosisscan.io/address/${value}`
                                 window.open(url, '_blank')

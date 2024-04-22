@@ -18,7 +18,7 @@ import {
 import { useApp } from 'src/contexts/app.context'
 import { clearSetup, setSetupCreate, setSetupStatus } from 'src/contexts/reducers'
 import { Position, SetupStatus, Strategy } from 'src/contexts/state'
-import { getStrategy } from 'src/utils/strategies'
+import { getStrategy } from 'src/services/strategies'
 import { Modal } from '../Modal/Modal'
 import InputRadio from './InputRadio'
 import { Label } from './Label'
@@ -295,7 +295,7 @@ const CustomForm = (props: CustomFormProps) => {
               if (haveOptions) {
                 return (
                   <BoxWrapperColumn gap={2} key={index}>
-                    <Label title={'DUDE' + label} />
+                    <Label title={label} />
                     <InputRadio
                       name={name}
                       control={control}

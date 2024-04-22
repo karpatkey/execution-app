@@ -1,13 +1,25 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+
+module.exports = {
   output: 'standalone',
   reactStrictMode: true,
   images: {
-    domains: ['agile.karpatkey.com', 'localhost', 'agile.karpatkey.dev']
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.karpatkey.dev',
+        port: '',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.karpatkey.com',
+        port: '',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '',
+      },
+    ],
   },
-  experimental: {
-    externalDir: true
-  }
 }
-
-module.exports = nextConfig

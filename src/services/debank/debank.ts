@@ -39,7 +39,7 @@ import pMemoize from 'p-memoize'
 const cache = new ExpiryMap(20 * 60 * 1000)
 const getFromDebank = pMemoize(fetchWallet, { cache })
 
-async function getDebank(path: string, retriesLeft: number = MAX_RETRIES) {
+async function getDebank(path: string, retriesLeft: number = MAX_RETRIES): Promise<any> {
   try {
     const url = `https://pro-openapi.debank.com${path}`
     const headers = { accept: 'application/json', AccessKey: accessKey() }
@@ -221,4 +221,45 @@ export async function getPositions(wallets: string[]) {
     return transformData(wallet, positions, tokens, updatedAt)
   }
   return await Promise.all(wallets.flatMap(processWallet))
+}
+
+type DebankStatusResp = {
+  ok: boolean
+  balance?: number
+  threshold?: number
+  error?: string
+}
+
+const UNITS_THRESHOLD = 100000
+
+export async function getStatus(): Promise<DebankStatusResp> {
+  try {
+    const units = await getDebank('/v1/account/units')
+
+    if (units.message) throw new Error(units.message)
+
+    const balance = units.balance
+    if (!units.balance) throw new Error('No balance?')
+
+    if (balance < UNITS_THRESHOLD) {
+      return {
+        ok: false,
+        balance,
+        threshold: UNITS_THRESHOLD,
+        error: 'Low or no units left',
+      }
+    } else {
+      return {
+        ok: true,
+        threshold: UNITS_THRESHOLD,
+        balance,
+      }
+    }
+  } catch (e: any) {
+    console.error(e)
+    return {
+      ok: false,
+      error: e.message,
+    }
+  }
 }

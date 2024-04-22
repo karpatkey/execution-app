@@ -1,4 +1,7 @@
 import * as Minio from 'minio'
+import { Dao } from './types'
+
+export { type Dao }
 
 const MINIO_ENDPOINT = process.env.MINIO_ENDPOINT ?? ''
 const MINIO_SECRET_KEY = process.env.MINIO_SECRET_KEY ?? ''
@@ -12,7 +15,7 @@ interface File {
   positions: any
 }
 
-const DAO_NAME_MAPPER = {
+export const DAO_NAME_MAPPER = {
   GnosisDAO: 'Gnosis DAO',
   GnosisLtd: 'Gnosis Ltd',
   karpatkey: 'karpatkey DAO',
@@ -20,7 +23,20 @@ const DAO_NAME_MAPPER = {
   ENS: 'ENS DAO',
   CoW: 'CoW DAO',
   GnosisGuild: 'Gnosis Guild',
+  TestSafeDAO: 'TestSafeDAO',
 } as any
+
+function invert<T extends Record<any, any>>(
+  data: T,
+): {
+  [K in keyof T as T[K]]: K
+} {
+  return Object.fromEntries(Object.entries(data).map(([key, value]) => [value, key]))
+}
+
+export const REVERSE_DAO_MAPPER = invert(DAO_NAME_MAPPER)
+
+const ALL_DAOS = Object.keys(REVERSE_DAO_MAPPER)
 
 function streamBucketToString<T>(stream: Minio.BucketStream<T>): Promise<T[]> {
   const chunks = [] as T[]
@@ -33,9 +49,8 @@ function streamBucketToString<T>(stream: Minio.BucketStream<T>): Promise<T[]> {
 
 async function fetchJsons(): Promise<File[]> {
   // // Simulate errors :)
-  // if (Math.random() > 0.7) {
-  //   throw new Error('BOOM!')
-  // }
+  // if (Math.random() > 0.7) throw new Error('BOOM!')
+
   const minioClient = new Minio.Client({
     endPoint: MINIO_ENDPOINT,
     accessKey: MINIO_ACCESS_KEY,
@@ -68,6 +83,8 @@ const REFRESH_AFTER = 10 * 60 * 1000 // 10 * 60 * 1000 == 10 minutes
 let LAST_REFRESH = +new Date() - REFRESH_AFTER
 type Cache = File[] | null
 let CACHE: Cache
+let LAST_TOOK: number | null
+let LAST_ERROR: string | undefined
 
 function invalidCache() {
   return LAST_REFRESH < +new Date() - REFRESH_AFTER
@@ -75,26 +92,34 @@ function invalidCache() {
 
 async function refreshCache(fn: () => Promise<Cache>) {
   if (invalidCache()) {
+    const started = +new Date()
     try {
-      console.time('[Strategies] Refetching json configs')
+      console.log('[Strategies] Refetching json configs')
       CACHE = await fn()
-    } catch (e) {
+      LAST_ERROR = undefined
+    } catch (e: any) {
       console.error('Error fetching strategies files.' + (CACHE ? ' Using outdated version' : ''))
+      LAST_ERROR = e.message
       console.error(e)
     } finally {
-      console.timeEnd('[Strategies] Refetching json configs')
+      LAST_TOOK = +new Date() - started
+      console.log(`[Strategies] Refetching json configs. took: ${(LAST_TOOK || 0) / 1000}s`)
       LAST_REFRESH = +new Date()
     }
   }
 }
 
-export async function cached(fn: () => Promise<Cache>) {
+async function cached(fn: () => Promise<Cache>) {
   if (CACHE) {
     refreshCache(fn)
   } else {
     await refreshCache(fn)
   }
   return CACHE
+}
+
+function mapBlockchain(blockchain: string) {
+  return blockchain.toLowerCase()
 }
 
 function fixPosition(position: any) {
@@ -118,9 +143,64 @@ export async function getDaosConfigs(daos: string[]) {
       ...f,
       positions: f.positions.map(fixPosition),
       dao: DAO_NAME_MAPPER[f.dao] || f.dao,
-      blockchain: f.blockchain.toLowerCase(),
+      blockchain: mapBlockchain(f.blockchain),
     }))
     .filter((f) => {
       return daos.includes(f.dao)
     })
+}
+
+type StatusResult = {
+  ok: boolean
+  last_error?: string
+  total?: number
+  total_positions?: number
+  total_tests?: number
+  total_passing?: number
+  passing?: number
+  strategies_human?: any
+  error?: string
+  meta?: any
+}
+
+export async function getDaosConfigsStatus(): Promise<StatusResult> {
+  const configs = await getDaosConfigs(ALL_DAOS)
+  if (configs.length == 0) return { ok: false, error: LAST_ERROR || 'No configs' }
+
+  const all_positions = configs.flatMap((c) => c.positions)
+  const total_positions = all_positions.length
+  const all_tests = all_positions.flatMap((p) => p.exec_config)
+  const total_tests = all_tests.length
+  const total_passing = all_tests.filter((p) => p.stresstest).length
+  const strategies_human = configs.reduce((strateses: any, c: any) => {
+    strateses[`${c.dao} on ${c.blockchain}`] = c.positions.reduce((poses: any, p: any) => {
+      poses[p.position_id_human_readable] = p.exec_config.reduce((res: any, strat: any) => {
+        res[strat.label] = strat.stresstest || strat.stresstest_error
+        return res
+      }, {})
+      return poses
+    }, {})
+    return strateses
+  }, {})
+
+  const time_since_last_refresh = +new Date() - LAST_REFRESH
+  return {
+    ok: true,
+    last_error: LAST_ERROR,
+    total_positions,
+    total_tests,
+    total_passing,
+    strategies_human,
+    meta: {
+      bucket: process.env.MINIO_BUCKET,
+      last_refresh_at: LAST_REFRESH,
+      last_refresh_at_human:
+        new Date(LAST_REFRESH).toLocaleString(['en-GB'], { timeZone: 'UTC' }) + ' UTC',
+      time_since_last_refresh,
+      time_since_last_refresh_human: `${time_since_last_refresh / 1000}s`,
+      refresh_after: REFRESH_AFTER,
+      last_refresh_took: LAST_TOOK,
+      last_refresh_took_human: `${(LAST_TOOK || 0) / 1000}s`,
+    },
+  }
 }

@@ -1,4 +1,4 @@
-export type DAO =
+export type Dao =
   | 'Gnosis DAO'
   | 'Balancer DAO'
   | 'karpatkey DAO'
@@ -6,13 +6,13 @@ export type DAO =
   | 'CoW DAO'
   | 'Gnosis Ltd'
 
-export type BLOCKCHAIN = 'Gnosis' | 'Ethereum'
+export type Blockchain = 'gnosis' | 'ethereum'
 
-export type EXECUTION_TYPE = 'execute' | 'simulate' | 'transaction_builder'
+export type ExecutionType = 'execute' | 'simulate' | 'transaction_builder'
 
-export type DAO_MAPPER_TYPE = {
-  name: DAO
-  blockchain: BLOCKCHAIN
+export type DaoMapperType = {
+  name: Dao
+  blockchain: Blockchain
   config: any
 }
 
@@ -107,7 +107,7 @@ export type ExecConfig = {
   positionConfig: PositionConfig[]
 }
 
-export const getStrategies = (mapper: any, dao: DAO, blockchain: BLOCKCHAIN) => {
+export const getStrategies = (mapper: any, dao: Dao, blockchain: Blockchain) => {
   const bc = blockchain.toLowerCase()
   const d = dao.toLowerCase()
   return mapper?.find(
@@ -117,8 +117,8 @@ export const getStrategies = (mapper: any, dao: DAO, blockchain: BLOCKCHAIN) => 
 
 export const getStrategyByPositionId = (
   daosConfigs: any,
-  dao: DAO,
-  blockchain: BLOCKCHAIN,
+  dao: Dao,
+  blockchain: Blockchain,
   pool_id: string,
 ) => {
   const daoItem = getStrategies(daosConfigs, dao, blockchain)
@@ -133,7 +133,7 @@ export const getStrategyByPositionId = (
   } as ExecConfig
 }
 
-export const getDAOFilePath = (executionType: EXECUTION_TYPE) => {
+export const getDAOFilePath = (executionType: ExecutionType) => {
   switch (executionType) {
     case 'execute':
       return EXECUTE_FILE_PATH

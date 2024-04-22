@@ -1,5 +1,5 @@
-import path from 'path'
 import { spawn } from 'child_process'
+import path from 'path'
 
 interface DBankReturn {
   data?: Maybe<any>
@@ -56,7 +56,7 @@ export const dBankPromise = (parameters: string[] = []): Promise<DBankReturn> =>
     } catch (error) {
       console.error('ERROR Reject: ', error)
       reject({
-        error: (error as Error)?.message
+        error: (error as Error)?.message,
       })
     }
   })
