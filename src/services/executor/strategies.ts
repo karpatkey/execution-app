@@ -179,6 +179,9 @@ export async function getDaosConfigsStatus(): Promise<StatusResult> {
   const strategies_human = configs.reduce((strateses: any, c: any) => {
     strateses[`${c.dao} on ${c.blockchain}`] = c.positions.reduce((poses: any, p: any) => {
       poses[p.position_id_human_readable] = p.exec_config.reduce((res: any, strat: any) => {
+        res['__id'] = p.position_id_tech
+        res['__protocol'] = p.protocol
+
         res[strat.label] = strat.stresstest || strat.stresstest_error
         return res
       }, {})

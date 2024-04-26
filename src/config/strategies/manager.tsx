@@ -51,7 +51,8 @@ export const getStrategies = (mapper: any, dao: Dao, blockchain: Blockchain) => 
   const bc = blockchain.toLowerCase()
   const d = dao.toLowerCase()
   return mapper?.find(
-    (daoMapper: any) => daoMapper.dao.toLowerCase() === d && daoMapper.blockchain === bc,
+    (daoMapper: any) =>
+      daoMapper.dao.toLowerCase() === d && daoMapper.blockchain.toLowerCase() === bc,
   )
 }
 
@@ -60,11 +61,14 @@ export const getStrategyByPositionId = (
   dao: Dao,
   blockchain: Blockchain,
   pool_id: string,
+  protocol?: string,
 ): ExecConfig => {
   const daoItem = getStrategies(daosConfigs, dao, blockchain)
 
   const position = daoItem?.positions?.find(
-    (position: any) => position.position_id_tech.toLowerCase() === pool_id,
+    (position: any) =>
+      position.position_id_tech.toLowerCase() === pool_id.toLowerCase() &&
+      (!protocol ? true : position.protocol.toLowerCase() == protocol.toLowerCase()),
   )
 
   return {
