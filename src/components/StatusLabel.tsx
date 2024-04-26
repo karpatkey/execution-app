@@ -1,8 +1,7 @@
-import * as React from 'react'
-import CustomTypography from 'src/components/CustomTypography'
 import { Check } from '@mui/icons-material'
-import { SetupItemStatus } from 'src/contexts/state'
 import { CircularProgress } from '@mui/material'
+import CustomTypography from 'src/components/CustomTypography'
+import { SetupItemStatus } from 'src/contexts/state'
 
 interface StatusLabelProps {
   status: SetupItemStatus
@@ -18,14 +17,14 @@ const StatusIcon = ({ status }: { status: SetupItemStatus }) => {
   return null
 }
 
-const StatusLabel = (props: StatusLabelProps) => {
+export default function StatusLabel(props: StatusLabelProps) {
   const { status } = props
 
   const statusColor = {
     'not done': 'black',
     loading: 'black',
     success: 'green',
-    failed: 'red'
+    failed: 'red',
   }[status]
 
   if (status == 'not done') {
@@ -42,5 +41,3 @@ const StatusLabel = (props: StatusLabelProps) => {
     </CustomTypography>
   )
 }
-
-export default StatusLabel

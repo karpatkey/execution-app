@@ -1,6 +1,6 @@
 import { Button } from '@mui/material'
-import * as React from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { memo, useCallback, useMemo } from 'react'
+import { Control, SubmitHandler, useForm } from 'react-hook-form'
 import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 
 import InfoIcon from '@mui/icons-material/Info'
@@ -8,25 +8,51 @@ import Tooltip from '@mui/material/Tooltip'
 import { AmountsPreviewFromPercentage } from 'src/components/AmountsPreviewFromPercentage'
 import CustomTypography from 'src/components/CustomTypography'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
-import {
-  Config,
-  DEFAULT_VALUES_TYPE,
-  PARAMETERS_CONFIG,
-  PositionConfig,
-} from 'src/config/strategies/manager'
+import { Config, PositionConfig } from 'src/config/strategies/manager'
 import { useApp } from 'src/contexts/app.context'
-import { clearSetup, setSetupCreate, setSetupStatus } from 'src/contexts/reducers'
+import { setSetupCreate, setSetupStatus } from 'src/contexts/reducers'
 import { Position, SetupStatus, Strategy } from 'src/contexts/state'
 import { getStrategy } from 'src/services/strategies'
-import { Modal } from '../Modal/Modal'
 import InputRadio from './InputRadio'
 import { Label } from './Label'
 import { PercentageText } from './PercentageText'
 import { Title } from './Title'
 
 interface CustomFormProps {
-  handleClickOpen: () => void
   position: Position
+  onValid: (params: any) => void
+}
+
+type OptionsInputOption = {
+  label: string
+  value: string
+}
+
+type OptionsInputProps = {
+  name: string
+  label: string
+  control: Control<any, any>
+  options?: OptionsInputOption[]
+}
+
+const OptionsInput = ({ name, label, control, options }: OptionsInputProps) => {
+  return (
+    <BoxWrapperColumn gap={2}>
+      <Label title={label} />
+      <InputRadio
+        name={name}
+        control={control}
+        options={
+          options?.map((item) => {
+            return {
+              name: item.label ?? '',
+              value: item.value ?? '',
+            }
+          }) ?? []
+        }
+      />
+    </BoxWrapperColumn>
+  )
 }
 
 function isActive(strategy: PositionConfig, config: PositionConfig[]) {
@@ -37,80 +63,77 @@ function isActive(strategy: PositionConfig, config: PositionConfig[]) {
   return all.get(base) || all.get(base + recoveryModeSufix) || false
 }
 
-const CustomForm = (props: CustomFormProps) => {
-  const { handleClickOpen, position } = props
+type FormValues = {
+  dao?: string
+  blockchain?: string
+  protocol?: string
+  strategy?: string
+  percentage?: number
+  rewards_address?: string
+  max_slippage?: number
+  token_in_address?: string
+  token_out_address?: string
+  bpt_address?: string
+}
 
+type FormFieldConfig = {
+  placeholder: string
+}
+
+const FORM_CONFIG: Record<keyof FormValues, FormFieldConfig> = {
+  dao: { placeholder: 'Dao' },
+  protocol: { placeholder: 'Protocol' },
+  blockchain: { placeholder: 'Blockchain' },
+  strategy: { placeholder: 'Strategy' },
+  percentage: { placeholder: '0.00%' },
+  rewards_address: { placeholder: '0x00000' },
+  max_slippage: { placeholder: '0.00%' },
+  token_in_address: { placeholder: '0x00000' },
+  token_out_address: { placeholder: '0x00000' },
+  bpt_address: { placeholder: '0x00000' },
+}
+
+function CustomForm({ position }: CustomFormProps) {
   const { dispatch, state } = useApp()
-  const [keyIndex, setKeyIndex] = React.useState(1)
 
   const { positionConfig: allStrategies, commonConfig } = getStrategy(state.daosConfigs, position)
 
-  const strategies = React.useMemo(() => {
+  const strategies = useMemo(() => {
+    console.log('Filtering strategies')
     return allStrategies.filter((strategy) => isActive(strategy, allStrategies))
   }, [allStrategies])
-
-  // If we don't do this, the application will rerender every time
-  const defaultValues: DEFAULT_VALUES_TYPE = React.useMemo(() => {
-    return {
-      blockchain: position?.blockchain ?? null,
-      protocol: position?.protocol ?? null,
-      strategy: strategies[0]?.function_name?.trim(),
-      percentage: null,
-      rewards_address: null,
-      max_slippage: null,
-      token_in_address: null,
-      token_out_address: null,
-      bpt_address: null,
-    }
-  }, [position, strategies])
 
   const {
     formState: { errors, isSubmitting, isValid },
     handleSubmit,
     control,
-    setError,
     setValue,
     clearErrors,
     watch,
-  } = useForm<any>({
-    defaultValues,
+  } = useForm<FormValues>({
+    // defaultValues,
     mode: 'all',
   })
 
   const watchStrategy = watch('strategy')
-  const watchMaxSlippage = watch('max_slippage')
+  // const watchMaxSlippage = watch('max_slippage')
   const watchPercentage = watch('percentage')
 
-  // We need to do this, because the react hook form default values are not working properly
-  React.useEffect(() => {
-    if (defaultValues) {
-      setValue('strategy', strategies[0]?.function_name ?? null)
-      setValue('percentage', null)
-      setValue('rewards_address', null)
-      setValue('max_slippage', null)
-      setValue('token_out_address', null)
-      setValue('bpt_address', null)
-    }
-  }, [defaultValues, strategies, setValue])
-
-  const onSubmit: SubmitHandler<any> = React.useCallback(
+  const onSubmit: SubmitHandler<any> = useCallback(
     async (data: any) => {
       // Get label by value for the token_out_address in the positionConfig
 
       // First clear the stage just in case
-      dispatch(clearSetup())
+      // dispatch(clearSetup())
 
-      const tokenInAddressLabel =
+      const findOptionLabel = (key: string) =>
         strategies
-          ?.find((item: PositionConfig) => item?.function_name === data?.strategy)
-          ?.parameters?.find((item: Config) => item?.name === 'token_in_address')
-          ?.options?.find((item: any) => item?.value === data?.token_in_address)?.label ?? ''
+          .find((item) => item.function_name === data.strategy)
+          ?.parameters.find((item) => item.name === key)
+          ?.options?.find((item) => item.value === data[key])?.label ?? ''
 
-      const tokenOutAddressLabel =
-        strategies
-          ?.find((item: PositionConfig) => item?.function_name === data?.strategy)
-          ?.parameters?.find((item: Config) => item?.name === 'token_out_address')
-          ?.options?.find((item: any) => item?.value === data?.token_out_address)?.label ?? ''
+      const tokenInAddressLabel = findOptionLabel('token_in_address')
+      const tokenOutAddressLabel = findOptionLabel('token_out_address')
 
       const setup: Strategy = {
         id: data?.strategy,
@@ -120,8 +143,7 @@ const CustomForm = (props: CustomFormProps) => {
         blockchain: position.blockchain,
         protocol: position.protocol,
         description:
-          strategies?.find((item: PositionConfig) => item.function_name === data?.strategy)
-            ?.description ?? '',
+          strategies?.find((item) => item.function_name === data?.strategy)?.description ?? '',
         percentage: data?.percentage,
         position_name: position.lptokenName,
         rewards_address: data?.rewards_address,
@@ -141,29 +163,28 @@ const CustomForm = (props: CustomFormProps) => {
   )
 
   const specificParameters: Config[] =
-    (strategies as PositionConfig[])?.find(
-      (item: PositionConfig) => item.function_name === watchStrategy,
-    )?.parameters ?? []
+    strategies?.find((item) => item.function_name === watchStrategy)?.parameters ?? []
 
   const parameters = [...commonConfig, ...specificParameters]
 
   const isExecuteButtonDisabled = isSubmitting || !isValid
+  console.log(isExecuteButtonDisabled)
 
-  const handleStrategyChange = React.useCallback(() => {
+  const handleStrategyChange = useCallback(() => {
     // Clear fields
-    setValue('percentage', null)
-    setValue('max_slippage', null)
-    setValue('rewards_address', null)
-    setValue('token_out_address', null)
-    setValue('bpt_address', null)
-    setKeyIndex(keyIndex + 1)
+    setValue('percentage', undefined)
+    setValue('max_slippage', undefined)
+    setValue('rewards_address', undefined)
+    setValue('token_out_address', undefined)
+    setValue('bpt_address', undefined)
+    // setKeyIndex(keyIndex + 1)
 
     clearErrors('percentage')
     clearErrors('max_slippage')
     clearErrors('rewards_address')
     clearErrors('token_out_address')
     clearErrors('bpt_address')
-  }, [clearErrors, keyIndex, setValue])
+  }, [clearErrors, setValue])
 
   return (
     <form id="hook-form" onSubmit={handleSubmit(onSubmit)}>
@@ -173,15 +194,13 @@ const CustomForm = (props: CustomFormProps) => {
             <Title title={'Exit strategies'} />
             <BoxWrapperColumn gap={2}>
               <InputRadio
-                name={'strategy'}
+                name="strategy"
                 onChange={handleStrategyChange}
-                options={strategies.map((item: PositionConfig) => {
-                  return {
-                    name: item.label,
-                    value: item.function_name.trim(),
-                    description: item.description,
-                  }
-                })}
+                options={strategies.map((item) => ({
+                  name: item.label,
+                  value: item.function_name.trim(),
+                  description: item.description,
+                }))}
                 control={control}
               />
             </BoxWrapperColumn>
@@ -189,15 +208,12 @@ const CustomForm = (props: CustomFormProps) => {
 
           <BoxWrapperColumn gap={2}>
             <Title title={'Parameters'} />
-            {parameters.map((parameter: Config, index: number) => {
+            {parameters.map((parameter, index) => {
               const { name, label = '', type, rules, options } = parameter
 
-              if (type === 'constant') {
-                return null
-              }
+              if (type === 'constant') return null
 
               let haveMinAndMaxRules = false
-              let onChange = undefined
 
               const haveOptions = options?.length ?? 0 > 0
               const min = rules?.min
@@ -205,35 +221,15 @@ const CustomForm = (props: CustomFormProps) => {
               const max = rules?.max
               haveMinAndMaxRules = min !== undefined && max !== undefined
 
-              if ((name === 'percentage' || name === 'max_slippage') && type === 'input') {
-                onChange = (values: any) => {
-                  const value = values?.floatValue
-                  if (!value) {
-                    setError(name as any, {
-                      type: 'manual',
-                      message: `Please enter a value between ${min}% and ${max}%`,
-                    })
-                  } else {
-                    clearErrors(label as any)
-                  }
-                }
-              }
-
               const onClickApplyMax = () => {
-                if (max !== undefined) {
-                  clearErrors(name as any)
-                  setValue(name as any, max, { shouldValidate: true })
-                }
+                if (max !== undefined) setValue(name, max, { shouldValidate: true })
               }
 
               if (haveMinAndMaxRules) {
-                const isMaxButtonDisabled =
-                  name === 'percentage' ? watchPercentage == max : watchMaxSlippage == max
-
                 const isPercentageButton = name === 'percentage'
 
                 return (
-                  <BoxWrapperColumn gap={2} key={`${index}_${keyIndex}`}>
+                  <BoxWrapperColumn gap={2} key={index}>
                     <BoxWrapperRow sx={{ justifyContent: 'space-between' }}>
                       <BoxWrapperRow gap={2}>
                         <Label title={label} />
@@ -252,11 +248,7 @@ const CustomForm = (props: CustomFormProps) => {
                       </BoxWrapperRow>
 
                       {isPercentageButton ? (
-                        <Button
-                          disabled={isMaxButtonDisabled}
-                          onClick={onClickApplyMax}
-                          variant="contained"
-                        >
+                        <Button onClick={onClickApplyMax} variant="contained">
                           Max
                         </Button>
                       ) : null}
@@ -275,9 +267,8 @@ const CustomForm = (props: CustomFormProps) => {
                       }}
                       minValue={0}
                       maxValue={max || 100}
-                      placeholder={PARAMETERS_CONFIG[name].placeholder}
+                      placeholder={FORM_CONFIG[name].placeholder}
                       errors={errors}
-                      onChange={onChange}
                     />
                     {name == 'percentage' ? (
                       <AmountsPreviewFromPercentage
@@ -291,21 +282,13 @@ const CustomForm = (props: CustomFormProps) => {
 
               if (haveOptions) {
                 return (
-                  <BoxWrapperColumn gap={2} key={index}>
-                    <Label title={label} />
-                    <InputRadio
-                      name={name}
-                      control={control}
-                      options={
-                        options?.map((item) => {
-                          return {
-                            name: item?.label ?? '',
-                            value: item?.value ?? '',
-                          }
-                        }) ?? []
-                      }
-                    />
-                  </BoxWrapperColumn>
+                  <OptionsInput
+                    key={index}
+                    name={name}
+                    label={label}
+                    control={control}
+                    options={options}
+                  />
                 )
               }
 
@@ -313,41 +296,10 @@ const CustomForm = (props: CustomFormProps) => {
             })}
           </BoxWrapperColumn>
         </BoxWrapperColumn>
-
-        <Button
-          onClick={handleClickOpen}
-          variant="contained"
-          size="large"
-          sx={{ height: '60px', marginTop: '30px' }}
-          disabled={isExecuteButtonDisabled}
-          type={'submit'}
-        >
-          Submit
-        </Button>
       </BoxWrapperColumn>
     </form>
   )
 }
 
-const CustomFormMemoized = React.memo(CustomForm)
-
-const Form = ({ position }: { position: Position }) => {
-  const [open, setOpen] = React.useState(false)
-
-  const handleClickOpen = React.useCallback(() => {
-    setOpen(true)
-  }, [])
-
-  const handleClose = React.useCallback(() => {
-    setOpen(false)
-  }, [])
-
-  return (
-    <>
-      <CustomFormMemoized position={position} handleClickOpen={handleClickOpen} />
-      <Modal position={position} open={open} handleClose={handleClose} />
-    </>
-  )
-}
-
+const Form = memo(CustomForm)
 export default Form

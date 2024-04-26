@@ -1,9 +1,8 @@
-import { SetupItemStatus, SetupStatus, Status, Strategy, TransactionBuild } from './state'
+import { Dao, SetupItemStatus, SetupStatus, Status, Strategy, TransactionBuild } from './state'
 
 export enum ActionType {
   UpdateStatus,
   AddDAOs,
-  ClearDAOs,
   SetSetupCreate,
   SetSetupCreateStatus,
   SetSetupTransactionBuild,
@@ -28,11 +27,7 @@ export interface UpdateStatus {
 
 export interface AddDAOs {
   type: ActionType.AddDAOs
-  payload: string[]
-}
-
-export interface ClearDAOs {
-  type: ActionType.ClearDAOs
+  payload: Dao[]
 }
 
 export interface SetSetupCreate {
@@ -111,7 +106,6 @@ export interface AddDaosConfigs {
 export type Actions =
   | UpdateStatus
   | AddDAOs
-  | ClearDAOs
   | SetSetupCreate
   | SetSetupCreateStatus
   | SetSetupTransactionBuild

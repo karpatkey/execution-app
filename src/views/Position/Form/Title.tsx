@@ -1,7 +1,6 @@
+import { Divider } from '@mui/material'
 import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 import Primary from 'src/views/Position/Title/Primary'
-import { Divider } from '@mui/material'
-import * as React from 'react'
 
 interface FormTitleProps {
   title: string

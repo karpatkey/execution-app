@@ -3,7 +3,6 @@ import {
   Actions,
   AddDAOs,
   AddDaosConfigs,
-  ClearDAOs,
   ClearSetup,
   ClearSetupWithoutCreate,
   SetSetupConfirm,
@@ -20,7 +19,9 @@ import {
   UpdateEnvNetworkData,
   UpdateStatus,
 } from './actions'
+
 import {
+  Dao,
   InitialState,
   SetupItemStatus,
   SetupStatus,
@@ -43,22 +44,9 @@ export const mainReducer = (state: InitialState, action: Actions): InitialState 
       }
 
     case ActionType.AddDAOs:
-      if (!action.payload.includes('All') && action.payload.length > 1) {
-        return {
-          ...state,
-          daos: ['All', ...action.payload],
-        }
-      } else if (action.payload.length === 1) {
-        return {
-          ...state,
-          daos: action.payload,
-        }
-      }
-
-    case ActionType.ClearDAOs:
       return {
         ...state,
-        daos: [],
+        daos: action.payload,
       }
 
     case ActionType.SetSetupCreate:
@@ -264,13 +252,9 @@ export const addDaosConfigs = (configs: any[]): AddDaosConfigs => ({
   payload: configs,
 })
 
-export const addDAOs = (daos: string[]): AddDAOs => ({
+export const addDAOs = (daos: Dao[]): AddDAOs => ({
   type: ActionType.AddDAOs,
   payload: daos,
-})
-
-export const clearDAOs = (): ClearDAOs => ({
-  type: ActionType.ClearDAOs,
 })
 
 export const setSetupCreate = (strategy: Strategy): SetSetupCreate => ({

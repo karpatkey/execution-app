@@ -142,7 +142,14 @@ export const Confirm = ({ handleClose }: ConfirmProps) => {
       setError(err as Error)
       dispatch(setSetupConfirmStatus('failed' as SetupItemStatus))
     }
-  }, [isDisabled, dispatch, transaction, blockchain, ENV_NETWORK_DATA])
+  }, [
+    isDisabled,
+    dispatch,
+    transaction,
+    transactionBuildValue?.decodedTransaction,
+    blockchain,
+    dao,
+  ])
 
   return (
     <AccordionBoxWrapper

@@ -1,9 +1,9 @@
-import React, { ForwardedRef } from 'react'
-import { Controller } from 'react-hook-form'
-import { TextFieldProps } from '@mui/material/TextField/TextField'
-import { InputProps } from 'src/views/Position/Form/Types'
 import { TextField } from '@mui/material'
+import { TextFieldProps } from '@mui/material/TextField/TextField'
+import { ForwardedRef, forwardRef } from 'react'
+import { Controller } from 'react-hook-form'
 import { NumericFormat } from 'react-number-format'
+import { InputProps } from './types'
 
 interface PercentageNumberFormatProps {
   inputRef: (instance: typeof NumericFormat | null) => void
@@ -11,20 +11,19 @@ interface PercentageNumberFormatProps {
 }
 
 // eslint-disable-next-line react/display-name
-const PercentageNumberFormat = React.forwardRef<
-  PercentageNumberFormatProps,
-  PercentageNumberFormatProps
->((props: PercentageNumberFormatProps, ref: ForwardedRef<PercentageNumberFormatProps>) => {
-  return (
-    <NumericFormat
-      {...props}
-      getInputRef={ref}
-      allowNegative={false}
-      valueIsNumericString
-      decimalScale={3}
-    />
-  )
-})
+const PercentageNumberFormat = forwardRef<PercentageNumberFormatProps, PercentageNumberFormatProps>(
+  (props: PercentageNumberFormatProps, ref: ForwardedRef<PercentageNumberFormatProps>) => {
+    return (
+      <NumericFormat
+        {...props}
+        getInputRef={ref}
+        allowNegative={false}
+        valueIsNumericString
+        decimalScale={3}
+      />
+    )
+  },
+)
 
 export interface CustomInputPropsProps {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -60,7 +59,7 @@ export const PercentageText = (props: ControlledTextFieldProps) => {
         return (
           <TextField
             InputProps={{
-              inputComponent: PercentageNumberFormat as any
+              inputComponent: PercentageNumberFormat as any,
             }}
             inputProps={{
               value: field?.value,
@@ -75,7 +74,7 @@ export const PercentageText = (props: ControlledTextFieldProps) => {
               onValueChange: (values: any) => {
                 if (onChange) onChange(values)
                 field.onChange(values.floatValue)
-              }
+              },
             }}
             value={field?.value}
             error={!!errors[field.name]}
@@ -89,16 +88,16 @@ export const PercentageText = (props: ControlledTextFieldProps) => {
               color: 'custom.grey.dark',
               width: '100%',
               '& input[type=number]': {
-                MozAppearance: 'textfield'
+                MozAppearance: 'textfield',
               },
               '& input[type=number]::-webkit-outer-spin-button': {
                 WebkitAppearance: 'none',
-                margin: 0
+                margin: 0,
               },
               '& input[type=number]::-webkit-inner-spin-button': {
                 WebkitAppearance: 'none',
-                margin: 0
-              }
+                margin: 0,
+              },
             }}
             {...restProps}
           />

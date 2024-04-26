@@ -1,4 +1,6 @@
-import { ExecConfig } from 'src/config/strategies/manager'
+import { Dao, ExecConfig } from 'src/config/strategies/manager'
+
+export { type Dao }
 
 export enum Status {
   Loading = 'Loading',
@@ -15,7 +17,7 @@ export type Token = {
 }
 
 export type Position = {
-  dao: string
+  dao: Dao
   pool_id: string
   protocol: string
   blockchain: AppBlockchain
@@ -48,7 +50,7 @@ export type DBankInfo = {
 
 export type Strategy = {
   id: string
-  dao: string
+  dao: Dao
   name: string
   pool_id: string
   description: string
@@ -125,7 +127,7 @@ export const initialState: InitialState = {
 export type InitialState = {
   status: Status
   daosConfigs: any[]
-  daos: string[]
+  daos: Dao[]
   envNetworkData: Maybe<any>
   setup: {
     status: SetupStatus

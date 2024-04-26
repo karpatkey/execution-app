@@ -5,7 +5,7 @@ import React from 'react'
 import { Controller } from 'react-hook-form'
 import CustomTypography from 'src/components/CustomTypography'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
-import { InputProps } from 'src/views/Position/Form/Types'
+import { InputProps } from './types'
 
 export type Option = {
   name: string
@@ -15,6 +15,7 @@ export type Option = {
 }
 
 export interface InputWithOptionsProps extends InputProps {
+  name: string
   options: Option[]
   onChange?: (e: any) => void
 }
@@ -60,7 +61,7 @@ const InputRadio: React.FC<InputWithOptionsProps> = ({
             <RadioGroup
               {...field}
               value={field?.value}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>, value) => {
+              onChange={(_e: React.ChangeEvent<HTMLInputElement>, value) => {
                 if (onChangeRadio) onChangeRadio(value)
                 field?.onChange(value)
               }}

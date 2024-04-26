@@ -14,7 +14,7 @@ import {
 } from '@mui/material'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import { formatUnits } from 'ethers'
-import * as React from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { AccordionWrapper } from 'src/components/Accordion/AccordionWrapper'
 import CustomTypography from 'src/components/CustomTypography'
 import StatusLabel from 'src/components/StatusLabel'
@@ -54,20 +54,23 @@ const WaitingDecodingTransaction = () => {
   )
 }
 
-export const TransactionDetails = () => {
+type Props = {
+  isLoading: boolean
+  tx: any
+  error?: Error | null
+}
+
+export function TransactionDetails({ isLoading, tx, error }: Props) {
   const { dispatch, state } = useApp()
 
-  const transactionBuildValue = state?.setup?.transactionBuild?.value ?? null
-  const transactionBuildStatus = state?.setup?.transactionBuild?.status ?? null
+  // const transactionBuildValue = state?.setup?.transactionBuild?.value ?? null
+  // const transactionBuildStatus = state?.setup?.transactionBuild?.status ?? null
   const formValue = state?.setup?.create?.value ?? null
 
-  const [error, setError] = React.useState<Maybe<Error>>(null)
-  const [expanded, setExpanded] = React.useState('panel1')
+  const [expanded, setExpanded] = useState('')
 
-  const isLoading = transactionBuildStatus == 'loading'
-
-  React.useEffect(() => {
-    if (!formValue || transactionBuildStatus !== 'not done' || isLoading) {
+  useEffect(() => {
+    if (!formValue || isLoading) {
       console.log('Transaction details not executed')
       return
     }
@@ -109,7 +112,6 @@ export const TransactionDetails = () => {
 
         if (status === 200) {
           if (executeError) {
-            setError(new Error(executeError))
             dispatch(setSetupTransactionCheck(false))
             dispatch(setSetupTransactionCheckStatus('failed' as SetupItemStatus))
             dispatch(setSetupTransactionBuildStatus('failed' as SetupItemStatus))
@@ -125,9 +127,6 @@ export const TransactionDetails = () => {
           }
         } else {
           // Don't allow to simulate or execute transaction
-          const errorMessage =
-            typeof body?.error === 'string' ? body?.error : 'Error decoding transaction'
-          setError(new Error(errorMessage))
           dispatch(setSetupTransactionCheck(false))
           dispatch(setSetupTransactionCheckStatus('failed' as SetupItemStatus))
           dispatch(
@@ -137,18 +136,17 @@ export const TransactionDetails = () => {
         }
       } catch (error) {
         console.error('Error fetching data:', error)
-        setError(error as Error)
         dispatch(setSetupTransactionCheckStatus('failed' as SetupItemStatus))
         dispatch(setSetupTransactionBuildStatus('failed' as SetupItemStatus))
       }
     }
 
     postData(parameters)
-  }, [dispatch, formValue, isLoading, transactionBuildStatus])
+  }, [dispatch, formValue, isLoading])
 
-  const parameters = React.useMemo(() => {
-    if (!transactionBuildValue) return []
-    const { transaction } = transactionBuildValue
+  const parameters = useMemo(() => {
+    if (!tx) return []
+    const { transaction } = tx
 
     if (!transaction) return []
 
@@ -161,11 +159,17 @@ export const TransactionDetails = () => {
         label: o.label.label,
         value: transaction[o.key as keyof typeof transaction],
       }))
-  }, [transactionBuildValue])
+  }, [tx])
 
   const handleChange = (panel: any) => (_event: any, newExpanded: any) => {
     setExpanded(newExpanded ? panel : false)
   }
+
+  let status: SetupItemStatus = SetupItemStatus.NotDone
+
+  if (tx) status = SetupItemStatus.Success
+  if (error) status = SetupItemStatus.Failed
+  if (isLoading) status = SetupItemStatus.Loading
 
   return (
     <BoxWrapperRow gap={2} sx={{ m: 3, backgroundColor: 'custom.grey.light' }}>
@@ -175,13 +179,7 @@ export const TransactionDetails = () => {
         sx={{ width: '100%' }}
       >
         <AccordionSummary
-          expandIcon={
-            transactionBuildStatus == 'loading' ? (
-              <StatusLabel status={transactionBuildStatus} />
-            ) : (
-              <ExpandMoreIcon />
-            )
-          }
+          expandIcon={isLoading ? <StatusLabel status={status} /> : <ExpandMoreIcon />}
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
@@ -192,7 +190,7 @@ export const TransactionDetails = () => {
         <AccordionDetails sx={{ justifyContent: 'flex-start', display: 'flex' }}>
           <Box sx={{ width: '100%' }} gap={2}>
             {isLoading && <WaitingDecodingTransaction />}
-            {transactionBuildValue && parameters?.length > 0 && !isLoading && (
+            {tx && parameters?.length > 0 && !isLoading && (
               <>
                 <TableContainer sx={{ marginBottom: '30px' }}>
                   <Table sx={{ minWidth: 350 }}>
@@ -272,7 +270,7 @@ export const TransactionDetails = () => {
                 </TableContainer>
               </>
             )}
-            {transactionBuildValue && transactionBuildValue?.decodedTransaction && !isLoading && (
+            {!isLoading && tx?.decodedTransaction && (
               <BoxWrapperColumn
                 sx={{
                   width: '100%',
@@ -297,9 +295,7 @@ export const TransactionDetails = () => {
                   }}
                 >
                   <pre>
-                    <code>
-                      {JSON.stringify(transactionBuildValue?.decodedTransaction, null, 2)}
-                    </code>
+                    <code>{JSON.stringify(tx?.decodedTransaction, null, 2)}</code>
                   </pre>
                 </Paper>
               </BoxWrapperColumn>

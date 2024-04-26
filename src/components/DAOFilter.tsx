@@ -1,8 +1,11 @@
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import * as React from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/router'
+import { useCallback, useMemo } from 'react'
 import { useApp } from 'src/contexts/app.context'
+
+import { slug } from 'src/utils/string'
 
 export const DAOFilter = () => {
   const { state } = useApp()
@@ -11,27 +14,29 @@ export const DAOFilter = () => {
   const pathname = usePathname()
   const router = useRouter()
 
-  const handleChange = React.useCallback(
+  const handleChange = useCallback(
     (_e: React.MouseEvent<HTMLElement>, value: any) => {
       const term = value
       const params = new URLSearchParams(searchParams.toString())
-      if (term && term != 'All') {
-        params.set('dao', term)
+      if (term && term != 'all') {
+        params.set('dao', slug(term))
       } else {
         params.delete('dao')
       }
 
       const p = params.toString()
       const uri = p ? `${pathname}?${p}` : pathname
-      router.replace(uri)
+      router.push(uri, undefined, { shallow: true })
     },
     [pathname, router, searchParams],
   )
 
-  const selectedDao = React.useMemo(() => {
+  const options = useMemo(() => (daos.length > 1 ? ['All', ...daos] : daos), [daos])
+
+  const selectedDao = useMemo(() => {
     const params = new URLSearchParams(searchParams.toString())
-    return params.get('dao') || daos[0]
-  }, [daos, searchParams])
+    return params.get('dao') || options[0]
+  }, [options, searchParams])
 
   return (
     <ToggleButtonGroup
@@ -42,9 +47,9 @@ export const DAOFilter = () => {
       aria-label="Platform"
       sx={{ margin: '25px 48px' }}
     >
-      {daos.map((option: string, index: number) => {
+      {options.map((option: string, index: number) => {
         return (
-          <ToggleButton key={index} value={option} disabled={daos.length === 1}>
+          <ToggleButton key={index} value={slug(option)} disabled={daos.length === 1}>
             {option}
           </ToggleButton>
         )

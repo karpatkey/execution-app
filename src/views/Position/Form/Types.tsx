@@ -1,6 +1,8 @@
+import { Control } from 'react-hook-form'
+
 export interface InputProps {
   name: string
-  control: any
+  control: Control
   label?: string
   setValue?: any
 }

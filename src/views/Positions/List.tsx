@@ -1,11 +1,14 @@
 import { Box } from '@mui/material'
 import { useSearchParams } from 'next/navigation'
-import { useMemo } from 'react'
+import { useRouter } from 'next/router'
+import { useCallback, useMemo } from 'react'
 import EmptyData from 'src/components/EmptyData'
 import { useApp } from 'src/contexts/app.context'
 import { PositionWithStrategies } from 'src/contexts/state'
 import { usePositions } from 'src/queries/positions'
 import { getStrategy } from 'src/services/strategies'
+import { slug } from 'src/utils/string'
+import { Modal } from 'src/views/Position/Modal/Modal'
 import Card from 'src/views/Positions/Card'
 
 const List = () => {
@@ -15,6 +18,7 @@ const List = () => {
   const { data: positions } = usePositions()
 
   const searchParams = useSearchParams()
+  const router = useRouter()
 
   const positionsWithStrategies: PositionWithStrategies[] = useMemo(() => {
     return (positions || []).map((position) => {
@@ -35,8 +39,8 @@ const List = () => {
     const dao = searchParams.get('dao')
 
     const withDao =
-      dao && dao != 'All'
-        ? positionsWithStrategies.filter((position) => position.dao == dao)
+      dao && dao != 'all'
+        ? positionsWithStrategies.filter((position) => slug(position.dao) == dao)
         : positionsWithStrategies
 
     const sorter = (a: PositionWithStrategies, b: PositionWithStrategies) => {
@@ -66,38 +70,60 @@ const List = () => {
     }
   }, [positionsWithStrategies, searchParams])
 
-  if (!positionsWithStrategies) {
-    return <EmptyData />
-  }
+  const selectedPosition = useMemo(() => {
+    const id = searchParams.get('position')
+    if (id) {
+      const [dao, blockchain, pool_id] = id.split(';')
+      return filteredPositions.find(
+        (pos) => pos.pool_id == pool_id && pos.blockchain == blockchain && slug(pos.dao) == dao,
+      )
+    }
+  }, [filteredPositions, searchParams])
+
+  const handleModalClose = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('position')
+
+    const p = params.toString()
+    const uri = p ? `${router.pathname}?${p}` : router.pathname
+    router.push(uri, undefined, { shallow: true })
+  }, [router, searchParams])
+
+  if (!positionsWithStrategies) return <EmptyData />
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        gap: '20px 20px',
-      }}
-    >
-      {filteredPositions.map((position, index) => {
-        return (
-          <Box
-            key={index}
-            sx={{
-              width: '380px',
-              minHeight: '140px',
-              padding: '12px 12px',
-              border: '1px solid #B6B6B6',
-              background: 'background.paper',
-              borderRadius: '8px',
-              display: 'flex',
-            }}
-          >
-            <Card id={index} key={index} position={position} />
-          </Box>
-        )
-      })}
-    </Box>
+    <>
+      {selectedPosition ? (
+        <Modal position={selectedPosition} open handleClose={handleModalClose} />
+      ) : null}
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          gap: '20px 20px',
+        }}
+      >
+        {filteredPositions.map((position, index) => {
+          return (
+            <Box
+              key={position.dao + index}
+              sx={{
+                width: '380px',
+                minHeight: '140px',
+                padding: '12px 12px',
+                border: '1px solid #B6B6B6',
+                background: 'background.paper',
+                borderRadius: '8px',
+                display: 'flex',
+              }}
+            >
+              <Card id={index} key={index} position={position} />
+            </Box>
+          )
+        })}
+      </Box>
+    </>
   )
 }
 

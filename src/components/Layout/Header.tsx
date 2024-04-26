@@ -40,7 +40,7 @@ const LoggedComponent = (props: LoggedComponentProps) => {
   return (
     <BoxWrapperRow>
       <BoxWrapperRow>
-        {matches && <Avatar alt={name} src={image} />}
+        {matches && <Avatar alt={name} src={image} imgProps={{ loading: 'lazy' }} />}
         <CustomTypography
           ellipsis={true}
           sx={{
@@ -77,9 +77,9 @@ const Header = () => {
       sx={{
         backgroundColor: 'background.default',
         justifyContent: 'space-between',
-        paddingX: '26px',
-        paddingRight: '48px',
-        paddingLeft: '48px',
+        // paddingX: '26px',
+        paddingRight: '3rem',
+        paddingLeft: '3rem',
         height: HEADER_HEIGHT,
       }}
     >

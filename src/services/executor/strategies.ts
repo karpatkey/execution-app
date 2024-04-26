@@ -1,5 +1,5 @@
 import * as Minio from 'minio'
-import { Dao } from './types'
+import { Blockchain, Dao } from 'src/config/strategies/manager'
 
 export { type Dao }
 
@@ -9,13 +9,13 @@ const MINIO_ACCESS_KEY = process.env.MINIO_ACCESS_KEY ?? ''
 const MINIO_BUCKET = process.env.MINIO_BUCKET ?? ''
 
 interface File {
-  dao: string
+  dao: Dao
   blockchain: string
   general_parameters: any
   positions: any
 }
 
-export const DAO_NAME_MAPPER = {
+export const DAO_NAME_MAPPER: Record<string, Dao> = {
   GnosisDAO: 'Gnosis DAO',
   GnosisLtd: 'Gnosis Ltd',
   karpatkey: 'karpatkey DAO',
@@ -24,7 +24,7 @@ export const DAO_NAME_MAPPER = {
   CoW: 'CoW DAO',
   GnosisGuild: 'Gnosis Guild',
   TestSafeDAO: 'TestSafeDAO',
-} as any
+}
 
 function invert<T extends Record<any, any>>(
   data: T,
@@ -117,8 +117,8 @@ async function cached(fn: () => Promise<Cache>) {
   return CACHE
 }
 
-function mapBlockchain(blockchain: string) {
-  return blockchain.toLowerCase()
+function mapBlockchain(blockchain: string): Blockchain {
+  return blockchain.toLowerCase() as Blockchain
 }
 
 function fixPosition(position: any) {
@@ -130,12 +130,17 @@ function fixPosition(position: any) {
   return position
 }
 
-export async function getDaosConfigs(daos: string[]) {
+export type DaoConfig = {
+  positions: any[]
+  dao: Dao
+  blockchain: Blockchain
+  general_parameters: Record<string, string>
+}
+
+export async function getDaosConfigs(daos: string[]): Promise<DaoConfig[]> {
   const configs = await cached(fetchJsons)
 
-  if (!configs) {
-    return []
-  }
+  if (!configs) return []
 
   return configs
     .map((f) => ({
