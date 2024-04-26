@@ -1,0 +1,18 @@
+{
+	auto_https off
+	http_port 3000
+	debug
+}
+
+http://localhost {
+	bind 0.0.0.0
+
+	encode zstd gzip
+	try_files {path} /app/.next/static{path}
+	try_files {path} /app/public{path}
+
+	header /_next/static/* Cache-Control max-age=31536000
+
+	file_server
+	reverse_proxy localhost:8080
+}

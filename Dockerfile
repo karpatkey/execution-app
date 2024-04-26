@@ -61,6 +61,10 @@ RUN adduser --system --uid 1001 nextjs
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
+# RUN apk --no-cache add caddy
+# COPY --chown=nextjs:nodejs ./deploy/Caddyfile /etc/caddy/Caddyfile
+COPY --chown=nextjs:nodejs ./deploy/run_with_envrc.sh .
+
 RUN npm install sharp@0.33.3
 
 # Automatically leverage output traces to reduce image size
@@ -71,12 +75,10 @@ COPY --from=prod_builder --chown=nextjs:nodejs /app/public ./public
 
 USER nextjs
 
-EXPOSE 3000
-
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-COPY ./deploy/run_with_envrc.sh .
+EXPOSE 3000
 
 # Start the app
 ENTRYPOINT ["/bin/sh", "./run_with_envrc.sh"]
