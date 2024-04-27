@@ -1,15 +1,18 @@
 import { useQuery } from '@tanstack/react-query'
 
-type TxData = {
-  decoded: any
+export type TxData = {
+  transaction: any
+  decoded_transactions: any
+  tx_transactables: any
+  error?: string
 }
 
-type TxCheckData = {
-  decoded: any
+export type TxCheckData = {
+  error?: string
 }
 
-type TxSimulationData = {
-  decoded: any
+export type TxSimulationData = {
+  error?: string
 }
 
 const headers = { Accept: 'application/json', 'Content-Type': 'application/json' }
@@ -24,10 +27,19 @@ async function fetcher(path: string, body: any, signal: AbortSignal | undefined 
   })
   const resBody = await res.json()
   if (!resBody || resBody.error) throw new Error(resBody.error)
-  return resBody.data
+  return resBody
 }
 
-export function useTxBuild(params?: Record<string, any>) {
+export type BuildParams = {
+  dao: string
+  blockchain: string
+  protocol: string
+  pool_id: string
+  strategy: string
+  percentage: any
+  exit_arguments: any
+}
+export function useTxBuild(params?: BuildParams) {
   return useQuery<TxData>({
     queryKey: ['tx/build/v1', btoa(JSON.stringify(params))],
     refetchInterval: 1 * 60 * 1000, // 1*60*1000 == 1 minutes
@@ -35,16 +47,23 @@ export function useTxBuild(params?: Record<string, any>) {
   })
 }
 
-export function useTxCheck(tx?: TxData) {
+export type CheckParams = {
+  dao: string
+  blockchain: string
+  protocol: string
+  tx_transactables: any
+}
+export function useTxCheck(params?: CheckParams) {
   return useQuery<TxCheckData>({
-    queryKey: ['tx/check/v1', btoa(JSON.stringify(tx))],
-    queryFn: async ({ signal }) => await fetcher('/api/tx/check', tx, signal),
+    queryKey: ['tx/check/v1', btoa(JSON.stringify(params))],
+    queryFn: async ({ signal }) => await fetcher('/api/tx/check', params, signal),
   })
 }
 
-export function useTxSimulation(tx?: TxData) {
+export type SimulateParams = { dao: string; blockchain: string; transaction: any }
+export function useTxSimulation(params?: SimulateParams) {
   return useQuery<TxSimulationData>({
-    queryKey: ['tx/simulate/v1', btoa(JSON.stringify(tx))],
-    queryFn: async ({ signal }) => await fetcher('/api/tx/simulate', tx, signal),
+    queryKey: ['tx/simulate/v1', btoa(JSON.stringify(params))],
+    queryFn: async ({ signal }) => await fetcher('/api/tx/simulate', params, signal),
   })
 }

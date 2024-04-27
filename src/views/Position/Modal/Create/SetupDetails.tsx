@@ -24,50 +24,17 @@ import { formatPercentage } from 'src/utils/format'
 import { shortenAddress } from 'src/utils/string'
 
 const LABEL_MAPPER = {
-  description: {
-    label: 'Strategy',
-    order: 4,
-  },
-  dao: {
-    label: 'DAO',
-    order: 0,
-  },
-  blockchain: {
-    label: 'Blockchain',
-    order: 1,
-  },
-  protocol: {
-    label: 'Protocol',
-    order: 2,
-  },
-  position_name: {
-    label: 'Position name',
-    order: 3,
-  },
-  bpt_address: {
-    label: 'BPT Address',
-    order: 5,
-  },
-  percentage: {
-    label: 'Percentage',
-    order: 6,
-  },
-  max_slippage: {
-    label: 'Max slippage',
-    order: 7,
-  },
-  rewards_address: {
-    label: 'Rewards address',
-    order: 8,
-  },
-  token_in_address: {
-    label: 'Token in address',
-    order: 9,
-  },
-  token_out_address: {
-    label: 'Token out address',
-    order: 10,
-  },
+  description: { label: 'Strategy', order: 4 },
+  dao: { label: 'DAO', order: 0 },
+  blockchain: { label: 'Blockchain', order: 1 },
+  protocol: { label: 'Protocol', order: 2 },
+  position_name: { label: 'Position name', order: 3 },
+  bpt_address: { label: 'BPT Address', order: 5 },
+  percentage: { label: 'Percentage', order: 6 },
+  max_slippage: { label: 'Max slippage', order: 7 },
+  rewards_address: { label: 'Rewards address', order: 8 },
+  token_in_address: { label: 'Token in address', order: 9 },
+  token_out_address: { label: 'Token out address', order: 10 },
 }
 
 export const SetupDetails = ({ position }: { position: Position }) => {

@@ -47,80 +47,9 @@ export function TransactionSimulation({ isLoading, simulation, error, onSimulate
   if (error) status = SetupItemStatus.Failed
   if (isLoading) status = SetupItemStatus.Loading
 
-  // const [error, setError] = useState<Error | null>(null)
-
-  // const { blockchain, dao } = state?.setup?.create?.value ?? {}
-  // const { transaction, decodedTransaction } = state?.setup?.transactionBuild?.value ?? {}
-  // const transactionBuildStatus = state?.setup?.transactionBuild?.status ?? null
-  // const simulationStatus = state?.setup?.simulation?.status ?? null
-  // const shareUrl = state?.setup?.simulation?.value?.shareUrl ?? null
-  // const simulationErrorMessage = state?.setup?.simulation?.value?.simulationErrorMessage ?? null
-
-  // const isLoading = simulationStatus == 'loading'
-
-  // const onSimulate = useCallback(async () => {
-  //   try {
-  //     if (isLoading) return
-  //
-  //     dispatch(setSetupSimulation(null))
-  //     dispatch(setSetupStatus('simulation' as SetupStatus))
-  //     dispatch(setSetupSimulationStatus('loading' as SetupItemStatus))
-  //
-  //     const parameters = {
-  //       transaction: transaction,
-  //       blockchain,
-  //       dao,
-  //     }
-  //
-  //     const response = await fetch('/api/tx/simulate', {
-  //       method: 'POST',
-  //       headers: {
-  //         Accept: 'application/json',
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(parameters),
-  //     })
-  //
-  //     const body = await response.json()
-  //
-  //     const { status, sim_data = {} } = body
-  //
-  //     if (status === 500) {
-  //       const errorMessage =
-  //         typeof body?.error === 'string' ? body?.error : 'Error trying to simulate the transaction'
-  //       throw new Error(errorMessage)
-  //     }
-  //
-  //     const { share_url: shareUrl, error_message: simulationErrorMessage } = sim_data ?? {}
-  //
-  //     if (shareUrl) {
-  //       dispatch(setSetupSimulation({ shareUrl, simulationErrorMessage }))
-  //       dispatch(
-  //         setSetupSimulationStatus(
-  //           !!simulationErrorMessage
-  //             ? ('failed' as SetupItemStatus)
-  //             : ('success' as SetupItemStatus),
-  //         ),
-  //       )
-  //       dispatch(setSetupStatus('simulation' as SetupStatus))
-  //       window.open(shareUrl, '_blank')
-  //     } else {
-  //       throw new Error('Error trying to simulate transaction')
-  //     }
-  //   } catch (err) {
-  //     console.error('Error fetching data:', err)
-  //     setError(err as Error)
-  //     dispatch(setSetupSimulationStatus('failed' as SetupItemStatus))
-  //   }
-  // }, [isLoading, dispatch, transaction, blockchain, dao])
-
-  // useEffect(() => {
-  //   if (!isDisabled && simulationStatus === 'not done' && !isLoading) {
-  //     onSimulate().then(() => console.log('Simulation finished'))
-  //   }
-  // }, [isDisabled, simulationStatus, isLoading, onSimulate])
-
   const showSimulateButton = !isLoading && !simulation?.shareUrl
+
+  if (status == SetupItemStatus.NotDone) return null
 
   return (
     <AccordionBoxWrapper
@@ -147,11 +76,11 @@ export function TransactionSimulation({ isLoading, simulation, error, onSimulate
               {translateErrorMessage(error)}
             </CustomTypography>
           )}
-          {!isLoading && simulation?.shareUrl && (
+          {!isLoading && simulation?.share_url && (
             <Button
               variant="contained"
               color="secondary"
-              onClick={() => window.open(simulation?.shareUrl, '_blank')}
+              onClick={() => window.open(simulation?.share_url, '_blank')}
             >
               View Tenderly simulation report
             </Button>

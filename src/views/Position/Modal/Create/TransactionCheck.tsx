@@ -18,6 +18,8 @@ export function TransactionCheck({ isLoading, error, check }: Props) {
   if (error) status = SetupItemStatus.Failed
   if (isLoading) status = SetupItemStatus.Loading
 
+  if (status == SetupItemStatus.NotDone) return null
+  console.log({ check })
   return (
     <AccordionBoxWrapper
       gap={2}

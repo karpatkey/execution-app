@@ -51,7 +51,7 @@ export const PercentageText = (props: ControlledTextFieldProps) => {
 
   return (
     <Controller
-      name={name as any}
+      name={name}
       control={control}
       rules={rules}
       defaultValue={(defaultValue as any) ?? ''}

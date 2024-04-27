@@ -1,7 +1,7 @@
 import { Box, Link } from '@mui/material'
 import Button from '@mui/material/Button'
 import { TransactionReceipt, ethers } from 'ethers'
-import * as React from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { AccordionBoxWrapper } from 'src/components/Accordion/AccordionBoxWrapper'
 import CustomTypography from 'src/components/CustomTypography'
 import StatusLabel from 'src/components/StatusLabel'
@@ -30,7 +30,7 @@ interface ConfirmProps {
 export const Confirm = ({ handleClose }: ConfirmProps) => {
   const { dispatch, state } = useApp()
 
-  const [error, setError] = React.useState<Error | null>(null)
+  const [error, setError] = useState<Error | null>(null)
 
   const { blockchain, dao } = state?.setup?.create?.value ?? {}
   const { transaction, decodedTransaction } = state?.setup?.transactionBuild?.value ?? {}
@@ -45,7 +45,7 @@ export const Confirm = ({ handleClose }: ConfirmProps) => {
   // Get env network data
   const ENV_NETWORK_DATA = state?.envNetworkData ?? {}
 
-  const isDisabled = React.useMemo(
+  const isDisabled = useMemo(
     () =>
       !dao ||
       !blockchain ||
@@ -66,7 +66,7 @@ export const Confirm = ({ handleClose }: ConfirmProps) => {
     ],
   )
 
-  const onExecute = React.useCallback(async () => {
+  const onExecute = useCallback(async () => {
     try {
       if (isDisabled) {
         throw new Error('Invalid transaction, please check the transaction and try again.')

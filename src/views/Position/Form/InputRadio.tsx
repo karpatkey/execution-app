@@ -8,7 +8,7 @@ import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 import { InputProps } from './types'
 
 export type Option = {
-  name: string
+  label: React.ReactNode
   value: string
   description?: string
   disabled?: boolean
@@ -31,7 +31,7 @@ const InputRadio: React.FC<InputWithOptionsProps> = ({
       <BoxWrapperRow sx={{ justifyContent: 'flex-start' }} key={index}>
         <FormControlLabel
           value={option.value}
-          label={option.name}
+          label={option.label}
           control={<Radio />}
           disabled={option.disabled}
         />
@@ -60,7 +60,7 @@ const InputRadio: React.FC<InputWithOptionsProps> = ({
           return (
             <RadioGroup
               {...field}
-              value={field?.value}
+              value={field?.value || null}
               onChange={(_e: React.ChangeEvent<HTMLInputElement>, value) => {
                 if (onChangeRadio) onChangeRadio(value)
                 field?.onChange(value)

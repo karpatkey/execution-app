@@ -17,7 +17,7 @@ import { TransactionDetails } from './Create/TransactionDetails'
 import { TransactionSimulation } from './Create/TransactionSimulation'
 import { Stepper } from './Stepper'
 
-import { useTxBuild, useTxCheck, useTxSimulation } from 'src/queries/execution'
+import { BuildParams, useTxBuild, useTxCheck, useTxSimulation } from 'src/queries/execution'
 
 interface ModalProps {
   open: boolean
@@ -42,19 +42,52 @@ export const Modal = (props: ModalProps) => {
   hiddenStepper = true
   const smallScreen = useMediaQuery((theme: any) => theme.breakpoints.down('sm'))
 
-  const [params, setParams] = useState(undefined)
+  const [params, setParams] = useState<BuildParams | undefined>(undefined)
 
-  const handleParamsChange = useCallback((params: any) => {
-    setParams(params)
-  }, [])
+  const handleParamsChange = useCallback(
+    (params: any) => {
+      console.log({ handleParamsChange: params })
+      setParams({
+        dao: position.dao,
+        blockchain: position.blockchain,
+        protocol: position.protocol,
+        pool_id: position.pool_id,
+        strategy: params.strategy,
+        percentage: params.percentage,
+        exit_arguments: params,
+      })
+    },
+    [position],
+  )
 
   const { data: tx, isLoading: isBuilding, error: buildError } = useTxBuild(params)
-  const { data: txCheck, isLoading: isChecking, error: checkError } = useTxCheck(tx)
+  const {
+    data: txCheck,
+    isLoading: isChecking,
+    error: checkError,
+  } = useTxCheck(
+    params && tx?.tx_transactables
+      ? {
+          dao: params.dao,
+          blockchain: params.blockchain,
+          protocol: params.protocol,
+          tx_transactables: tx.tx_transactables,
+        }
+      : undefined,
+  )
   const {
     data: txSimulation,
     isLoading: isSimulating,
     error: simulationError,
-  } = useTxSimulation(tx)
+  } = useTxSimulation(
+    params && tx?.tx_transactables
+      ? {
+          dao: params.dao,
+          blockchain: params.blockchain,
+          transaction: tx.transaction,
+        }
+      : undefined,
+  )
 
   const stepperWidth = '280px'
 
@@ -66,9 +99,11 @@ export const Modal = (props: ModalProps) => {
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
+      maxWidth="lg"
       sx={{
         backgroundColor: 'custom.grey.light',
       }}
+      PaperProps={{ sx: { flexGrow: 1 } }}
     >
       <BoxContainerWrapper sx={{}}>
         <BoxWrapperRow sx={{ padding: '1rem', justifyContent: 'space-between' }}>
@@ -101,21 +136,23 @@ export const Modal = (props: ModalProps) => {
                   isLoading={isSimulating}
                   error={simulationError}
                 />
-                <Confirm handleClose={handleClose} />
+                <Confirm {...{ tx, txCheck, txSimulation }} handleClose={handleClose} />
               </BoxWrapper>
             </BoxWrapperColumn>
 
-            <BoxWrapperColumn
-              sx={{
-                width: stepperWidth,
-                justifyContent: 'flex-start',
-                display: hiddenStepper ? 'none' : 'flex',
-                position: 'fixed',
-                right: '3rem',
-              }}
-            >
-              <Stepper />
-            </BoxWrapperColumn>
+            {!hiddenStepper ? (
+              <BoxWrapperColumn
+                sx={{
+                  width: stepperWidth,
+                  justifyContent: 'flex-start',
+                  display: hiddenStepper ? 'none' : 'flex',
+                  // position: 'fixed',
+                  // right: '3rem',
+                }}
+              >
+                <Stepper />
+              </BoxWrapperColumn>
+            ) : null}
           </BoxWrapperRow>
         </BoxWrapperColumn>
       </BoxContainerWrapper>

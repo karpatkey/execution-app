@@ -14,22 +14,14 @@ import {
 } from '@mui/material'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import { formatUnits } from 'ethers'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { AccordionWrapper } from 'src/components/Accordion/AccordionWrapper'
 import CustomTypography from 'src/components/CustomTypography'
 import StatusLabel from 'src/components/StatusLabel'
 import TextLoadingDots from 'src/components/TextLoadingDots'
 import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
-import { useApp } from 'src/contexts/app.context'
-import {
-  setSetupStatus,
-  setSetupTransactionBuild,
-  setSetupTransactionBuildStatus,
-  setSetupTransactionCheck,
-  setSetupTransactionCheckStatus,
-} from 'src/contexts/reducers'
-import { SetupItemStatus, SetupStatus, TransactionBuild } from 'src/contexts/state'
+import { SetupItemStatus } from 'src/contexts/state'
 import { shortenAddress } from 'src/utils/string'
 
 const LABEL_MAPPER = {
@@ -61,88 +53,7 @@ type Props = {
 }
 
 export function TransactionDetails({ isLoading, tx, error }: Props) {
-  const { dispatch, state } = useApp()
-
-  // const transactionBuildValue = state?.setup?.transactionBuild?.value ?? null
-  // const transactionBuildStatus = state?.setup?.transactionBuild?.status ?? null
-  const formValue = state?.setup?.create?.value ?? null
-
-  const [expanded, setExpanded] = useState('')
-
-  useEffect(() => {
-    if (!formValue || isLoading) {
-      console.log('Transaction details not executed')
-      return
-    }
-
-    const parameters = {
-      dao: formValue.dao,
-      pool_id: formValue.pool_id,
-      strategy: formValue.name,
-      percentage: formValue.percentage,
-      position_name: formValue.position_name,
-      protocol: formValue.protocol,
-      blockchain: formValue.blockchain,
-      exit_arguments: {
-        bpt_address: formValue.bpt_address,
-        max_slippage: formValue.max_slippage,
-        rewards_address: formValue.rewards_address,
-        token_in_address: formValue.token_in_address,
-        token_out_address: formValue.token_out_address,
-      },
-    }
-
-    const postData = async (data: any) => {
-      try {
-        dispatch(setSetupTransactionBuildStatus('loading' as SetupItemStatus))
-        const response = await fetch('/api/tx/build', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        })
-
-        const body = await response.json()
-
-        const { status, error: executeError } = body
-
-        const { transaction, decoded_transaction: decodedTransaction } = body?.tx_data ?? {}
-
-        if (status === 200) {
-          if (executeError) {
-            dispatch(setSetupTransactionCheck(false))
-            dispatch(setSetupTransactionCheckStatus('failed' as SetupItemStatus))
-            dispatch(setSetupTransactionBuildStatus('failed' as SetupItemStatus))
-          } else {
-            // Allow to simulate and execute transaction
-            dispatch(setSetupTransactionCheck(true))
-            dispatch(setSetupTransactionCheckStatus('success' as SetupItemStatus))
-            dispatch(
-              setSetupTransactionBuild({ transaction, decodedTransaction } as TransactionBuild),
-            )
-            dispatch(setSetupTransactionBuildStatus('success' as SetupItemStatus))
-            dispatch(setSetupStatus('transaction_check' as SetupStatus))
-          }
-        } else {
-          // Don't allow to simulate or execute transaction
-          dispatch(setSetupTransactionCheck(false))
-          dispatch(setSetupTransactionCheckStatus('failed' as SetupItemStatus))
-          dispatch(
-            setSetupTransactionBuild({ transaction, decodedTransaction } as TransactionBuild),
-          )
-          dispatch(setSetupTransactionBuildStatus('failed' as SetupItemStatus))
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error)
-        dispatch(setSetupTransactionCheckStatus('failed' as SetupItemStatus))
-        dispatch(setSetupTransactionBuildStatus('failed' as SetupItemStatus))
-      }
-    }
-
-    postData(parameters)
-  }, [dispatch, formValue, isLoading])
+  const [expanded, setExpanded] = useState(error ? 'panel1' : '')
 
   const parameters = useMemo(() => {
     if (!tx) return []
@@ -170,6 +81,8 @@ export function TransactionDetails({ isLoading, tx, error }: Props) {
   if (tx) status = SetupItemStatus.Success
   if (error) status = SetupItemStatus.Failed
   if (isLoading) status = SetupItemStatus.Loading
+
+  if (status == SetupItemStatus.NotDone) return null
 
   return (
     <BoxWrapperRow gap={2} sx={{ m: 3, backgroundColor: 'custom.grey.light' }}>
@@ -240,7 +153,7 @@ export function TransactionDetails({ isLoading, tx, error }: Props) {
                                     color="inherit"
                                     onClick={() => {
                                       const url =
-                                        formValue?.blockchain == 'ethereum'
+                                        tx?.transaction?.blockchain == 'ethereum'
                                           ? `https://etherscan.io/address/${value}`
                                           : `https://gnosisscan.io/address/${value}`
                                       window.open(url, '_blank')
@@ -270,7 +183,7 @@ export function TransactionDetails({ isLoading, tx, error }: Props) {
                 </TableContainer>
               </>
             )}
-            {!isLoading && tx?.decodedTransaction && (
+            {!isLoading && tx?.decoded_transaction && (
               <BoxWrapperColumn
                 sx={{
                   width: '100%',
@@ -295,7 +208,7 @@ export function TransactionDetails({ isLoading, tx, error }: Props) {
                   }}
                 >
                   <pre>
-                    <code>{JSON.stringify(tx?.decodedTransaction, null, 2)}</code>
+                    <code>{JSON.stringify(tx?.decoded_transaction, null, 2)}</code>
                   </pre>
                 </Paper>
               </BoxWrapperColumn>

@@ -72,7 +72,7 @@ export default withApiAuthRequired(async function handler(
     const api = new RolesApi(dao, blockchain)
     const response = await api.buildTransaction(protocol, strategy, percentage, [argsParams])
 
-    return res.status(response.status || 400).json(response)
+    return res.status(response.status || 400).json({ ...response.tx_data, error: response.error })
   } catch (e: any) {
     console.error(e)
     return res.status(500).json({ error: `Internal Server Error ${e.message}`, status: 500 })
