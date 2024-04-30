@@ -15,6 +15,25 @@ export type TxSimulationData = {
   error?: string
 }
 
+export type BuildParams = {
+  dao: string
+  blockchain: string
+  protocol: string
+  pool_id: string
+  strategy: string
+  percentage: any
+  exit_arguments: any
+}
+
+export type CheckParams = {
+  dao: string
+  blockchain: string
+  protocol: string
+  tx_transactables: any
+}
+
+export type SimulateParams = { dao: string; blockchain: string; transaction: any }
+
 const headers = { Accept: 'application/json', 'Content-Type': 'application/json' }
 
 async function fetcher(path: string, body: any, signal: AbortSignal | undefined = undefined) {
@@ -30,15 +49,6 @@ async function fetcher(path: string, body: any, signal: AbortSignal | undefined 
   return resBody
 }
 
-export type BuildParams = {
-  dao: string
-  blockchain: string
-  protocol: string
-  pool_id: string
-  strategy: string
-  percentage: any
-  exit_arguments: any
-}
 export function useTxBuild(params?: BuildParams) {
   return useQuery<TxData>({
     queryKey: ['tx/build/v1', btoa(JSON.stringify(params))],
@@ -47,12 +57,6 @@ export function useTxBuild(params?: BuildParams) {
   })
 }
 
-export type CheckParams = {
-  dao: string
-  blockchain: string
-  protocol: string
-  tx_transactables: any
-}
 export function useTxCheck(params?: CheckParams) {
   return useQuery<TxCheckData>({
     queryKey: ['tx/check/v1', btoa(JSON.stringify(params))],
@@ -60,7 +64,6 @@ export function useTxCheck(params?: CheckParams) {
   })
 }
 
-export type SimulateParams = { dao: string; blockchain: string; transaction: any }
 export function useTxSimulation(params?: SimulateParams) {
   return useQuery<TxSimulationData>({
     queryKey: ['tx/simulate/v1', btoa(JSON.stringify(params))],

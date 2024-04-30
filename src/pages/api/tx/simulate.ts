@@ -39,9 +39,11 @@ export default withApiAuthRequired(async function handler(
       const api = new RolesApi(dao, blockchain, env.fork?.url)
       const response = await api.simulateTransaction(transaction)
 
-      return res
-        .status(response.status || 400)
-        .json({ ...response.sim_data, error: response.sim_data?.error_message })
+      return res.status(200).json({
+        status: response.status,
+        ...response.sim_data,
+        error: response.sim_data?.error_message,
+      })
     } finally {
       env.release()
     }
