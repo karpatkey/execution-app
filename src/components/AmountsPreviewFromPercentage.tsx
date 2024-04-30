@@ -3,23 +3,42 @@ import { Position } from 'src/contexts/state'
 export const AmountsPreviewFromPercentage = ({
   position,
   percentage,
+  tokenOut,
 }: {
   position: Position
   percentage: any
+  tokenOut?: string
 }) => {
   if (!percentage) return null
 
-  return (
-    <>
-      {(position.tokens || []).map((token: any) => {
-        if (token.as == 'supply') {
-          return (
-            <span key={token.symbol}>
-              {`${token.symbol} ${token.amount * (+percentage / 100)}`}
-            </span>
-          )
-        }
-      })}
-    </>
-  )
+  let tokens = position.tokens.filter((t) => t.as == 'supply')
+  if (tokens.length == 0) tokens = position.tokens.filter((t) => t.as == 'core')
+  const pct = +percentage / 100
+
+  if (tokenOut) {
+    const totalUsd = tokens.reduce((acc, t) => t.price * t.amount + acc, 0)
+    const findToken = (id: string) =>
+      tokens.find((t) => (t.id || '').toLowerCase() == id.toLowerCase())
+    let out = findToken(tokenOut)
+
+    if (!out && tokenOut) {
+      if (tokenOut == '0xaf204776c7245bF4147c2612BF6e5972Ee483701') out = findToken('xdai')
+    }
+
+    if (!out) return null
+
+    const usdToGetOut = totalUsd * pct
+
+    const amountToGetOut = usdToGetOut / out.price
+
+    return <span key={out.symbol}>{`${out.symbol} ${amountToGetOut}`}</span>
+  } else {
+    return (
+      <>
+        {tokens.map((token) => (
+          <span key={token.symbol}>{`${token.symbol} ${token.amount * pct}`}</span>
+        ))}
+      </>
+    )
+  }
 }
