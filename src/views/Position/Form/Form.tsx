@@ -118,16 +118,22 @@ function CustomForm({ position, onValid }: CustomFormProps) {
     setValue,
     clearErrors,
     watch,
+    formState,
+    register,
+    unregister,
   } = useForm<FormValues>({
     // defaultValues,
-    mode: 'all',
+    mode: 'onBlur',
   })
 
   console.log('isValid', isValid)
 
+  console.log(formState)
+
   const watchStrategy = watch('strategy')
   // const watchMaxSlippage = watch('max_slippage')
   const watchPercentage = watch('percentage')
+  const watchTokenOut = watch('token_out_address')
 
   const onSubmit: SubmitHandler<any> = useDebounceCallback(onValid, 300)
 
@@ -141,6 +147,7 @@ function CustomForm({ position, onValid }: CustomFormProps) {
 
   const handleStrategyChange = useCallback(() => {
     // Clear fields
+    unregister('percentage')
     setValue('percentage', undefined)
     setValue('max_slippage', undefined)
     setValue('rewards_address', undefined)
@@ -153,7 +160,9 @@ function CustomForm({ position, onValid }: CustomFormProps) {
     clearErrors('rewards_address')
     clearErrors('token_out_address')
     clearErrors('bpt_address')
-  }, [clearErrors, setValue])
+  }, [clearErrors, setValue, unregister])
+
+  console.log({ errors })
 
   return (
     <form id="hook-form" onChange={handleSubmit(onSubmit)}>
@@ -163,6 +172,7 @@ function CustomForm({ position, onValid }: CustomFormProps) {
             <Title title={'Exit strategies'} />
             <BoxWrapperColumn gap={2}>
               <InputRadio
+                // {...register('strategy')}
                 name="strategy"
                 onChange={handleStrategyChange}
                 options={strategies.map((item) => ({
@@ -174,35 +184,28 @@ function CustomForm({ position, onValid }: CustomFormProps) {
               />
             </BoxWrapperColumn>
           </BoxWrapperColumn>
+          {parameters.length == 0 ? (
+            <input hidden {...register('percentage', { required: true })} />
+          ) : null}
 
           {parameters.length > 0 ? (
             <BoxWrapperColumn gap={2}>
               <Title title={'Parameters'} />
-              {parameters.map((parameter, index) => {
-                const { name, label = '', type, rules, options } = parameter
-
+              {parameters.map(({ name, label, type, rules, options }, index) => {
                 if (type === 'constant') return null
 
-                let haveMinAndMaxRules = false
-
-                const haveOptions = options?.length ?? 0 > 0
-                const min = rules?.min
-
-                const max = rules?.max
-                haveMinAndMaxRules = min !== undefined && max !== undefined
+                const { min, max } = rules || {}
 
                 const onClickApplyMax = () => {
                   if (max !== undefined) setValue(name, max, { shouldValidate: true })
                 }
 
-                if (haveMinAndMaxRules) {
-                  const isPercentageButton = name === 'percentage'
-
+                if (min !== undefined && max !== undefined) {
                   return (
                     <BoxWrapperColumn gap={2} key={index}>
                       <BoxWrapperRow sx={{ justifyContent: 'space-between' }}>
                         <BoxWrapperRow gap={2}>
-                          <Label title={label} />
+                          <Label title={label || ''} />
                           {name === 'max_slippage' ? (
                             <Tooltip
                               title={
@@ -217,7 +220,7 @@ function CustomForm({ position, onValid }: CustomFormProps) {
                           ) : null}
                         </BoxWrapperRow>
 
-                        {isPercentageButton ? (
+                        {name == 'percentage' ? (
                           <Button onClick={onClickApplyMax} variant="contained">
                             Max
                           </Button>
@@ -230,15 +233,9 @@ function CustomForm({ position, onValid }: CustomFormProps) {
                           required: `Please enter a value between ${min}% and ${max}%`,
                           min,
                           max,
-                          validate: {
-                            required: (value: any) => {
-                              if (!value || value === 0)
-                                return `Please enter a value between ${min}% and ${max}%`
-                            },
-                          },
                         }}
-                        minValue={0}
-                        maxValue={max || 100}
+                        // minValue={0}
+                        // maxValue={max || 100}
                         placeholder={FORM_CONFIG[name].placeholder}
                         errors={errors}
                       />
@@ -246,18 +243,19 @@ function CustomForm({ position, onValid }: CustomFormProps) {
                         <AmountsPreviewFromPercentage
                           position={position}
                           percentage={watchPercentage}
+                          tokenOut={watchTokenOut}
                         />
                       ) : null}
                     </BoxWrapperColumn>
                   )
                 }
 
-                if (haveOptions) {
+                if (options?.length ?? 0 > 0) {
                   return (
                     <OptionsInput
                       key={index}
                       name={name}
-                      label={label}
+                      label={label || ''}
                       control={control}
                       options={options}
                     />

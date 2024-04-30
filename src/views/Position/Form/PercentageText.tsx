@@ -1,7 +1,7 @@
 import { TextField } from '@mui/material'
 import { TextFieldProps } from '@mui/material/TextField/TextField'
 import { ForwardedRef, forwardRef } from 'react'
-import { Controller } from 'react-hook-form'
+import { Controller, ControllerProps } from 'react-hook-form'
 import { NumericFormat } from 'react-number-format'
 import { InputProps } from './types'
 
@@ -25,29 +25,22 @@ const PercentageNumberFormat = forwardRef<PercentageNumberFormatProps, Percentag
   },
 )
 
+type PropType<TObj, TProp extends keyof TObj> = TObj[TProp]
+
 export interface CustomInputPropsProps {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
   errors: any
-  rules?: any
-  maxValue: number
-  minValue: number
+  rules?: PropType<ControllerProps, 'rules'>
   defaultValue?: number
 }
 
 export type ControlledTextFieldProps = InputProps & TextFieldProps & CustomInputPropsProps
 
 export const PercentageText = (props: ControlledTextFieldProps) => {
-  const {
-    name,
-    rules,
-    minValue = 0,
-    maxValue = 100,
-    defaultValue,
-    control,
-    errors,
-    onChange,
-    ...restProps
-  } = props
+  const { name, rules, defaultValue, control, errors, onChange, ...restProps } = props
+
+  const min = rules?.min || 0
+  const max = rules?.max || 100
 
   return (
     <Controller
@@ -65,10 +58,10 @@ export const PercentageText = (props: ControlledTextFieldProps) => {
               value: field?.value,
               suffix: '%',
               isAllowed: (values: any) => {
+                console.log(values)
                 return (
-                  (values.floatValue! >= minValue && values.floatValue! <= maxValue) ||
-                  values.floatValue === undefined ||
-                  values.floatValue === null
+                  (values.floatValue! >= min && values.floatValue! <= max) ||
+                  values.floatValue === undefined
                 )
               },
               onValueChange: (values: any) => {

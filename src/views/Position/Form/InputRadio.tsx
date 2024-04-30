@@ -55,7 +55,7 @@ const InputRadio: React.FC<InputWithOptionsProps> = ({
       <Controller
         name={name}
         control={control}
-        rules={{ required: `${name} is required` } as any}
+        rules={{ required: `${name} is required` }}
         render={({ field }) => {
           return (
             <RadioGroup
