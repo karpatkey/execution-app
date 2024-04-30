@@ -10,6 +10,7 @@ export enum Status {
 export type AppBlockchain = 'ethereum' | 'gnosis'
 
 export type Token = {
+  id: string
   symbol: string
   as: 'supply' | 'borrow' | 'reward' | 'other' | 'core'
   amount: number
@@ -26,7 +27,7 @@ export type Position = {
   positionType?: string
   usd_amount: number
   updated_at: number
-  tokens?: Token[]
+  tokens: Token[]
 }
 
 export type PositionWithStrategies = Position & {
