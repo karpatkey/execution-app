@@ -15,7 +15,6 @@ import { Confirm } from './Confirm/Confirm'
 import { TransactionCheck } from './Create/TransactionCheck'
 import { TransactionDetails } from './Create/TransactionDetails'
 import { TransactionSimulation } from './Create/TransactionSimulation'
-import { Stepper } from './Stepper'
 
 import { BuildParams, useTxBuild, useTxCheck, useTxSimulation } from 'src/queries/execution'
 
@@ -38,8 +37,6 @@ const BoxWrapperRowStyled = styled(BoxWrapperRow)(() => ({
 export const Modal = (props: ModalProps) => {
   const { position, open, handleClose } = props
 
-  let hiddenStepper = useMediaQuery((theme: any) => theme.breakpoints.down('md'))
-  hiddenStepper = true
   const smallScreen = useMediaQuery((theme: any) => theme.breakpoints.down('sm'))
 
   const [params, setParams] = useState<BuildParams | undefined>(undefined)
@@ -89,12 +86,10 @@ export const Modal = (props: ModalProps) => {
       : undefined,
   )
 
-  const stepperWidth = '280px'
-
   const modalPadding = smallScreen ? '1rem' : '3rem'
   return (
     <Dialog
-      fullScreen={false}
+      fullScreen={smallScreen}
       open={open}
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
@@ -106,21 +101,27 @@ export const Modal = (props: ModalProps) => {
       PaperProps={{ sx: { flexGrow: 1 } }}
     >
       <BoxContainerWrapper sx={{}}>
-        <BoxWrapperRow sx={{ padding: '1rem', justifyContent: 'space-between' }}>
-          <Box />
+        <BoxWrapperRow sx={{ padding: '1rem', justifyContent: 'flex-end' }}>
           <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
             <CloseIcon />
           </IconButton>
         </BoxWrapperRow>
 
-        <BoxWrapperColumn sx={{ paddingRight: modalPadding, paddingLeft: modalPadding }} gap={2}>
+        <BoxWrapperColumn
+          sx={{
+            paddingRight: modalPadding,
+            paddingLeft: modalPadding,
+            paddingBottom: modalPadding,
+          }}
+          gap={2}
+        >
           <BoxWrapperRowStyled gap={2}>
             <CustomTypography variant="h6">Strategy execution</CustomTypography>
           </BoxWrapperRowStyled>
           <BoxWrapperRow gap={2} sx={{ justifyContent: 'space-between', alignItems: 'self-start' }}>
             <BoxWrapperColumn
               sx={{
-                width: hiddenStepper ? '100%' : `calc(100% - ${stepperWidth} - 1em)`,
+                width: '100%',
                 justifyContent: 'flex-start',
                 height: '100%',
               }}
@@ -136,23 +137,17 @@ export const Modal = (props: ModalProps) => {
                   isLoading={isSimulating}
                   error={simulationError}
                 />
-                <Confirm {...{ tx, txCheck, txSimulation }} handleClose={handleClose} />
+                {tx && txCheck && txSimulation ? (
+                  <Confirm
+                    position={position}
+                    tx={tx}
+                    txCheck={txCheck}
+                    txSimulation={txSimulation}
+                    handleClose={handleClose}
+                  />
+                ) : null}
               </BoxWrapper>
             </BoxWrapperColumn>
-
-            {!hiddenStepper ? (
-              <BoxWrapperColumn
-                sx={{
-                  width: stepperWidth,
-                  justifyContent: 'flex-start',
-                  display: hiddenStepper ? 'none' : 'flex',
-                  // position: 'fixed',
-                  // right: '3rem',
-                }}
-              >
-                <Stepper />
-              </BoxWrapperColumn>
-            ) : null}
           </BoxWrapperRow>
         </BoxWrapperColumn>
       </BoxContainerWrapper>

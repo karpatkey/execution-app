@@ -32,20 +32,6 @@ PositionsPage.getLayout = (page: ReactElement) => <PageLayout>{page}</PageLayout
 
 export default PositionsPage
 
-// export const getServerSideProps = withPageAuthRequired(async (context: {
-//   req: NextApiRequest
-//   res: NextApiResponse
-// }) => {
-//   const { error, daos } = await authorizedDao(context)
-//   if (error) return { props: { daos: [] } }
-//
-//   const daosConfigs = await getDaosConfigs(daos as Dao[])
-//
-//   context.res.setHeader('Cache-Control', 'private, max-age=300, stale-while-revalidate=3600')
-//
-//   return { props: { daos, daosConfigs } }
-// })
-
 export const getServerSideProps = withPageAuthRequired<any, any>({
   async getServerSideProps(ctx) {
     const { error, daos } = await authorizedDao(ctx)

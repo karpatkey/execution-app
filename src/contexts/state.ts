@@ -96,61 +96,11 @@ export enum SetupStatus {
 }
 
 export const initialState: InitialState = {
-  status: Status.Loading,
   daosConfigs: [],
   daos: [],
-  envNetworkData: null,
-  setup: {
-    status: SetupStatus.Loading,
-    create: {
-      value: null,
-      status: SetupItemStatus.NotDone,
-    },
-    transactionBuild: {
-      value: null,
-      status: SetupItemStatus.NotDone,
-    },
-    transactionCheck: {
-      value: null,
-      status: SetupItemStatus.NotDone,
-    },
-    simulation: {
-      value: null,
-      status: SetupItemStatus.NotDone,
-    },
-    confirm: {
-      value: null,
-      status: SetupItemStatus.NotDone,
-    },
-  },
 }
 
 export type InitialState = {
-  status: Status
   daosConfigs: any[]
   daos: Dao[]
-  envNetworkData: Maybe<any>
-  setup: {
-    status: SetupStatus
-    create: {
-      value: Maybe<Strategy>
-      status: SetupItemStatus
-    }
-    transactionBuild: {
-      value: Maybe<TransactionBuild>
-      status: SetupItemStatus
-    }
-    transactionCheck: {
-      value: Maybe<boolean>
-      status: SetupItemStatus
-    }
-    simulation: {
-      value: Maybe<any>
-      status: SetupItemStatus
-    }
-    confirm: {
-      value: Maybe<any>
-      status: SetupItemStatus
-    }
-  }
 }
