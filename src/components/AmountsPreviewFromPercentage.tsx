@@ -1,5 +1,10 @@
 import { Position } from 'src/contexts/state'
 
+const format = (value: number) => {
+  const Amount = new Intl.NumberFormat('en-US', { maximumFractionDigits: 4 })
+  return Amount.format(+value)
+}
+
 export const AmountsPreviewFromPercentage = ({
   position,
   percentage,
@@ -31,12 +36,12 @@ export const AmountsPreviewFromPercentage = ({
 
     const amountToGetOut = usdToGetOut / out.price
 
-    return <span key={out.symbol}>{`${out.symbol} ${amountToGetOut}`}</span>
+    return <span key={out.symbol}>{`${out.symbol} ${format(amountToGetOut)}`}</span>
   } else {
     return (
       <>
         {tokens.map((token) => (
-          <span key={token.symbol}>{`${token.symbol} ${token.amount * pct}`}</span>
+          <span key={token.symbol}>{`${token.symbol} ${format(token.amount * pct)}`}</span>
         ))}
       </>
     )
