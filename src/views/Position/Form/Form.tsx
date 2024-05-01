@@ -81,6 +81,7 @@ const CustomForm = (props: CustomFormProps) => {
   const watchStrategy = watch('strategy')
   const watchMaxSlippage = watch('max_slippage')
   const watchPercentage = watch('percentage')
+  const watchTokenOut = watch('token_out_address')
 
   // We need to do this, because the react hook form default values are not working properly
   React.useEffect(() => {
@@ -286,6 +287,7 @@ const CustomForm = (props: CustomFormProps) => {
                       <AmountsPreviewFromPercentage
                         position={position}
                         percentage={watchPercentage}
+                        tokenOut={watchTokenOut}
                       />
                     ) : null}
                   </BoxWrapperColumn>
