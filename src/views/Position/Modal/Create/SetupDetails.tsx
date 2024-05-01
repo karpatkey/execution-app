@@ -182,11 +182,7 @@ export const SetupDetails = ({ position }: { position: Position }) => {
                         key={index}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                       >
-                        <TableCell
-                          component="th"
-                          scope="row"
-                          sx={{ display: 'flex', justifyContent: 'flex-start' }}
-                        >
+                        <TableCell component="td" scope="row">
                           {label}
                         </TableCell>
                         <TableCell align="right">

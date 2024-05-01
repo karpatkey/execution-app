@@ -20,6 +20,7 @@ export const AmountsPreviewFromPercentage = ({
   if (tokens.length == 0) tokens = position.tokens.filter((t) => t.as == 'core')
   const pct = +percentage / 100
 
+  console.log({ tokenOut })
   if (tokenOut) {
     const totalUsd = tokens.reduce((acc, t) => t.price * t.amount + acc, 0)
     const findToken = (id: string) =>
@@ -39,11 +40,11 @@ export const AmountsPreviewFromPercentage = ({
     return <span key={out.symbol}>{`${out.symbol} ${format(amountToGetOut)}`}</span>
   } else {
     return (
-      <>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
         {tokens.map((token) => (
           <span key={token.symbol}>{`${token.symbol} ${format(token.amount * pct)}`}</span>
         ))}
-      </>
+      </div>
     )
   }
 }
