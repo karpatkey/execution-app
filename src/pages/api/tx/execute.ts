@@ -15,7 +15,6 @@ type Params = {
   blockchain: Maybe<Blockchain>
   dao: Maybe<Dao>
   transaction: Maybe<any>
-  decoded: Maybe<any>
 }
 
 import { authorizedDao } from 'src/services/authorizer'
@@ -28,7 +27,7 @@ export default withApiAuthRequired(async function handler(
     // Should be a post request
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-    const { transaction, decoded, blockchain, dao = '' } = req.body as Params
+    const { transaction, blockchain, dao = '' } = req.body as Params
 
     const { error } = await authorizedDao({ req, res }, dao)
     if (error) return res.status(401).json({ error: 'Unauthorized' })
@@ -38,16 +37,19 @@ export default withApiAuthRequired(async function handler(
 
     const env = await executorEnv(blockchain)
 
-    if (!decoded || !transaction) throw new Error('Missing required param')
+    if (!transaction) throw new Error('Missing required param')
 
     try {
       const provider = await getEthersProvider(blockchain, env.env)
       const signor = new Signor({ blockchain, dao, provider, env: env.env })
       const txResponse = await signor.sendTransaction(transaction)
 
-      const txReceipt = await txResponse.wait()
+      const { status, hash: tx_hash } = (await txResponse.wait()) ?? {}
 
-      if (txReceipt?.status == 1) {
+      if (!status) return res.status(200).json({ error: 'Transaction reverted', data: { tx_hash } })
+      if (!tx_hash) return res.status(200).json({ error: 'Error trying to execute transaction' })
+
+      if (status == 1) {
         // TODO cleanup Roles royce creates the order now so we don't need this
         //
         // const cowsigner = new CowswapSigner(blockchain, decoded)
