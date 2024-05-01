@@ -234,8 +234,6 @@ function CustomForm({ position, onValid }: CustomFormProps) {
                           min,
                           max,
                         }}
-                        // minValue={0}
-                        // maxValue={max || 100}
                         placeholder={FORM_CONFIG[name].placeholder}
                         errors={errors}
                       />

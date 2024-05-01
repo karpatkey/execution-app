@@ -37,17 +37,16 @@ export interface CustomInputPropsProps {
 export type ControlledTextFieldProps = InputProps & TextFieldProps & CustomInputPropsProps
 
 export const PercentageText = (props: ControlledTextFieldProps) => {
-  const { name, rules, defaultValue, control, errors, onChange, ...restProps } = props
+  const { name, rules, defaultValue, control, errors, ...restProps } = props
 
-  const min = rules?.min || 0
-  const max = rules?.max || 100
+  console.log({ name, errors })
 
   return (
     <Controller
       name={name}
       control={control}
       rules={rules}
-      defaultValue={(defaultValue as any) ?? ''}
+      defaultValue={defaultValue ?? ''}
       render={({ field }) => {
         return (
           <TextField
@@ -57,15 +56,7 @@ export const PercentageText = (props: ControlledTextFieldProps) => {
             inputProps={{
               value: field?.value,
               suffix: '%',
-              isAllowed: (values: any) => {
-                console.log(values)
-                return (
-                  (values.floatValue! >= min && values.floatValue! <= max) ||
-                  values.floatValue === undefined
-                )
-              },
               onValueChange: (values: any) => {
-                if (onChange) onChange(values)
                 field.onChange(values.floatValue)
               },
             }}
