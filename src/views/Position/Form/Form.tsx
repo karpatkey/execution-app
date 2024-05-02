@@ -142,10 +142,8 @@ const CustomForm = (props: CustomFormProps) => {
     [strategies, dispatch, position],
   )
 
-  const specificParameters: Config[] =
-    (strategies as PositionConfig[])?.find(
-      (item: PositionConfig) => item.function_name === watchStrategy,
-    )?.parameters ?? []
+  const specificParameters =
+    strategies.find((item) => item.function_name === watchStrategy)?.parameters ?? []
 
   const parameters = [...commonConfig, ...specificParameters]
 
