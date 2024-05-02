@@ -100,6 +100,7 @@ async function getDebankPositions(daos: string[]): Promise<{ data: Position[] }>
           blockchain: t.chain,
           tokens: [
             {
+              id: t.id,
               symbol: t.symbol,
               as: 'core',
               amount: t.amount,
