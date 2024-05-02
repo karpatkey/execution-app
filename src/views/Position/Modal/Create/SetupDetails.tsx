@@ -73,27 +73,27 @@ const LABEL_MAPPER = {
 export const SetupDetails = ({ position }: { position: Position }) => {
   const { state } = useApp()
 
-  const createValue = state?.setup?.create?.value || {}
+  const createValue = state?.setup?.create?.value ?? {}
 
   //filter value by LABEL_MAPPER and sort by order
-  const parameters = createValue
-    ? Object.keys(createValue)
-        .filter((key) => LABEL_MAPPER[key as keyof typeof LABEL_MAPPER])
-        .sort((a, b) => {
-          return (
-            LABEL_MAPPER[a as keyof typeof LABEL_MAPPER].order -
-            LABEL_MAPPER[b as keyof typeof LABEL_MAPPER].order
-          )
-        })
-        .map((key) => {
-          return {
-            key,
-            label: LABEL_MAPPER[key as keyof typeof LABEL_MAPPER].label,
-            value: createValue && createValue[key as keyof typeof createValue],
-          }
-        })
-        .filter(({ value }) => value)
-    : []
+  const parameters = Object.keys(createValue)
+    .filter((key) => LABEL_MAPPER[key as keyof typeof LABEL_MAPPER])
+    .sort((a, b) => {
+      return (
+        LABEL_MAPPER[a as keyof typeof LABEL_MAPPER].order -
+        LABEL_MAPPER[b as keyof typeof LABEL_MAPPER].order
+      )
+    })
+    .map((key) => {
+      return {
+        key,
+        label: LABEL_MAPPER[key as keyof typeof LABEL_MAPPER].label,
+        value: createValue && createValue[key as keyof typeof createValue],
+      }
+    })
+    .filter(({ value }) => value)
+
+  const tokenOutAddress = parameters.find((p) => p.key == 'token_out_address')
 
   return (
     <BoxWrapperRow gap={2} sx={{ m: 3, backgroundColor: 'custom.grey.light' }}>
@@ -118,7 +118,11 @@ export const SetupDetails = ({ position }: { position: Position }) => {
                       valueToDisplay = (
                         <>
                           <div>{formatPercentage(+value / 100)}</div>
-                          <AmountsPreviewFromPercentage position={position} percentage={value} />
+                          <AmountsPreviewFromPercentage
+                            position={position}
+                            percentage={value}
+                            tokenOut={tokenOutAddress?.value}
+                          />
                         </>
                       )
                     } else if (key === 'max_slippage') {
