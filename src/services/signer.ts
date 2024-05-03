@@ -167,7 +167,7 @@ export class Signor {
         'Balancer LTD': 'BALANCERLTD',
         'Balancer DAO': 'BALANCERDAO',
         'CoW DAO': 'COWDAO',
-        'ENS DAO': 'ENSDAO',
+        'ENS DAO': 'ENS',
         TestSafeDAO: 'TESTSAFEDAO',
       }[this.dao] || '__'
 
