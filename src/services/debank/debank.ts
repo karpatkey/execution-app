@@ -195,7 +195,7 @@ function transformPosition(position: DebankPosition): ResponsePosition[] {
     ].filter((l) => l)
 
     const position_type = i.name
-    const pool_id = i.pool.id
+    const pool_id = i.pool.id.replace(/(:.*)/g, '')
     const lptoken_name = PositionNamesFromPoolId.get(pool_id) || i.detail.description
 
     return {
