@@ -124,7 +124,7 @@ export const getStrategyByPositionId = (
   const daoItem = getStrategies(daosConfigs, dao, blockchain)
 
   const position = daoItem?.positions?.find(
-    (position: any) => position.position_id_tech.toLowerCase() === pool_id,
+    (position: any) => position.position_id_tech.toLowerCase() === pool_id.toLowerCase(),
   )
 
   return {
