@@ -8,7 +8,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { AmountsPreviewFromPercentage } from 'src/components/AmountsPreviewFromPercentage'
 import CustomTypography from 'src/components/CustomTypography'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
-import { Config, PositionConfig } from 'src/config/strategies/manager'
+import { PositionConfig } from 'src/config/strategies/manager'
 import { useApp } from 'src/contexts/app.context'
 import { Position } from 'src/contexts/state'
 import { getStrategy } from 'src/services/strategies'
@@ -137,8 +137,8 @@ function CustomForm({ position, onValid }: CustomFormProps) {
 
   const onSubmit: SubmitHandler<any> = useDebounceCallback(onValid, 300)
 
-  const specificParameters: Config[] =
-    strategies?.find((item) => item.function_name === watchStrategy)?.parameters ?? []
+  const specificParameters =
+    strategies.find((item) => item.function_name === watchStrategy)?.parameters ?? []
 
   const parameters = watchStrategy ? [...commonConfig, ...specificParameters] : []
 

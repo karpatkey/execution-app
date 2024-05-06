@@ -59,7 +59,7 @@ const List = () => {
             position.dao,
             position.lptokenName,
             position.pool_id,
-            position.blockchain,
+            // position.blockchain,
             position.protocol,
           ]
             .join(' ')

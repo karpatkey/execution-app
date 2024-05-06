@@ -61,6 +61,11 @@ class DisabledAdapter implements Adapter {
 
 const MIN_USD_AMOUNT = process.env.AXA_MIN_USD_AMOUNT || 5000
 
+function translateId(id: string) {
+  if (['eth', 'xdai'].includes(id)) return '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+  return id
+}
+
 async function getDebankPositions(daos: string[]): Promise<{ data: Position[] }> {
   const dwallets = daos.map((dao) => ({ dao, wallets: daoWallets(dao) }))
   const wallets = dwallets.flatMap((dw) => dw.wallets)
@@ -78,11 +83,13 @@ async function getDebankPositions(daos: string[]): Promise<{ data: Position[] }>
         const lptokenName = lptokenNameFromPosition(position)
         return {
           ...position,
+          pool_id: translateId(position.pool_id),
           dao,
           protocol: position.protocol_name,
           positionType: position.position_type,
           lptokenName: position.lptoken_name || lptokenName,
           blockchain: position.chain,
+          tokens: position.tokens.map((t) => ({ ...t, id: translateId(t.id) })),
         }
       })
       .filter((p: any) => p.usd_amount > MIN_USD_AMOUNT)
@@ -95,12 +102,12 @@ async function getDebankPositions(daos: string[]): Promise<{ data: Position[] }>
           usd_amount: t.price * t.amount,
           positionType: 'token',
           lptokenName: t.symbol,
-          pool_id: t.id,
+          pool_id: translateId(t.id),
           protocol: 'Wallet',
           blockchain: t.chain,
           tokens: [
             {
-              id: t.id,
+              id: translateId(t.id),
               symbol: t.symbol,
               as: 'core',
               amount: t.amount,
