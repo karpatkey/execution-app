@@ -62,8 +62,7 @@ class DisabledAdapter implements Adapter {
 const MIN_USD_AMOUNT = process.env.AXA_MIN_USD_AMOUNT || 5000
 
 function translateId(id: string) {
-  if (id == 'eth') return '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-  if (id == 'xdai') return '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d'
+  if (['eth', 'xdai'].includes(id)) return '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
   return id
 }
 
@@ -90,6 +89,7 @@ async function getDebankPositions(daos: string[]): Promise<{ data: Position[] }>
           positionType: position.position_type,
           lptokenName: position.lptoken_name || lptokenName,
           blockchain: position.chain,
+          tokens: position.tokens.map((t) => ({ ...t, id: translateId(t.id) })),
         }
       })
       .filter((p: any) => p.usd_amount > MIN_USD_AMOUNT)
