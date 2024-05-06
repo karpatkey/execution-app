@@ -5,7 +5,7 @@ import React from 'react'
 import { Controller } from 'react-hook-form'
 import CustomTypography from 'src/components/CustomTypography'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
-import { InputProps } from './types'
+import { InputProps } from './typing'
 
 export type Option = {
   label: React.ReactNode

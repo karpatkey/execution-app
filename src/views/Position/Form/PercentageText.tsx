@@ -3,7 +3,7 @@ import { TextFieldProps } from '@mui/material/TextField/TextField'
 import { ForwardedRef, forwardRef } from 'react'
 import { Controller, ControllerProps } from 'react-hook-form'
 import { NumericFormat } from 'react-number-format'
-import { InputProps } from './types'
+import { InputProps } from './typing'
 
 interface PercentageNumberFormatProps {
   inputRef: (instance: typeof NumericFormat | null) => void

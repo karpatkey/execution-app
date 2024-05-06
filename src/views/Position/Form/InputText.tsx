@@ -1,13 +1,13 @@
 import { InputAdornment, TextField } from '@mui/material'
 import { TextFieldProps } from '@mui/material/TextField/TextField'
-import React from 'react'
+import { ChangeEvent } from 'react'
 import { Controller } from 'react-hook-form'
-import { InputProps } from './types'
+import { InputProps } from './typing'
 
 export interface CustomInputPropsProps {
   label: string
   textFieldType?: string
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void
   errors: any
   rules?: any
 }
@@ -25,7 +25,7 @@ export const InputText = (props: ControlledTextFieldProps) => {
       render={({ field }) => (
         <TextField
           type={textFieldType}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
             if (onChange) onChange(e)
             field.onChange(e)
           }}
