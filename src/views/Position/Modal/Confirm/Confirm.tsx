@@ -1,13 +1,15 @@
-import { Box, Link } from '@mui/material'
+import { Box } from '@mui/material'
 import Button from '@mui/material/Button'
+import { useCallback } from 'react'
 import { AccordionBoxWrapper } from 'src/components/Accordion/AccordionBoxWrapper'
 import CustomTypography from 'src/components/CustomTypography'
+import Link from 'src/components/Link'
 import StatusLabel from 'src/components/StatusLabel'
 import TextLoadingDots from 'src/components/TextLoadingDots'
 import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 import { Position, SetupItemStatus } from 'src/contexts/state'
-import { TxCheckData, TxData, TxSimulationData } from 'src/queries/execution'
+import { TxCheckData, TxData, TxSimulationData, useExecute } from 'src/queries/execution'
 
 const WaitingExecutingTransaction = () => {
   return (
@@ -30,59 +32,35 @@ interface ConfirmProps {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const Confirm = ({ position, tx, txCheck, txSimulation, handleClose }: ConfirmProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { blockchain, dao } = position
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { transaction } = tx ?? {}
+  const execute = useExecute()
 
-  // Get env network data
+  const onExecute = useCallback(async () => {
+    execute.mutate({
+      dao: position.dao,
+      blockchain: position.blockchain,
+      transaction: tx.transaction,
+    })
+  }, [execute, position.blockchain, position.dao, tx.transaction])
 
-  const isDisabled = true
+  const error = execute.error
+  const txHash = execute.data?.tx_hash
 
-  // const onExecute = useCallback(async () => {
-  //   try {
-  //     const parameters = { transaction, blockchain, dao }
-  //
-  //     const response = await fetch('/api/tx/execute', {
-  //       method: 'POST',
-  //       headers: {
-  //         Accept: 'application/json',
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(parameters),
-  //     })
-  //
-  //     const body = await response.json()
-  //
-  //     const { status } = body
-  //
-  //     // TODO, we need to check if the transaction was reverted or not in the development environment (fork blockchain)
-  //   } catch (err) {
-  //     console.error('Error fetching data:', err)
-  //   }
-  // }, [])
+  console.log(execute)
 
-  const isLoading = true
-  const confirmStatus = 'loading'
-  const error = { message: '' }
-
-  const txHash = ''
+  const exploreUrl =
+    position.blockchain == 'ethereum'
+      ? `https://etherscan.io/tx/${txHash}`
+      : `https://gnosisscan.io/tx/${txHash}`
 
   return (
-    <AccordionBoxWrapper
-      gap={2}
-      sx={{
-        m: 3,
-        backgroundColor: 'background.default',
-      }}
-    >
+    <AccordionBoxWrapper gap={2} sx={{ m: 3, backgroundColor: 'background.default' }}>
       <BoxWrapperColumn gap={4} sx={{ width: '100%', marginY: '14px', justifyContent: 'center' }}>
         <BoxWrapperColumn gap={2}>
           <BoxWrapperRow sx={{ justifyContent: 'space-between' }}>
             <CustomTypography variant={'body2'}>Confirmation</CustomTypography>
-            {isLoading && <StatusLabel status={'loading' as SetupItemStatus} />}
+            {execute.isPending && <StatusLabel status={'loading' as SetupItemStatus} />}
           </BoxWrapperRow>
-          {confirmStatus !== ('success' as SetupItemStatus) && !isLoading && (
+          {!execute.isPending && !execute.isError && !execute.data && (
             <CustomTypography variant={'subtitle1'}>
               You're about to create and confirm this transaction.
             </CustomTypography>
@@ -90,8 +68,8 @@ export const Confirm = ({ position, tx, txCheck, txSimulation, handleClose }: Co
         </BoxWrapperColumn>
         <BoxWrapperColumn gap={'20px'}>
           <BoxWrapperRow gap={'20px'}>
-            {isLoading && <WaitingExecutingTransaction />}
-            {confirmStatus === ('failed' as SetupItemStatus) && !isLoading && (
+            {execute.isPending && <WaitingExecutingTransaction />}
+            {execute.isError && !execute.isPending && (
               <CustomTypography variant={'body2'} sx={{ color: 'red', overflow: 'auto' }}>
                 {error?.message && typeof error?.message === 'string'
                   ? error?.message
@@ -106,32 +84,22 @@ export const Confirm = ({ position, tx, txCheck, txSimulation, handleClose }: Co
             )}
           </BoxWrapperRow>
           <BoxWrapperRow sx={{ justifyContent: 'flex-end' }} gap={'20px'}>
-            {txHash && !isLoading && (
-              <Button
-                variant="contained"
-                onClick={() => {
-                  // open transaction hash in an explorer, if is ethereum in etherscan, if is gnosis in gnosisscan
-                  const txUrl =
-                    blockchain == 'ethereum'
-                      ? `https://etherscan.io/tx/${txHash}`
-                      : `https://gnosisscan.io/tx/${txHash}`
-                  window.open(txUrl, '_blank')
-                }}
-              >
+            {txHash && (
+              <Link href={exploreUrl} target="_blank">
                 View on block explorer
-              </Button>
+              </Link>
             )}
-            {confirmStatus !== ('success' as SetupItemStatus) && !isLoading && (
+            {!execute.isError && !execute.data && (
               <Button variant="contained" color="error" onClick={() => handleClose()}>
                 Cancel
               </Button>
             )}
-            {confirmStatus !== ('success' as SetupItemStatus) && !isLoading && (
-              <Button variant="contained" disabled={isDisabled}>
+            {execute.isIdle && (
+              <Button variant="contained" onClick={onExecute}>
                 Execute
               </Button>
             )}
-            {confirmStatus === ('success' as SetupItemStatus) && !isLoading && (
+            {execute.data && !execute.isPending && (
               <Button variant="contained" component={Link} href={`/positions`}>
                 Finish
               </Button>

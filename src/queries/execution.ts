@@ -87,9 +87,9 @@ type ExecuteData = {
   error?: string
 }
 
-export function useExecute(params: ExecuteParams) {
-  return useMutation<ExecuteData>({
-    mutationFn: async () => {
+export function useExecute() {
+  return useMutation<ExecuteData, Error, ExecuteParams>({
+    mutationFn: async (params) => {
       return await fetcher('/api/tx/execute', params)
     },
   })
