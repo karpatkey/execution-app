@@ -55,13 +55,7 @@ const List = () => {
     } else {
       return withDao
         .filter((position) => {
-          const joined = [
-            position.dao,
-            position.lptokenName,
-            position.pool_id,
-            // position.blockchain,
-            position.protocol,
-          ]
+          const joined = [position.dao, position.lptokenName, position.pool_id, position.protocol]
             .join(' ')
             .toLowerCase()
           return !queryTerms.find((t) => joined.search(t) == -1)
