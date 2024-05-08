@@ -1,11 +1,12 @@
-import LogoKarpatkey from 'src/components/LogoKarpatkey'
-import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
-import React from 'react'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import { Avatar, Button } from '@mui/material'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useRouter } from 'next/navigation'
 import CustomTypography from 'src/components/CustomTypography'
-import useMediaQuery from '@mui/material/useMediaQuery'
+import Loading from 'src/components/Loading'
+import LogoKarpatkey from 'src/components/LogoKarpatkey'
+import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
+import { usePositions } from 'src/queries/positions'
 
 export const HEADER_HEIGHT = 100
 
@@ -46,7 +47,7 @@ const LoggedComponent = (props: LoggedComponentProps) => {
             gap: 2,
             maxWidth: 'min-content',
             padding: '6px 14px',
-            alignItems: 'center'
+            alignItems: 'center',
           }}
         >
           {name}
@@ -61,13 +62,14 @@ const LoggedComponent = (props: LoggedComponentProps) => {
 
 const Header = () => {
   const { user, isLoading } = useUser()
+  const { isRefetching: isLoadingPositions } = usePositions()
 
   const name = user?.name ?? ''
   const image = user?.picture ?? ''
 
   const loggedComponentProps = {
     name,
-    image
+    image,
   }
 
   return (
@@ -78,10 +80,13 @@ const Header = () => {
         paddingX: '26px',
         paddingRight: '48px',
         paddingLeft: '48px',
-        height: HEADER_HEIGHT
+        height: HEADER_HEIGHT,
       }}
     >
-      <LogoKarpatkey />
+      <BoxWrapperRow>
+        <LogoKarpatkey />
+        {isLoadingPositions ? <Loading sx={{ marginLeft: '2em' }} size={'1rem'} /> : null}
+      </BoxWrapperRow>
       <BoxWrapperRow>
         {!isLoading ? (
           !user ? (

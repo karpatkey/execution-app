@@ -1,8 +1,8 @@
+import * as React from 'react'
 import CustomTypography from 'src/components/CustomTypography'
 import Paper from 'src/components/Paper'
 import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
-import * as React from 'react'
 
 interface PaperSectionProps {
   title?: string
@@ -28,7 +28,7 @@ const PaperSection = (props: PaperSectionProps) => {
         {subTitle ? (
           <BoxWrapperRow
             sx={{
-              ...(subTitle ? { justifyContent: 'space-between' } : { justifyContent: 'flex-end' })
+              ...(subTitle ? { justifyContent: 'space-between' } : { justifyContent: 'flex-end' }),
             }}
           >
             {subTitle ? (

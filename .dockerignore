@@ -1,0 +1,7 @@
+node_modules
+.github
+roles_royce/.github
+roles_royce/tests
+roles_royce/docs
+docker-compose.yml
+Dockerfile

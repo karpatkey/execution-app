@@ -1,69 +1,70 @@
-import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import {
   AccordionSummary,
   Box,
   IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableRow
+  TableRow,
 } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import CustomTypography from 'src/components/CustomTypography'
 import AccordionDetails from '@mui/material/AccordionDetails'
+import { formatUnits } from 'ethers'
 import * as React from 'react'
 import { AccordionWrapper } from 'src/components/Accordion/AccordionWrapper'
-import { useApp } from 'src/contexts/app.context'
-import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
+import CustomTypography from 'src/components/CustomTypography'
+import StatusLabel from 'src/components/StatusLabel'
 import TextLoadingDots from 'src/components/TextLoadingDots'
+import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
+import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
+import { useApp } from 'src/contexts/app.context'
 import {
   setSetupStatus,
   setSetupTransactionBuild,
   setSetupTransactionBuildStatus,
   setSetupTransactionCheck,
-  setSetupTransactionCheckStatus
+  setSetupTransactionCheckStatus,
 } from 'src/contexts/reducers'
 import { SetupItemStatus, SetupStatus, TransactionBuild } from 'src/contexts/state'
 import { shortenAddress } from 'src/utils/string'
-import { formatUnits } from 'ethers'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import OpenInNewIcon from '@mui/icons-material/OpenInNew'
-import StatusLabel from 'src/components/StatusLabel'
 
 const LABEL_MAPPER = {
   value: {
     label: 'Value',
-    order: 1
+    order: 1,
   },
   chainId: {
     label: 'Chain Id',
-    order: 2
+    order: 2,
   },
   gas: {
     label: 'Gas',
-    order: 3
+    order: 3,
   },
   maxFeePerGas: {
     label: 'Max fee per gas',
-    order: 4
+    order: 4,
   },
   maxPriorityFeePerGas: {
     label: 'Max priority fee per gas',
-    order: 5
+    order: 5,
   },
   nonce: {
     label: 'Nonce',
-    order: 6
+    order: 6,
   },
   to: {
     label: 'To',
-    order: 7
+    order: 7,
   },
   from: {
     label: 'From',
-    order: 8
-  }
+    order: 8,
+  },
 }
 
 const WaitingDecodingTransaction = () => {
@@ -83,7 +84,6 @@ export const TransactionDetails = () => {
   const transactionBuildValue = state?.setup?.transactionBuild?.value ?? null
   const transactionBuildStatus = state?.setup?.transactionBuild?.status ?? null
   const formValue = state?.setup?.create?.value ?? null
-  const selectedDAO = state?.selectedPosition?.dao ?? null
 
   const [error, setError] = React.useState<Maybe<Error>>(null)
   const [expanded, setExpanded] = React.useState('panel1')
@@ -99,22 +99,24 @@ export const TransactionDetails = () => {
     const {
       name: strategy,
       percentage,
-      position_id,
+      dao,
       position_name,
+      pool_id,
       protocol,
       blockchain,
       bpt_address,
       max_slippage,
       rewards_address,
-      token_out_address
+      token_in_address,
+      token_out_address,
     } = formValue
 
     const parameters = {
       execution_type: 'transaction_builder',
-      dao: selectedDAO,
+      dao,
+      pool_id,
       strategy,
       percentage,
-      position_id,
       position_name,
       protocol,
       blockchain,
@@ -122,8 +124,9 @@ export const TransactionDetails = () => {
         bpt_address,
         max_slippage,
         rewards_address,
-        token_out_address
-      }
+        token_in_address,
+        token_out_address,
+      },
     }
 
     const postData = async (data: any) => {
@@ -133,14 +136,14 @@ export const TransactionDetails = () => {
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data)
+          body: JSON.stringify(data),
         })
 
         const body = await response.json()
 
-        const { status } = body
+        const { status, error: executeError } = body
 
         const { transaction, decoded_transaction: decodedTransaction } = body?.data ?? {}
 
@@ -154,13 +157,13 @@ export const TransactionDetails = () => {
           dispatch(setSetupTransactionCheck(false))
           dispatch(setSetupTransactionCheckStatus('failed' as SetupItemStatus))
           dispatch(
-            setSetupTransactionBuild({ transaction, decodedTransaction } as TransactionBuild)
+            setSetupTransactionBuild({ transaction, decodedTransaction } as TransactionBuild),
           )
           dispatch(setSetupTransactionBuildStatus('success' as SetupItemStatus))
           dispatch(setSetupStatus('transaction_check' as SetupStatus))
         }
 
-        if (status === 500) {
+        if (status === 500 || response?.status === 401) {
           // Don't allow to simulate or execute transaction
           const errorMessage =
             typeof body?.error === 'string' ? body?.error : 'Error decoding transaction'
@@ -168,20 +171,27 @@ export const TransactionDetails = () => {
           dispatch(setSetupTransactionCheck(false))
           dispatch(setSetupTransactionCheckStatus('failed' as SetupItemStatus))
           dispatch(
-            setSetupTransactionBuild({ transaction, decodedTransaction } as TransactionBuild)
+            setSetupTransactionBuild({ transaction, decodedTransaction } as TransactionBuild),
           )
           dispatch(setSetupTransactionBuildStatus('failed' as SetupItemStatus))
         }
 
         if (status === 200) {
-          // Allow to simulate and execute transaction
-          dispatch(setSetupTransactionCheck(true))
-          dispatch(setSetupTransactionCheckStatus('success' as SetupItemStatus))
-          dispatch(
-            setSetupTransactionBuild({ transaction, decodedTransaction } as TransactionBuild)
-          )
-          dispatch(setSetupTransactionBuildStatus('success' as SetupItemStatus))
-          dispatch(setSetupStatus('transaction_check' as SetupStatus))
+          if (executeError) {
+            setError(new Error(executeError))
+            dispatch(setSetupTransactionCheck(false))
+            dispatch(setSetupTransactionCheckStatus('failed' as SetupItemStatus))
+            dispatch(setSetupTransactionBuildStatus('failed' as SetupItemStatus))
+          } else {
+            // Allow to simulate and execute transaction
+            dispatch(setSetupTransactionCheck(true))
+            dispatch(setSetupTransactionCheckStatus('success' as SetupItemStatus))
+            dispatch(
+              setSetupTransactionBuild({ transaction, decodedTransaction } as TransactionBuild),
+            )
+            dispatch(setSetupTransactionBuildStatus('success' as SetupItemStatus))
+            dispatch(setSetupStatus('transaction_check' as SetupStatus))
+          }
         }
       } catch (error) {
         console.error('Error fetching data:', error)
@@ -192,7 +202,7 @@ export const TransactionDetails = () => {
     }
 
     postData(parameters)
-  }, [dispatch, formValue, isLoading, selectedDAO, transactionBuildStatus])
+  }, [dispatch, formValue, isLoading, transactionBuildStatus])
 
   const parameters = React.useMemo(() => {
     if (!transactionBuildValue) return []
@@ -212,7 +222,7 @@ export const TransactionDetails = () => {
         return {
           key,
           label: LABEL_MAPPER[key as keyof typeof LABEL_MAPPER].label,
-          value: transaction[key as keyof typeof transaction]
+          value: transaction[key as keyof typeof transaction],
         }
       })
       .filter(({ value }) => value)
@@ -288,7 +298,7 @@ export const TransactionDetails = () => {
                                         width: '1rem',
                                         height: '1rem',
                                         color: 'black',
-                                        ':hover': { color: 'grey', transition: '0.2s' }
+                                        ':hover': { color: 'grey', transition: '0.2s' },
                                       }}
                                     />
                                   </IconButton>
@@ -297,7 +307,7 @@ export const TransactionDetails = () => {
                                     color="inherit"
                                     onClick={() => {
                                       const url =
-                                        formValue?.blockchain === 'Ethereum'
+                                        formValue?.blockchain == 'ethereum'
                                           ? `https://etherscan.io/address/${value}`
                                           : `https://gnosisscan.io/address/${value}`
                                       window.open(url, '_blank')
@@ -308,7 +318,7 @@ export const TransactionDetails = () => {
                                         cursor: 'pointer',
                                         width: '1rem',
                                         height: '1rem',
-                                        color: 'black'
+                                        color: 'black',
                                       }}
                                     />
                                   </IconButton>
@@ -333,32 +343,36 @@ export const TransactionDetails = () => {
                   width: '100%',
                   justifyContent: 'flex-start',
                   alignItems: 'flex-start',
-                  fontSize: '0.8rem'
+                  fontSize: '0.8rem',
                 }}
               >
                 <CustomTypography variant={'body2'}>Decoded Transaction</CustomTypography>
-                <Box
+                <Paper
+                  variant="outlined"
+                  square
                   sx={{
                     width: '-webkit-fill-available;',
                     overflow: 'auto',
                     maxHeight: '400px',
-                    padding: '16px',
-                    marginTop: '16px',
-                    marginBottom: '16px'
+                    marginTop: '1rem',
+                    marginBottom: '1rem',
+                    fontSize: '0.9em',
+                    lineHeight: '1.5em',
+                    background: '#F5F5F5',
                   }}
                 >
-                  <pre id="json">
+                  <pre>
                     <code>
                       {JSON.stringify(transactionBuildValue?.decodedTransaction, null, 2)}
                     </code>
                   </pre>
-                </Box>
+                </Paper>
               </BoxWrapperColumn>
             )}
 
             {error && !isLoading && (
               <BoxWrapperRow sx={{ justifyContent: 'flex-start' }}>
-                <CustomTypography variant={'body2'} sx={{ color: 'red', overflow: 'auto' }}>
+                <CustomTypography variant={'body2'} sx={{ color: 'red' }}>
                   {error?.message && typeof error?.message === 'string'
                     ? error?.message
                     : 'Error decoding transaction'}

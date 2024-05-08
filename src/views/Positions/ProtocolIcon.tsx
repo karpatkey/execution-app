@@ -1,17 +1,18 @@
+import * as React from 'react'
 import Aave from 'src/components/Assets/Icons/Protocols/Aave'
 import AaveV3 from 'src/components/Assets/Icons/Protocols/AaveV3'
-import Angle from 'src/components/Assets/Icons/Protocols/Angle'
 import Agave from 'src/components/Assets/Icons/Protocols/Agave'
+import Angle from 'src/components/Assets/Icons/Protocols/Angle'
 import Ankr from 'src/components/Assets/Icons/Protocols/Ankr'
 import Aura from 'src/components/Assets/Icons/Protocols/Aura'
 import Azuro from 'src/components/Assets/Icons/Protocols/Azuro'
 import Balancer from 'src/components/Assets/Icons/Protocols/Balancer'
 import Bancor from 'src/components/Assets/Icons/Protocols/Bancor'
+import CoW from 'src/components/Assets/Icons/Protocols/CoW'
 import Compound from 'src/components/Assets/Icons/Protocols/Compound'
 import Connext from 'src/components/Assets/Icons/Protocols/Connext'
 import Convex from 'src/components/Assets/Icons/Protocols/Convex'
 import Curve from 'src/components/Assets/Icons/Protocols/Curve'
-import Default from 'src/components/Assets/Icons/Protocols/Default'
 import Element from 'src/components/Assets/Icons/Protocols/Element'
 import HoneySwap from 'src/components/Assets/Icons/Protocols/HoneySwap'
 import Idle from 'src/components/Assets/Icons/Protocols/Idle'
@@ -25,8 +26,7 @@ import SushiSwap from 'src/components/Assets/Icons/Protocols/SushiSwap'
 import Swapr from 'src/components/Assets/Icons/Protocols/Swapr'
 import UniswapV3 from 'src/components/Assets/Icons/Protocols/UniswapV3'
 import Validators from 'src/components/Assets/Icons/Protocols/Validators'
-import CoW from 'src/components/Assets/Icons/Protocols/CoW'
-import * as React from 'react'
+import CryptoIcon from 'src/components/CryptoIcon'
 
 interface ProtocolIconProps {
   protocol: string
@@ -122,12 +122,9 @@ const ProtocolIcon = (props: ProtocolIconProps) => {
     case 'UniswapV3':
       icon = <UniswapV3 width={24} height={24} />
       break
-    default:
-      icon = <Default width={24} height={24} />
-      break
   }
 
-  return icon
+  return icon || <CryptoIcon symbol={protocol} size={24} />
 }
 
 export default ProtocolIcon

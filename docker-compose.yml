@@ -1,27 +1,43 @@
-version: '3'
 services:
-  app:
+  dev:
     build:
       context: .
-    container_name: app
+      target: dev
+    container_name: dev
+    environment:
+      - VAULT_SIGNER_URL=http://host.docker.internal:8200/v1/ethereum
+      - VAULT_SIGNER_TOKEN=root
     env_file:
-      - .env  # Specify the path to your .env file
+      - .env # Specify the path to your .env file
     ports:
-      - "3000:3000"
-    # Add other configurations as needed for your custom app
+      - '3000:3000'
+    volumes:
+      - .:/app
+      - /app/.next
+    profiles:
+      - dev
 
-  anvil_ethereum:
-    image: ghcr.io/foundry-rs/foundry:latest
-    container_name: anvil_ethereum
-    # Remember to update the KEY with your own key
-    entrypoint: /bin/sh -c "anvil --accounts 15 -f https://eth-mainnet.g.alchemy.com/v2/KEY --port 8546 --host 0.0.0.0"
+  prod:
+    build:
+      context: .
+    container_name: prod
+    environment:
+      - VAULT_SIGNER_URL=http://host.docker.internal:8200/v1/ethereum
+      - VAULT_SIGNER_TOKEN=root
+    env_file:
+      - .env # Specify the path to your .env file
     ports:
-      - "8546:8546"
+      - '3000:3000'
+    profiles:
+      - prod
 
-  anvil_gnosis:
-    image: ghcr.io/foundry-rs/foundry:latest
-    container_name: anvil_gnosis
-    # Remember to update the KEY with your own key
-    entrypoint: /bin/sh -c "anvil --accounts 15 -f https://few-delicate-snowflake.xdai.quiknode.pro/KEY --port 8547 --host 0.0.0.0"
+  pulley:
+    build:
+      context: ../pulley
+    container_name: app-pulley
+    environment:
+      - LOGGER_LEVEL=info
+    env_file:
+      - .env
     ports:
-      - "8547:8547"
+      - '4000:4000'

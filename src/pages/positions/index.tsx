@@ -1,39 +1,28 @@
-import PageLayout from 'src/components/Layout/Layout'
+import { withPageAuthRequired } from '@auth0/nextjs-auth0/client'
+import { NextApiRequest, NextApiResponse } from 'next'
 import * as React from 'react'
 import { ReactElement } from 'react'
-import WrapperPositions from 'src/views/Positions/WrapperPositions'
+import PageLayout from 'src/components/Layout/Layout'
 import { useApp } from 'src/contexts/app.context'
-import { DataWarehouse } from 'src/services/classes/dataWarehouse.class'
-import { withPageAuthRequired } from '@auth0/nextjs-auth0/client'
-import { getSession, Session } from '@auth0/nextjs-auth0'
-import { NextApiRequest, NextApiResponse } from 'next'
-import { updateStatus, addPositions, addDAOs, clearSearch, filter } from 'src/contexts/reducers'
-import { Position, Status } from 'src/contexts/state'
+import { addDAOs, addDaosConfigs } from 'src/contexts/reducers'
+import { authorizedDao } from 'src/services/authorizer'
+import { Dao, getDaosConfigs } from 'src/services/executor/strategies'
+import WrapperPositions from 'src/views/Positions/WrapperPositions'
 
 interface PositionsPageProps {
-  positions: Position[]
-  DAOs: string[]
+  daos: string[]
+  daosConfigs: any
 }
 
 const PositionsPage = (props: PositionsPageProps) => {
-  const { positions = [], DAOs } = props
+  const { daos, daosConfigs = [] } = props
 
   const { dispatch } = useApp()
 
   React.useEffect(() => {
-    const start = () => {
-      dispatch(updateStatus('Loading' as Status))
-
-      dispatch(addDAOs(DAOs))
-      dispatch(addPositions(positions))
-      dispatch(clearSearch())
-      dispatch(filter())
-
-      dispatch(updateStatus('Finished' as Status))
-    }
-
-    start()
-  }, [dispatch, DAOs, positions])
+    dispatch(addDAOs(daos))
+    dispatch(addDaosConfigs(daosConfigs))
+  }, [dispatch, daos, daosConfigs])
 
   return <WrapperPositions />
 }
@@ -48,26 +37,9 @@ export const getServerSideProps = async (context: {
   req: NextApiRequest
   res: NextApiResponse
 }) => {
-  const { req, res } = context
-  const session = await getSession(req as any, res as any)
+  const { error, daos } = await authorizedDao(context)
+  if (error) return { props: { daos: [] } }
 
-  if (!session) {
-    return {
-      props: {
-        positions: []
-      }
-    }
-  }
-
-  const user = (session as Session).user
-  const roles = user?.['http://localhost:3000/roles']
-    ? (user?.['http://localhost:3000/roles'] as unknown as string[])
-    : []
-
-  const DAOs = roles
-
-  const dataWarehouse = DataWarehouse.getInstance()
-  const positions: Position[] = await dataWarehouse.getPositions(DAOs)
-
-  return { props: { positions, DAOs } }
+  const daosConfigs = await getDaosConfigs(daos as Dao[])
+  return { props: { daos, daosConfigs } }
 }

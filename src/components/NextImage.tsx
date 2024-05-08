@@ -35,7 +35,7 @@ const NextImage: FC<NextImageProps & { fallbackSrc: string }> = (props) => {
         width: width || undefined,
         height: height || undefined,
         position: 'relative',
-        margin: margin || undefined
+        margin: margin || undefined,
       }}
     >
       <Image

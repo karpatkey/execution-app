@@ -17,9 +17,16 @@
     "baseUrl": ".",
     "paths": {
       "react": ["./node_modules/@types/react"],
-      "src": ["./src/*"]
+      "src": ["./src/*"],
+      "@": ["./src/*"],
+      "@utils/": ["./src/utils/"]
     },
-    "types": ["./src/types/additional.d.ts"]
+    "types": ["./src/types/additional.d.ts"],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "ts-node": {
     // these options are overrides used only by ts-node
@@ -29,6 +36,6 @@
     },
     "require": ["tsconfig-paths/register"]
   },
-  "include": ["./**/*", "./roles_royce/**/*"],
+  "include": ["./**/*", "./roles_royce/**/*", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

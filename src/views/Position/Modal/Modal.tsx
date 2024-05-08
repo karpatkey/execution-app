@@ -1,37 +1,41 @@
+import CloseIcon from '@mui/icons-material/Close'
+import { styled } from '@mui/material'
+import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
-import CloseIcon from '@mui/icons-material/Close'
-import Box from '@mui/material/Box'
-import * as React from 'react'
-import { styled } from '@mui/material'
-import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
-import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import CustomTypography from 'src/components/CustomTypography'
 import BoxContainerWrapper from 'src/components/Wrappers/BoxContainerWrapper'
-import { SetupDetails } from './Create/SetupDetails'
-import { TransactionDetails } from './Create/TransactionDetails'
-import { TransactionCheck } from './Create/TransactionCheck'
-import { Tenderly } from './Simulation/Tenderly'
+import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
+import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
+import { Position } from 'src/contexts/state'
 import { Confirm } from './Confirm/Confirm'
+import { SetupDetails } from './Create/SetupDetails'
+import { TransactionCheck } from './Create/TransactionCheck'
+import { TransactionDetails } from './Create/TransactionDetails'
+import { Tenderly } from './Simulation/Tenderly'
 import { Stepper } from './Stepper'
 
 interface ModalProps {
   open: boolean
+  position: Position
   handleClose: () => void
 }
 
 const BoxWrapper = styled(Box)(() => ({
   backgroundColor: 'white',
-  borderRadius: '8px'
+  borderRadius: '8px',
 }))
 
 const BoxWrapperRowStyled = styled(BoxWrapperRow)(() => ({
   justifyContent: 'flex-start',
-  borderBottom: '1px solid #B6B6B6'
+  borderBottom: '1px solid #B6B6B6',
 }))
 
 export const Modal = (props: ModalProps) => {
-  const { open, handleClose } = props
+  const { position, open, handleClose } = props
+
+  const hiddenStepper = useMediaQuery((theme: any) => theme.breakpoints.down('md'))
 
   return (
     <Dialog
@@ -41,7 +45,7 @@ export const Modal = (props: ModalProps) => {
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       sx={{
-        backgroundColor: 'custom.grey.light'
+        backgroundColor: 'custom.grey.light',
       }}
     >
       <BoxContainerWrapper sx={{ maxHeight: '840px' }}>
@@ -58,11 +62,15 @@ export const Modal = (props: ModalProps) => {
           </BoxWrapperRowStyled>
           <BoxWrapperRow gap={2} sx={{ justifyContent: 'space-between', alignItems: 'self-start' }}>
             <BoxWrapperColumn
-              sx={{ width: '60%', justifyContent: 'flex-start', height: '100%' }}
+              sx={{
+                width: hiddenStepper ? '100%' : 'calc(100% - 350px)',
+                justifyContent: 'flex-start',
+                height: '100%',
+              }}
               gap={2}
             >
               <BoxWrapper>
-                <SetupDetails />
+                <SetupDetails position={position} />
                 <TransactionDetails />
                 <TransactionCheck />
                 <Tenderly />
@@ -70,7 +78,13 @@ export const Modal = (props: ModalProps) => {
               </BoxWrapper>
             </BoxWrapperColumn>
 
-            <BoxWrapperColumn sx={{ width: '40%', justifyContent: 'flex-start' }}>
+            <BoxWrapperColumn
+              sx={{
+                width: '350px',
+                justifyContent: 'flex-start',
+                display: hiddenStepper ? 'none' : 'flex',
+              }}
+            >
               <Stepper />
             </BoxWrapperColumn>
           </BoxWrapperRow>

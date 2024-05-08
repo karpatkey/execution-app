@@ -1,20 +1,18 @@
-import PageLayout from 'src/components/Layout/Layout'
-import * as React from 'react'
-import { ReactElement } from 'react'
 import { useUser } from '@auth0/nextjs-auth0/client'
-import BoxContainerWrapper from 'src/components/Wrappers/BoxContainerWrapper'
-import CustomTypography from 'src/components/CustomTypography'
-import Loading from 'src/components/Loading'
 import { useRouter } from 'next/navigation'
-import { HEADER_HEIGHT } from 'src/components/Layout/Header'
+import { ReactElement } from 'react'
+import CustomTypography from 'src/components/CustomTypography'
 import { FOOTER_HEIGHT } from 'src/components/Layout/Footer'
+import { HEADER_HEIGHT } from 'src/components/Layout/Header'
+import PageLayout from 'src/components/Layout/Layout'
+import Loading from 'src/components/Loading'
+import BoxContainerWrapper from 'src/components/Wrappers/BoxContainerWrapper'
 
 const Homepage = (): ReactElement => {
   const { user, error, isLoading } = useUser()
   const { push } = useRouter()
 
-  if (isLoading)
-    return <Loading minHeight={`calc(100vh - ${HEADER_HEIGHT}px - ${FOOTER_HEIGHT}px)`} />
+  if (isLoading) return <Loading fullPage />
   if (error) push('/500')
   if (!user) {
     return (
@@ -25,7 +23,7 @@ const Homepage = (): ReactElement => {
             display: 'flex',
             minHeight: `calc(100vh - ${HEADER_HEIGHT}px - ${FOOTER_HEIGHT}px)`,
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
           }}
         >
           To view the positions you need to Login

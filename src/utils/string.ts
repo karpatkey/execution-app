@@ -15,3 +15,7 @@ export const isObject = (value: any) => {
 export const shortenAddress = (address: string, chars = 4): string => {
   return `${address.substring(0, chars + 2)}...${address.substring(42 - chars)}`
 }
+
+export function slug(value: string): string {
+  return value.replaceAll(' ', '-').toLowerCase()
+}

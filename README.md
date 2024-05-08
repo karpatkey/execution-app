@@ -1,4 +1,4 @@
-# The Panic Button App
+# The Execution App: Agile Execution
 
 This app enables karpatkey’s asset managers to safely and rapidly deploy, adjust or exit any position with carefully tailored and predesigned strategies.
 
@@ -40,7 +40,7 @@ Today, the app enables only positions exits in order to avoid potential losses, 
 
 To get started, clone the repository and run `yarn install && yarn dev`:
 
-    git clone git@github.com:KarpatkeyDAO/panic-button-app.git
+    git clone git@github.com:KarpatkeyDAO/execution-app.git
     yarn install
     yarn dev
 
@@ -58,7 +58,7 @@ Note: When running a webserver on port 80 (e.g. Macs usually have the Apache web
 
 ### Configuring
 
-Configure the .env file by copying [.env.example](https://github.com/KarpatkeyDAO/panic-button-app/blob/develop/.env.example) This gives a range of options. To have the app run any strategies, the strategies need to be updated with positions that have funds and are whitelisted. These files are in the strategies folder of the roles_royce.
+Configure the .env file by copying [.env.example](https://github.com/KarpatkeyDAO/execution-app/blob/develop/.env.example) This gives a range of options. To have the app run any strategies, the strategies need to be updated with positions that have funds and are whitelisted. These files are in the strategies folder of the roles_royce.
 
 ### Contribution
 

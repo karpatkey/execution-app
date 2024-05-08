@@ -1,58 +1,69 @@
-import { useForm, SubmitHandler } from 'react-hook-form'
 import { Button } from '@mui/material'
-import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 import * as React from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 
+import InfoIcon from '@mui/icons-material/Info'
+import Tooltip from '@mui/material/Tooltip'
+import { AmountsPreviewFromPercentage } from 'src/components/AmountsPreviewFromPercentage'
+import CustomTypography from 'src/components/CustomTypography'
+import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 import {
   Config,
   DEFAULT_VALUES_KEYS,
   DEFAULT_VALUES_TYPE,
   PARAMETERS_CONFIG,
-  PositionConfig
+  PositionConfig,
 } from 'src/config/strategies/manager'
+import { useApp } from 'src/contexts/app.context'
+import { clearSetup, setSetupCreate, setSetupStatus } from 'src/contexts/reducers'
+import { Position, SetupStatus, Strategy } from 'src/contexts/state'
+import { getStrategy } from 'src/services/strategies'
+import { Modal } from '../Modal/Modal'
 import InputRadio from './InputRadio'
 import { Label } from './Label'
-import { Title } from './Title'
-import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 import { PercentageText } from './PercentageText'
-import { Modal } from '../Modal/Modal'
-import Tooltip from '@mui/material/Tooltip'
-import CustomTypography from 'src/components/CustomTypography'
-import InfoIcon from '@mui/icons-material/Info'
-import { useApp } from 'src/contexts/app.context'
-import { Position, SetupStatus, Strategy } from 'src/contexts/state'
-import { clearSetup, setSetupCreate, setSetupStatus } from 'src/contexts/reducers'
-import { getStrategy } from 'src/utils/strategies'
-import { neutralizeBack, revivalBack } from 'src/utils/modal'
+import { Title } from './Title'
 
 interface CustomFormProps {
   handleClickOpen: () => void
+  position: Position
+}
+
+function isActive(strategy: PositionConfig, config: PositionConfig[]) {
+  if (strategy.stresstest) return true
+  const all = new Map(config.map((s) => [s.label.toLowerCase(), s.stresstest]))
+  const recoveryModeSufix = ' (recovery mode)'
+  const base = strategy.label.toLowerCase().replace(recoveryModeSufix, '')
+  return all.get(base) || all.get(base + recoveryModeSufix) || false
 }
 
 const CustomForm = (props: CustomFormProps) => {
-  const { handleClickOpen } = props
+  const { handleClickOpen, position } = props
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { dispatch, state } = useApp()
-  const { selectedPosition: position } = state
-
-  const { positionConfig, commonConfig } = getStrategy(position as Position)
-
   const [keyIndex, setKeyIndex] = React.useState(1)
+
+  const { positionConfig: allStrategies, commonConfig } = getStrategy(state.daosConfigs, position)
+
+  const strategies = React.useMemo(() => {
+    return allStrategies.filter((strategy) => isActive(strategy, allStrategies))
+  }, [allStrategies])
+
   // If we don't do this, the application will rerender every time
   const defaultValues: DEFAULT_VALUES_TYPE = React.useMemo(() => {
     return {
-      position_id: position?.position_id ?? null,
       blockchain: position?.blockchain ?? null,
       protocol: position?.protocol ?? null,
-      strategy: positionConfig[0]?.function_name?.trim(),
+      strategy: strategies[0]?.function_name?.trim(),
       percentage: null,
       rewards_address: null,
       max_slippage: null,
+      token_in_address: null,
       token_out_address: null,
-      bpt_address: null
+      bpt_address: null,
     }
-  }, [position, positionConfig])
+  }, [position, strategies])
 
   const {
     formState: { errors, isSubmitting, isValid },
@@ -61,31 +72,28 @@ const CustomForm = (props: CustomFormProps) => {
     setError,
     setValue,
     clearErrors,
-    watch
+    watch,
   } = useForm<any>({
     defaultValues,
-    mode: 'all'
+    mode: 'all',
   })
 
   const watchStrategy = watch('strategy')
   const watchMaxSlippage = watch('max_slippage')
   const watchPercentage = watch('percentage')
+  const watchTokenOut = watch('token_out_address')
 
   // We need to do this, because the react hook form default values are not working properly
   React.useEffect(() => {
     if (defaultValues) {
-      setValue('position_id', position?.position_id ?? null)
-      setValue('blockchain', position?.blockchain ?? null)
-      setValue('protocol', position?.protocol ?? null)
-      setValue('strategy', positionConfig[0]?.function_name ?? null)
+      setValue('strategy', strategies[0]?.function_name ?? null)
       setValue('percentage', null)
       setValue('rewards_address', null)
       setValue('max_slippage', null)
       setValue('token_out_address', null)
       setValue('bpt_address', null)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultValues])
+  }, [defaultValues, strategies, setValue])
 
   const onSubmit: SubmitHandler<any> = React.useCallback(
     async (data: any) => {
@@ -94,47 +102,68 @@ const CustomForm = (props: CustomFormProps) => {
       // First clear the stage just in case
       dispatch(clearSetup())
 
-      // Object is possibly 'undefined'.  TS2532, disable this error
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const tokenInAddressLabel =
+        strategies
+          ?.find((item: PositionConfig) => item?.function_name === data?.strategy)
+          ?.parameters?.find((item: Config) => item?.name === 'token_in_address')
+          ?.options?.find((item: any) => item?.value === data?.token_in_address)?.label ?? ''
+
       const tokenOutAddressLabel =
-        positionConfig
+        strategies
           ?.find((item: PositionConfig) => item?.function_name === data?.strategy)
           ?.parameters?.find((item: Config) => item?.name === 'token_out_address')
           ?.options?.find((item: any) => item?.value === data?.token_out_address)?.label ?? ''
 
-      const setup = {
+      const setup: Strategy = {
         id: data?.strategy,
         name: data?.strategy,
+        dao: position.dao,
+        pool_id: position.pool_id,
+        blockchain: position.blockchain,
+        protocol: position.protocol,
         description:
-          positionConfig?.find((item: PositionConfig) => item.function_name === data?.strategy)
+          strategies?.find((item: PositionConfig) => item.function_name === data?.strategy)
             ?.description ?? '',
         percentage: data?.percentage,
-        blockchain: data?.blockchain,
-        protocol: data?.protocol,
-        position_id: data?.position_id,
-        position_name: position?.lptoken_name,
+        position_name: position.lptokenName,
         rewards_address: data?.rewards_address,
         max_slippage: data?.max_slippage,
+        token_in_address: data?.token_in_address,
+        token_in_address_label: tokenInAddressLabel,
         token_out_address: data?.token_out_address,
         token_out_address_label: tokenOutAddressLabel,
-        bpt_address: data?.bpt_address
+        bpt_address: data?.bpt_address,
       }
 
-      dispatch(setSetupCreate(setup as Strategy))
+      dispatch(setSetupCreate(setup))
 
       dispatch(setSetupStatus('create' as SetupStatus))
     },
-    [positionConfig, dispatch, position]
+    [strategies, dispatch, position],
   )
 
-  const specificParameters: Config[] =
-    (positionConfig as PositionConfig[])?.find(
-      (item: PositionConfig) => item.function_name === watchStrategy
-    )?.parameters ?? []
+  const specificParameters =
+    strategies.find((item) => item.function_name === watchStrategy)?.parameters ?? []
 
   const parameters = [...commonConfig, ...specificParameters]
 
   const isExecuteButtonDisabled = isSubmitting || !isValid
+
+  const handleStrategyChange = React.useCallback(() => {
+    // Clear fields
+    setValue('percentage', null)
+    setValue('max_slippage', null)
+    setValue('rewards_address', null)
+    setValue('token_out_address', null)
+    setValue('bpt_address', null)
+    setKeyIndex(keyIndex + 1)
+
+    clearErrors('percentage')
+    clearErrors('max_slippage')
+    clearErrors('rewards_address')
+    clearErrors('token_out_address')
+    clearErrors('bpt_address')
+  }, [clearErrors, keyIndex, setValue])
 
   return (
     <form id="hook-form" onSubmit={handleSubmit(onSubmit)}>
@@ -145,27 +174,12 @@ const CustomForm = (props: CustomFormProps) => {
             <BoxWrapperColumn gap={2}>
               <InputRadio
                 name={'strategy'}
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                onChange={(e: any) => {
-                  // Clear fields
-                  setValue('percentage', null)
-                  setValue('max_slippage', null)
-                  setValue('rewards_address', null)
-                  setValue('token_out_address', null)
-                  setValue('bpt_address', null)
-                  setKeyIndex(keyIndex + 1)
-
-                  clearErrors('percentage')
-                  clearErrors('max_slippage')
-                  clearErrors('rewards_address')
-                  clearErrors('token_out_address')
-                  clearErrors('bpt_address')
-                }}
-                options={positionConfig.map((item: PositionConfig) => {
+                onChange={handleStrategyChange}
+                options={strategies.map((item: PositionConfig) => {
                   return {
                     name: item.label,
                     value: item.function_name.trim(),
-                    description: item.description
+                    description: item.description,
                   }
                 })}
                 control={control}
@@ -197,7 +211,7 @@ const CustomForm = (props: CustomFormProps) => {
                   if (!value) {
                     setError(name as any, {
                       type: 'manual',
-                      message: `Please enter a value between ${min}% and ${max}%`
+                      message: `Please enter a value between ${min}% and ${max}%`,
                     })
                   } else {
                     clearErrors(label as any)
@@ -256,8 +270,8 @@ const CustomForm = (props: CustomFormProps) => {
                           required: (value: any) => {
                             if (!value || value === 0)
                               return `Please enter a value between ${min}% and ${max}%`
-                          }
-                        }
+                          },
+                        },
                       }}
                       minValue={0}
                       maxValue={max || 100}
@@ -267,6 +281,13 @@ const CustomForm = (props: CustomFormProps) => {
                       errors={errors}
                       onChange={onChange}
                     />
+                    {name == 'percentage' ? (
+                      <AmountsPreviewFromPercentage
+                        position={position}
+                        percentage={watchPercentage}
+                        tokenOut={watchTokenOut}
+                      />
+                    ) : null}
                   </BoxWrapperColumn>
                 )
               }
@@ -282,7 +303,7 @@ const CustomForm = (props: CustomFormProps) => {
                         options?.map((item) => {
                           return {
                             name: item?.label ?? '',
-                            value: item?.value ?? ''
+                            value: item?.value ?? '',
                           }
                         }) ?? []
                       }
@@ -313,23 +334,21 @@ const CustomForm = (props: CustomFormProps) => {
 
 const CustomFormMemoized = React.memo(CustomForm)
 
-const Form = () => {
+const Form = ({ position }: { position: Position }) => {
   const [open, setOpen] = React.useState(false)
 
   const handleClickOpen = React.useCallback(() => {
     setOpen(true)
-    neutralizeBack(handleClose)
   }, [])
 
   const handleClose = React.useCallback(() => {
     setOpen(false)
-    revivalBack()
   }, [])
 
   return (
     <>
-      <CustomFormMemoized handleClickOpen={handleClickOpen} />
-      <Modal open={open} handleClose={handleClose} />
+      <CustomFormMemoized position={position} handleClickOpen={handleClickOpen} />
+      <Modal position={position} open={open} handleClose={handleClose} />
     </>
   )
 }

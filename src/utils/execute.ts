@@ -1,5 +1,5 @@
-import path from 'path'
 import { spawn } from 'child_process'
+import path from 'path'
 
 interface CommonExecuteReturn {
   status: number
@@ -9,13 +9,19 @@ interface CommonExecuteReturn {
 
 export const CommonExecutePromise = (
   filePath: string,
-  parameters: any
+  parameters: any,
+  env: Record<string, string>,
 ): Promise<CommonExecuteReturn> => {
   return new Promise((resolve, reject) => {
     try {
       const scriptFile = path.resolve(process.cwd(), filePath)
 
-      const python = spawn(`python3`, [`${scriptFile}`, ...parameters])
+      const childEnv = {
+        NODE_ENV: process.env.NODE_ENV,
+        ...env,
+      }
+
+      const python = spawn(`python3`, [`${scriptFile}`, ...parameters], { env: childEnv })
 
       let buffer = ''
       python.stdout.on('data', function (data) {
@@ -59,13 +65,13 @@ export const CommonExecutePromise = (
           tx_data = null, // {"transaction"?: null, "decoded_transaction": null}}
           sim_data = null,
           tx_hash = null,
-          message = null
+          message = null,
         } = response ?? {}
 
         const body = {
           status,
           data: tx_data || sim_data || { tx_hash } || null,
-          error: message || null
+          error: message || null,
         }
 
         resolve(body)
@@ -74,7 +80,7 @@ export const CommonExecutePromise = (
       console.error('ERROR Reject: ', error)
       reject({
         status: 500,
-        error: (error as Error)?.message
+        error: (error as Error)?.message,
       })
     }
   })

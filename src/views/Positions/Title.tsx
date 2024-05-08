@@ -1,26 +1,26 @@
+import { SxProps } from '@mui/material'
 import CustomTypography from 'src/components/CustomTypography'
-import * as React from 'react'
 
 interface TitleProps {
   title: string
-  fontSize?: number
+  sx?: SxProps
 }
 
-const Title = ({ title, fontSize = 14 }: TitleProps) => {
+export const Title = ({ title, sx }: TitleProps) => {
   return (
     <CustomTypography
       sx={{
         fontFamily: 'IBM Plex Sans',
         fontStyle: 'normal',
         fontWeight: 700,
-        fontSize,
-        lineHeight: '18px',
-        color: 'custom.grey.dark'
+        fontSize: '16px',
+        lineHeight: '20px',
+        color: 'custom.grey.dark',
+        wordBreak: 'break-word',
+        ...(sx || {}),
       }}
     >
       {title}
     </CustomTypography>
   )
 }
-
-export default Title

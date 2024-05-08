@@ -1,0 +1,1088 @@
+[
+  {
+    "protocol": "Aave",
+    "position_name": "Staked AAVE",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aave",
+    "position_name": "Lend stETH / Borrow WBTC",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aave",
+    "position_name": "Lend ETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "AaveV3",
+    "position_name": "Lend wstETH / Borrow multiple tokens",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "AaveV3",
+    "position_name": "Lend wstETH / Borrow multiple tokens",
+    "blockchain": "polygon",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "AaveV3",
+    "position_name": "Lend multiple tokens (GC)",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Agave",
+    "position_name": "Lend multiple tokens",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Agave",
+    "position_name": "Staked AGVE",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Angle",
+    "position_name": "Vault wstETH-agEUR",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Angle",
+    "position_name": "stEUR",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Ankr",
+    "position_name": "ankrETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Arbitrage Bot",
+    "position_name": "crvEUReUSD",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "COW/GNO",
+    "blockchain": "ethereum",
+    "debank_position_name": "aura50COW/50GNO"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "GNO/WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": "auraB/80GNO/20WETH"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "COW/WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": "aura50COW/50WETH"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "bb-a-USD",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "wstETH/WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": "aurawstETH/WETH/BPT"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "Locked AURA",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "AURA",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "Staked auraBAL",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "rETH/WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": "rETH/WETH"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "auraBAL/B-80BAL-20WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": "auraB/auraBAL/STABLE"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "wstETH/LDO (deprecated)",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "AURA/WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "wstETH/LDO",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "Staked auraBAL Compounder",
+    "blockchain": "ethereum",
+    "debank_position_name": "stkauraBAL"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "bb-a-USD (v3)",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "wstETH/bb-a-WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "GHO/bb-a-USD",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "GHO/USDT/USDC",
+    "blockchain": "ethereum",
+    "debank_position_name": "auraGHO/USDT/USDC"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "GHO/DAI/USDC/USDT",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "wstETH/WETH (v2)",
+    "blockchain": "ethereum",
+    "debank_position_name": "wstETH/WETH"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "COW/GNO",
+    "blockchain": "gnosis",
+    "debank_position_name": "aura50COW/50GNO"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "bb-ag-GNO/bb-ag-WETH",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "bb-ag-GNO/bb-ag-USD",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "bb-ag-WBTC/bb-ag-WETH/bb-ag-USD",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "bb-ag-USD",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "agEUR/EURe",
+    "blockchain": "gnosis",
+    "debank_position_name": "aurabb/agEUR/EURe"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "wstETH/WETH",
+    "blockchain": "gnosis",
+    "debank_position_name": "aurabb/WETH/wstETH"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "staBAL3",
+    "blockchain": "gnosis",
+    "debank_position_name": "aurastaBAL3"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "staBAL3/wstETH",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "wstETH/GNO",
+    "blockchain": "gnosis",
+    "debank_position_name": "auraB/50wstETH/50GNO"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "wstETH/BAL/AURA",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "EURe/staBAL3",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "wstETH/COW",
+    "blockchain": "gnosis",
+    "debank_position_name": "auraB/50wstETH/50COW"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "sDAI/USDC/USDT",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "EURe/sDAI",
+    "blockchain": "gnosis",
+    "debank_position_name": "auraEURe/sDAI"
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "sDAI/wstETH",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "stEUR/EURe",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Azuro",
+    "position_name": "xDAI (v1)-1099511627778",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Azuro",
+    "position_name": "xDAI (v2)-1099511627781",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Azuro",
+    "position_name": "xDAI (v1)-1099511627811",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Azuro",
+    "position_name": "xDAI (v1)-1099511627813",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Azuro",
+    "position_name": "xDAI (v2)-1099511628055",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Azuro",
+    "position_name": "xDAI (v1)-1099511627809",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "B-80BAL-20WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "bb-a-USD",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "AURA/WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "wstETH/WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "GNO/WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "bb-ag-GNO/bb-ag-WETH",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "bb-ag-GNO/bb-ag-USD",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "bb-ag-WBTC/bb-ag-WETH/bb-ag-USD",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "bb-ag-USD",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "COW/GNO",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "BAL/WETH/GNO/WXDAI",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "AGVE/GNO",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "COW/WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "COW/GNO",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "rETH/WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "wstETH/LDO (deprecated)",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "wstETH/LDO",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "bb-a-USD (v3)",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "bb-a-USD (old)",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "wstETH/WETH",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "EURe/bb-ag-USD",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "auraBAL/B-80BAL-20WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "Locked B-80BAL-20WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "agEUR/EURe",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "BAL-GNO-wstETH/WETH-WXDAI",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "wstETH/bb-a-WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "GHO/bb-a-USD",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "staBAL3",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "staBAL3/wstETH",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "wstETH/GNO",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "wstETH/BAL/AURA",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "EURe/staBAL3",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "wstETH/COW",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "GHO/USDT/USDC",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "GHO/DAI/USDC/USDT",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "wstETH/WETH (v2)",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "sDAI/USDC/USDT",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "EURe/sDAI",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "sDAI/wstETH",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "DAI/USDC/USDT",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "D2D/BAL",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Balancer",
+    "position_name": "stEUR/EURe",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Bancor",
+    "position_name": "bnICHI",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Compound",
+    "position_name": "USDC",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Compound",
+    "position_name": "DAI",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Compound",
+    "position_name": "ETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "CompoundV3",
+    "position_name": "USDC",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Connext",
+    "position_name": "nextUSDC/USDC",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Connext",
+    "position_name": "nextWETH/WETH",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Connext",
+    "position_name": "nextUSDT/USDT",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Connext",
+    "position_name": "nextDAI/WXDAI",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Connext",
+    "position_name": "Amarok v2 Router",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Convex",
+    "position_name": "cDAI/cUSDC",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Convex",
+    "position_name": "stETH/ETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Convex",
+    "position_name": "Locked CVX",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Convex",
+    "position_name": "USDT/WBTC/WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Convex",
+    "position_name": "ETH/LDO",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "CoW",
+    "position_name": "Vested COW",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "CoW",
+    "position_name": "Vested COW",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Curve",
+    "position_name": "EURe/WXDAI/USDC/USDT",
+    "blockchain": "gnosis",
+    "debank_position_name": "crvEUReUSD"
+  },
+  {
+    "protocol": "Curve",
+    "position_name": "WETH/WBTC/WXDAI/USDC/USDT",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Curve",
+    "position_name": "rGNO/sGNO",
+    "blockchain": "gnosis",
+    "debank_position_name": "rgnoCRV/f"
+  },
+  {
+    "protocol": "Curve",
+    "position_name": "GNO/sGNO",
+    "blockchain": "gnosis",
+    "debank_position_name": "sgnoCRV/f"
+  },
+  {
+    "protocol": "Curve",
+    "position_name": "stETH/ETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Curve",
+    "position_name": "DAI/USDC/USDT",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Curve",
+    "position_name": "cDAI/cUSDC",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Curve",
+    "position_name": "USDT/WBTC/WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Curve",
+    "position_name": "WXDAI/USDC/USDT",
+    "blockchain": "gnosis",
+    "debank_position_name": "x3CRV"
+  },
+  {
+    "protocol": "Curve",
+    "position_name": "ETH/LDO",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Element",
+    "position_name": "stETH/ETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Enzyme",
+    "position_name": "Diva Early Stakers stETH Vault",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Gnosis",
+    "position_name": "xDAI in DSR (sDAI)",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "HiddenHand",
+    "position_name": "Locked AURA",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "HiddenHand",
+    "position_name": "Locked B-80BAL-20WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Honeyswap",
+    "position_name": "COW/GNO",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Honeyswap",
+    "position_name": "GNO/WETH",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Honeyswap",
+    "position_name": "GNO/WXDAI",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Honeyswap",
+    "position_name": "GNO/GIV",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Honeyswap",
+    "position_name": "GNO/FLX",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Honeyswap",
+    "position_name": "CRV/GNO",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Hop",
+    "position_name": "Bonder",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Hop",
+    "position_name": "Bonder",
+    "blockchain": "polygon",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Hop",
+    "position_name": "Bonder",
+    "blockchain": "arbitrum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Hop",
+    "position_name": "Bonder",
+    "blockchain": "optimism",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Hop",
+    "position_name": "Bonder",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Idle",
+    "position_name": "stETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Idle",
+    "position_name": "stETH (id2)",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Lido",
+    "position_name": "stETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Lido",
+    "position_name": "wstETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Lido",
+    "position_name": "wstETH",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Maker",
+    "position_name": "Delegated MKR",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Maker",
+    "position_name": "Vault WSTETH-A",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Maker",
+    "position_name": "Vault GNO-A",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Maker",
+    "position_name": "DAI in DSR (Manager)",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Maker",
+    "position_name": "DAI in DSR (sDAI)",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Notional",
+    "position_name": "DAI",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Pods",
+    "position_name": "ETHphoria Vault",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "RealT",
+    "position_name": "xDAI",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Reflexer",
+    "position_name": "WETH/FLX",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Rocket",
+    "position_name": "rETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Spark",
+    "position_name": "Lend multiple tokens / Borrow DAI (Ethereum)",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Spark",
+    "position_name": "Lend multiple tokens (GC)",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Stakewise",
+    "position_name": "sGNO",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Stakewise",
+    "position_name": "sETH2",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "SushiSwap",
+    "position_name": "ENS/WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "SushiSwap",
+    "position_name": "SUSHI/GNO",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "SushiSwap",
+    "position_name": "GNO/WETH",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "SushiSwap",
+    "position_name": "wstETH/WETH",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Swapr",
+    "position_name": "GNO/BER",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Swapr",
+    "position_name": "GNO/WETH",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Swapr",
+    "position_name": "QI/GNO",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Swapr",
+    "position_name": "GNO/WXDAI",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Swapr",
+    "position_name": "COW/GNO",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Swapr",
+    "position_name": "WBTC/WETH",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Swapr",
+    "position_name": "CRV/GNO",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Symmetric",
+    "position_name": "SYMM/GNO",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "SymmetricV2",
+    "position_name": "40AGVE-60GNO",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "The Graph",
+    "position_name": "Delegated GRT",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "UniswapV2",
+    "position_name": "WETH/FLX",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "UniswapV3",
+    "position_name": "WBTC/WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "UniswapV3",
+    "position_name": "GNO/WETH",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "UniswapV3",
+    "position_name": "sETH2/ETH (415282)",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "UniswapV3",
+    "position_name": "sETH2/ETH (339884)",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Validators (GC)",
+    "position_name": "GNO",
+    "blockchain": "gnosis",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Votium",
+    "position_name": "Locked CVX",
+    "blockchain": "ethereum",
+    "debank_position_name": ""
+  },
+  {
+    "protocol": "Aura",
+    "position_name": "sDAI/USDC/USDT",
+    "blockchain": "gnosis",
+    "debank_position_name": "aurasBAL3"
+  }
+]

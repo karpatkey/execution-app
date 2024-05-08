@@ -1,6 +1,6 @@
 {
-  "name": "panic-button-app",
-  "version": "0.1.0",
+  "name": "execution-app",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000",
@@ -15,7 +15,9 @@
     "prepare": "husky install",
     "commit": "git-cz",
     "bulk:positions": "NODE_PATH=./src ts-node --project ./tsconfig.json ./src/scripts/dump/positions.ts",
-    "submodule:sync": "git submodule update --remote"
+    "submodule:sync": "git submodule update --remote",
+    "test": "jest --watch",
+    "test:ci": "jest --ci"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^3.5.0",
@@ -23,45 +25,60 @@
     "@emotion/react": "^11.11.3",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.0",
-    "@google-cloud/bigquery": "^7.3.0",
-    "@mui/icons-material": "5.14.8",
-    "@mui/material": "5.14.8",
+    "@google-cloud/bigquery": "^7.4.0",
+    "@mui/icons-material": "^5.14.8",
+    "@mui/material": "^5.14.8",
+    "@tanstack/query-sync-storage-persister": "^5.28.2",
+    "@tanstack/react-query": "^5.27.5",
+    "@tanstack/react-query-persist-client": "^5.28.2",
     "clsx": "^2.1.0",
-    "dotenv": "^16.3.1",
-    "ethers": "^6.9.0",
-    "framer-motion": "^10.18.0",
-    "next": "13.4.12",
+    "dotenv": "^16.4.1",
+    "ethers": "^6.11.1",
+    "expiry-map": "^2.0.0",
+    "framer-motion": "^11.0.3",
+    "minio": "^7.1.3",
+    "next": "^14.1.0",
     "numbro": "^2.4.0",
+    "p-memoize": "^7.1.1",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
     "react-error-boundary": "^4.0.12",
-    "react-hook-form": "^7.49.3",
-    "react-intersection-observer": "^9.5.3",
-    "react-number-format": "^5.3.1"
+    "react-hook-form": "^7.50.1",
+    "react-intersection-observer": "^9.8.1",
+    "react-number-format": "^5.3.1",
+    "react-timeago": "^7.2.0",
+    "usehooks-ts": "^3.0.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "^18.4.4",
-    "@commitlint/config-conventional": "^18.4.4",
-    "@types/node": "20.11.5",
-    "@types/react": "18.2.48",
-    "@types/react-dom": "18.2.18",
-    "@typescript-eslint/eslint-plugin": "^6.19.0",
-    "@typescript-eslint/parser": "^6.19.0",
+    "@commitlint/cli": "^19.2.0",
+    "@commitlint/config-conventional": "^19.1.0",
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/react": "^14.1.2",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.11.25",
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "@types/react-timeago": "^4.1.7",
+    "@typescript-eslint/eslint-plugin": "^7.6.0",
+    "@typescript-eslint/parser": "^7.6.0",
     "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "8.56.0",
-    "eslint-config-next": "14.0.4",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.1.0",
     "eslint-config-prettier": "^9.1.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^15.2.0",
-    "prettier": "^3.2.4",
+    "husky": "^9.0.10",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5",
+    "prettier-plugin-organize-imports": "^3.2.4",
     "tsc-files": "^1.1.4",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "5.3.3"
+    "typescript": "^5.4.2"
   },
   "lint-staged": {
     "src/**/*.+(js,ts,tsx)": [
-      "eslint -c ./dapps/panic-button/.eslintrc.json -cache --fix",
+      "eslint -c ./dapps/execution-app/.eslintrc.json -cache --fix",
       "tsc-files --noEmit"
     ],
     "src/**/*.{js,ts,tsx,css,md,json}": [
@@ -72,5 +89,37 @@
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
+  },
+  "eslintConfig": {
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "next/core-web-vitals",
+      "plugin:@typescript-eslint/recommended",
+      "prettier"
+    ],
+    "rules": {
+      "@typescript-eslint/no-unused-vars": "error",
+      "@typescript-eslint/no-explicit-any": "off",
+      "react/no-unescaped-entities": 0
+    }
+  },
+  "eslintIgnore": [
+    "node_modules",
+    "__generated__"
+  ],
+  "prettier": {
+    "arrowParens": "always",
+    "bracketSpacing": true,
+    "printWidth": 100,
+    "trailingComma": "all",
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true,
+    "useTabs": false,
+    "plugins": [
+      "prettier-plugin-organize-imports"
+    ]
   }
 }
