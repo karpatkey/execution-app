@@ -53,7 +53,9 @@ type Props = {
 }
 
 export function TransactionDetails({ isLoading, tx, error }: Props) {
-  const [expanded, setExpanded] = useState(error ? 'panel1' : '')
+  const [manualExpanded, setExpanded] = useState('')
+
+  const expanded = manualExpanded || (error && 'panel1') || ''
 
   const parameters = useMemo(() => {
     if (!tx) return []
