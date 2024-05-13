@@ -1,6 +1,5 @@
 import { Button } from '@mui/material'
-import { memo, useCallback, useMemo } from 'react'
-import { Control, SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 
 import InfoIcon from '@mui/icons-material/Info'
@@ -8,75 +7,26 @@ import Tooltip from '@mui/material/Tooltip'
 import { AmountsPreviewFromPercentage } from 'src/components/AmountsPreviewFromPercentage'
 import CustomTypography from 'src/components/CustomTypography'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
-import { PositionConfig } from 'src/config/strategies/manager'
-import { useApp } from 'src/contexts/app.context'
+import { Config, PositionConfig } from 'src/config/strategies/manager'
 import { Position } from 'src/contexts/state'
-import { getStrategy } from 'src/services/strategies'
 import { useDebounceCallback } from 'usehooks-ts'
-import InputRadio from './InputRadio'
 import { Label } from './Label'
+import { OptionsInput } from './OptionsInput'
 import { PercentageText } from './PercentageText'
 import { Title } from './Title'
 
 interface CustomFormProps {
+  strategy: PositionConfig
+  commonConfig: Config[]
   position: Position
   onValid: (params: any) => void
 }
 
-type OptionsInputOption = {
-  label: string
-  value: string
-}
-
-type OptionsInputProps = {
-  name: string
-  label: string
-  control: Control<any, any>
-  options?: OptionsInputOption[]
-}
-
-import CryptoIcon from 'src/components/CryptoIcon'
-
-const OptionsInput = ({ name, label, control, options }: OptionsInputProps) => {
-  return (
-    <BoxWrapperColumn gap={2}>
-      <Label title={label} />
-      <InputRadio
-        name={name}
-        control={control}
-        options={
-          options?.map((item) => {
-            const sufix = name.startsWith('token_') ? (
-              <CryptoIcon symbol={item.label} size={18} />
-            ) : null
-            return {
-              label: (
-                <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-                  {sufix} <span style={{ marginLeft: '0.5em' }}>{item.label ?? ''}</span>
-                </span>
-              ),
-              value: item.value ?? '',
-            }
-          }) ?? []
-        }
-      />
-    </BoxWrapperColumn>
-  )
-}
-
-function isActive(strategy: PositionConfig, config: PositionConfig[]) {
-  if (strategy.stresstest) return true
-  const all = new Map(config.map((s) => [s.label.toLowerCase(), s.stresstest]))
-  const recoveryModeSufix = ' (recovery mode)'
-  const base = strategy.label.toLowerCase().replace(recoveryModeSufix, '')
-  return all.get(base) || all.get(base + recoveryModeSufix) || false
-}
-
 type FormValues = {
-  dao?: string
-  blockchain?: string
-  protocol?: string
-  strategy?: string
+  // dao?: string
+  // blockchain?: string
+  // protocol?: string
+  // strategy?: string
   percentage?: number
   rewards_address?: string
   max_slippage?: number
@@ -85,15 +35,17 @@ type FormValues = {
   bpt_address?: string
 }
 
+type FormFieldName = keyof FormValues
+
 type FormFieldConfig = {
   placeholder: string
 }
 
-const FORM_CONFIG: Record<keyof FormValues, FormFieldConfig> = {
-  dao: { placeholder: 'Dao' },
-  protocol: { placeholder: 'Protocol' },
-  blockchain: { placeholder: 'Blockchain' },
-  strategy: { placeholder: 'Strategy' },
+const FORM_CONFIG: Record<FormFieldName, FormFieldConfig> = {
+  // dao: { placeholder: 'Dao' },
+  // protocol: { placeholder: 'Protocol' },
+  // blockchain: { placeholder: 'Blockchain' },
+  // strategy: { placeholder: 'Strategy' },
   percentage: { placeholder: '0.00%' },
   rewards_address: { placeholder: '0x00000' },
   max_slippage: { placeholder: '0.00%' },
@@ -102,27 +54,15 @@ const FORM_CONFIG: Record<keyof FormValues, FormFieldConfig> = {
   bpt_address: { placeholder: '0x00000' },
 }
 
-function CustomForm({ position, onValid }: CustomFormProps) {
-  const { state } = useApp()
-
-  const { positionConfig: allStrategies, commonConfig } = getStrategy(state.daosConfigs, position)
-
-  const strategies = useMemo(() => {
-    return allStrategies.filter((strategy) => isActive(strategy, allStrategies))
-  }, [allStrategies])
-
+export default function CustomForm({ commonConfig, strategy, position, onValid }: CustomFormProps) {
   const {
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isValid },
     handleSubmit,
     control,
     setValue,
-    clearErrors,
     watch,
     formState,
-    register,
-    unregister,
   } = useForm<FormValues>({
-    // defaultValues,
     mode: 'onBlur',
   })
 
@@ -130,64 +70,18 @@ function CustomForm({ position, onValid }: CustomFormProps) {
 
   console.log(formState)
 
-  const watchStrategy = watch('strategy')
-  // const watchMaxSlippage = watch('max_slippage')
   const watchPercentage = watch('percentage')
   const watchTokenOut = watch('token_out_address')
 
   const onSubmit: SubmitHandler<any> = useDebounceCallback(onValid, 300)
 
-  const specificParameters =
-    strategies.find((item) => item.function_name === watchStrategy)?.parameters ?? []
-
-  const parameters = watchStrategy ? [...commonConfig, ...specificParameters] : []
-
-  const isExecuteButtonDisabled = isSubmitting || !isValid
-  console.log(isExecuteButtonDisabled)
-
-  const handleStrategyChange = useCallback(() => {
-    // Clear fields
-    unregister('percentage')
-    setValue('percentage', undefined)
-    setValue('max_slippage', undefined)
-    setValue('rewards_address', undefined)
-    setValue('token_out_address', undefined)
-    setValue('bpt_address', undefined)
-    // setKeyIndex(keyIndex + 1)
-
-    clearErrors('percentage')
-    clearErrors('max_slippage')
-    clearErrors('rewards_address')
-    clearErrors('token_out_address')
-    clearErrors('bpt_address')
-  }, [clearErrors, setValue, unregister])
-
-  console.log({ errors })
+  const specificParameters = strategy?.parameters ?? []
+  const parameters = [...commonConfig, ...specificParameters]
 
   return (
     <form id="hook-form" onChange={handleSubmit(onSubmit)}>
       <BoxWrapperColumn gap={2}>
         <BoxWrapperColumn gap={6}>
-          <BoxWrapperColumn gap={2}>
-            <Title title={'Exit strategies'} />
-            <BoxWrapperColumn gap={2}>
-              <InputRadio
-                // {...register('strategy')}
-                name="strategy"
-                onChange={handleStrategyChange}
-                options={strategies.map((item) => ({
-                  label: item.label,
-                  value: item.function_name.trim(),
-                  description: item.description,
-                }))}
-                control={control}
-              />
-            </BoxWrapperColumn>
-          </BoxWrapperColumn>
-          {parameters.length == 0 ? (
-            <input hidden {...register('percentage', { required: true })} />
-          ) : null}
-
           {parameters.length > 0 ? (
             <BoxWrapperColumn gap={2}>
               <Title title={'Parameters'} />
@@ -197,7 +91,8 @@ function CustomForm({ position, onValid }: CustomFormProps) {
                 const { min, max } = rules || {}
 
                 const onClickApplyMax = () => {
-                  if (max !== undefined) setValue(name, max, { shouldValidate: true })
+                  if (max !== undefined)
+                    setValue(name as FormFieldName, max, { shouldValidate: true })
                 }
 
                 if (min !== undefined && max !== undefined) {
@@ -234,7 +129,7 @@ function CustomForm({ position, onValid }: CustomFormProps) {
                           min,
                           max,
                         }}
-                        placeholder={FORM_CONFIG[name].placeholder}
+                        placeholder={FORM_CONFIG[name as FormFieldName].placeholder}
                         errors={errors}
                       />
                       {name == 'percentage' ? (
@@ -269,6 +164,3 @@ function CustomForm({ position, onValid }: CustomFormProps) {
     </form>
   )
 }
-
-const Form = memo(CustomForm)
-export default Form

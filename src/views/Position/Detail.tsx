@@ -1,9 +1,12 @@
 import { Divider, styled } from '@mui/material'
+import { useCallback, useMemo, useState } from 'react'
 import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
+import { PositionConfig } from 'src/config/strategies/manager'
 import { useApp } from 'src/contexts/app.context'
 import { Position } from 'src/contexts/state'
 import { getStrategy } from 'src/services/strategies'
-import Form from 'src/views/Position/Form/Form'
+import ConfigurationForm from 'src/views/Position/Form/ConfigurationForm'
+import StrategyForm from 'src/views/Position/Form/StrategyForm'
 import NoStrategies from 'src/views/Position/NoStrategies'
 import Primary from 'src/views/Position/Title/Primary'
 import Secondary from 'src/views/Position/Title/Secondary'
@@ -16,6 +19,14 @@ const BoxWrapperRowStyled = styled(BoxWrapperColumn)(() => ({
   borderBottom: '1px solid #B6B6B6',
 }))
 
+function isActive(strategy: PositionConfig, config: PositionConfig[]) {
+  if (strategy.stresstest) return true
+  const all = new Map(config.map((s) => [s.label.toLowerCase(), s.stresstest]))
+  const recoveryModeSufix = ' (recovery mode)'
+  const base = strategy.label.toLowerCase().replace(recoveryModeSufix, '')
+  return all.get(base) || all.get(base + recoveryModeSufix) || false
+}
+
 export default function Detail({
   position,
   onChange,
@@ -26,10 +37,37 @@ export default function Detail({
   const { state } = useApp()
   const { daosConfigs } = state
 
+  const [selectedStrategy, setStrategy] = useState<string>()
+  const onStrategyChange = useCallback((st: any) => setStrategy(st.strategy), [setStrategy])
+
+  const { positionConfig, commonConfig } = getStrategy(daosConfigs, position)
+  const areAnyStrategies = positionConfig?.length > 0
+
+  const strategies = useMemo(() => {
+    return positionConfig.filter((strategy) => isActive(strategy, positionConfig))
+  }, [positionConfig])
+
+  const strategy = useMemo(
+    () => strategies.find((s) => s.function_name == selectedStrategy),
+    [selectedStrategy, strategies],
+  )
+
+  const onConfigChange = useCallback(
+    (data: any) => {
+      onChange({
+        dao: position.dao,
+        blockchain: position.blockchain,
+        protocol: position.protocol,
+        strategy: selectedStrategy,
+        ...data,
+      })
+    },
+    [onChange, position.blockchain, position.dao, position.protocol, selectedStrategy],
+  )
+
   if (!position) return null
 
-  const { positionConfig } = getStrategy(daosConfigs, position)
-  const areAnyStrategies = positionConfig?.length > 0
+  console.log('strategy', selectedStrategy)
 
   return (
     <BoxWrapperRowStyled gap={2}>
@@ -51,7 +89,21 @@ export default function Detail({
         <Balances tokens={position.tokens} />
       </BoxWrapperColumn>
       <BoxWrapperColumn gap={2}>
-        {areAnyStrategies ? <Form position={position} onValid={onChange} /> : <NoStrategies />}
+        {areAnyStrategies ? (
+          <StrategyForm strategies={strategies} onValid={onStrategyChange} />
+        ) : (
+          <NoStrategies />
+        )}
+        {strategy ? (
+          <ConfigurationForm
+            key={selectedStrategy}
+            // strategies={strategies}
+            commonConfig={commonConfig}
+            strategy={strategy}
+            position={position}
+            onValid={onConfigChange}
+          />
+        ) : null}
       </BoxWrapperColumn>
     </BoxWrapperRowStyled>
   )
