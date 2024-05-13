@@ -38,7 +38,13 @@ export default function Detail({
   const { daosConfigs } = state
 
   const [selectedStrategy, setStrategy] = useState<string>()
-  const onStrategyChange = useCallback((st: any) => setStrategy(st.strategy), [setStrategy])
+  const onStrategyChange = useCallback(
+    (st: any) => {
+      setStrategy(st.strategy)
+      onChange(null)
+    },
+    [setStrategy, onChange],
+  )
 
   const { positionConfig, commonConfig } = getStrategy(daosConfigs, position)
   const areAnyStrategies = positionConfig?.length > 0
@@ -55,14 +61,11 @@ export default function Detail({
   const onConfigChange = useCallback(
     (data: any) => {
       onChange({
-        dao: position.dao,
-        blockchain: position.blockchain,
-        protocol: position.protocol,
         strategy: selectedStrategy,
         ...data,
       })
     },
-    [onChange, position.blockchain, position.dao, position.protocol, selectedStrategy],
+    [onChange, selectedStrategy],
   )
 
   if (!position) return null

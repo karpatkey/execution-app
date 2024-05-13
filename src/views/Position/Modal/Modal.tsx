@@ -44,6 +44,8 @@ export const Modal = (props: ModalProps) => {
   const handleParamsChange = useCallback(
     (params: any) => {
       console.log({ handleParamsChange: params })
+      if (!params) return setParams(undefined)
+
       setParams({
         dao: position.dao,
         blockchain: position.blockchain,

@@ -42,10 +42,6 @@ type FormFieldConfig = {
 }
 
 const FORM_CONFIG: Record<FormFieldName, FormFieldConfig> = {
-  // dao: { placeholder: 'Dao' },
-  // protocol: { placeholder: 'Protocol' },
-  // blockchain: { placeholder: 'Blockchain' },
-  // strategy: { placeholder: 'Strategy' },
   percentage: { placeholder: '0.00%' },
   rewards_address: { placeholder: '0x00000' },
   max_slippage: { placeholder: '0.00%' },
