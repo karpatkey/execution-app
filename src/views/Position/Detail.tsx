@@ -70,8 +70,6 @@ export default function Detail({
 
   if (!position) return null
 
-  console.log('strategy', selectedStrategy)
-
   return (
     <BoxWrapperRowStyled gap={2}>
       <BoxWrapperColumn gap={2}>

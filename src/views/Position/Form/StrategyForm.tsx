@@ -17,18 +17,11 @@ type FormValues = {
 }
 
 function CustomForm({ strategies, onValid }: CustomFormProps) {
-  const {
-    formState: { isSubmitting, isValid },
-    handleSubmit,
-    control,
-  } = useForm<FormValues>({
+  const { handleSubmit, control } = useForm<FormValues>({
     mode: 'onChange',
   })
 
   const onSubmit = useDebounceCallback(onValid, 100)
-
-  const isExecuteButtonDisabled = isSubmitting || !isValid
-  console.log(isExecuteButtonDisabled)
 
   return (
     <form id="hook-form" onChange={handleSubmit(onSubmit)}>
@@ -38,7 +31,6 @@ function CustomForm({ strategies, onValid }: CustomFormProps) {
             <Title title={'Exit strategies'} />
             <BoxWrapperColumn gap={2}>
               <InputRadio
-                // {...register('strategy')}
                 name="strategy"
                 options={strategies.map((item) => ({
                   label: item.label,

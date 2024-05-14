@@ -45,8 +45,6 @@ export const Confirm = ({ position, tx, txCheck, txSimulation, handleClose }: Co
   const error = execute.error
   const txHash = execute.data?.tx_hash
 
-  console.log(execute)
-
   const exploreUrl =
     position.blockchain == 'ethereum'
       ? `https://etherscan.io/tx/${txHash}`
