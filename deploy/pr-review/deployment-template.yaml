@@ -62,7 +62,7 @@ spec:
             - name: APP
               value: execution_app
             - name: PORT
-              value: 4001
+              value: '4001'
 
 ---
 apiVersion: v1
