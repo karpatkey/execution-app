@@ -79,6 +79,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: develop-execution-app-config-{{PR_NUMBER}}
+  namespace: agile-pr-review
 data:
   VAULT_SIGNER_URL: 'http://develop-vault:8200/v1/ethereum'
   DATA_WAREHOUSE_ENV: development
