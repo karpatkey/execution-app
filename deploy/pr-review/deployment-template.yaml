@@ -46,12 +46,23 @@ spec:
             - name: PULLEY_URL
               value: 'http://localhost:4000'
 
+            - name: ROLESAPI_URL
+              value: 'http://localhost:4001'
+
         - name: pulley
           image: registry.digitalocean.com/karpatkey/pulley:main
           imagePullPolicy: Always
           env:
             - name: LOGGER_LEVEL
               value: debug
+
+        - name: rolesapi
+          image: registry.digitalocean.com/karpatkey/bots:main-c585cf0
+          env:
+            - name: APP
+              value: execution_app
+            - name: PORT
+              value: 4001
 
 ---
 apiVersion: v1
