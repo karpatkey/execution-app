@@ -106,6 +106,23 @@ export interface DebankPositionItem {
       time_at: number
       amount: number
     }[]
+    borrow_token_list: {
+      id: string
+      chain: string
+      name: string
+      symbol: string
+      display_symbol?: string
+      optimized_symbol: string
+      decimals: number
+      logo_url: string
+      protocol_id: string
+      price: number
+      is_verified: boolean
+      is_core: boolean
+      is_wallet: boolean
+      time_at: number
+      amount: number
+    }[]
   }
 }
 export interface DebankPosition {
@@ -189,8 +206,8 @@ function transformPosition(position: DebankPosition): ResponsePosition[] {
   return position.portfolio_item_list.flatMap((i) => {
     const tokens = [
       ...(i.detail.supply_token_list || []).map(tokenOfType('supply')),
+      ...(i.detail.borrow_token_list || []).map(tokenOfType('borrow')),
       // ...(i.detail.reward_token_list || []).map(tokenOfType('reward')),
-      // ...(i.detail.borrow_token_list || []).map(tokenOfType('borrow')),
       // ...(i.detail.other_tokens_list || []).map(tokenOfType('other')),
     ].filter((l) => l)
 
