@@ -59,7 +59,7 @@ export const Balances = ({ tokens }: ListItemsProps) => {
     { supply: [], borrow: [], reward: [], other: [], core: [] },
   )
 
-  const ordered: TokenGroup[] = ['core', 'supply']
+  const ordered: TokenGroup[] = ['core', 'supply', 'borrow']
 
   return (
     <BoxWrapperColumn sx={{ gap: 2 }}>
