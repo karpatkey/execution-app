@@ -41,6 +41,8 @@ const LoggedComponent = (props: LoggedComponentProps) => {
   }
   return (
     <BoxWrapperRow>
+      <DAOFilter />
+      <ChainFilter />
       <BoxWrapperRow>
         {matches && <Avatar alt={name} src={image} imgProps={{ loading: 'lazy' }} />}
         <CustomTypography
@@ -90,8 +92,6 @@ const Header = () => {
         {isLoadingPositions ? <Loading sx={{ marginLeft: '2em' }} size={'1rem'} /> : null}
       </BoxWrapperRow>
       <BoxWrapperRow>
-        <DAOFilter />
-        <ChainFilter />
         {!isLoading ? (
           !user ? (
             <NotLoggedComponent />
