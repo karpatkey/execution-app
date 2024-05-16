@@ -42,7 +42,7 @@ export const ChainFilter = () => {
         labelId="chain-selector-label"
         id="chain-selector"
         color="primary"
-        defaultValue={selectedChain.toLowerCase()}
+        value={selectedChain.toLowerCase()}
         label="Chain"
         onChange={handleChange}
       >

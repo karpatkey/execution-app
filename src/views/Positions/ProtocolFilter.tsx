@@ -26,11 +26,13 @@ export default function ProtocolFilter({ positions }: { positions: PositionWithS
         gap: '20px 20px',
       }}
     >
-      {Object.keys(protocols).map((protocol, index) => {
-        const positions = protocols[protocol]
+      {Object.keys(protocols)
+        .sort()
+        .map((protocol, index) => {
+          const positions = protocols[protocol]
 
-        return <ProtocolCard key={index} protocol={protocol} positions={positions} />
-      })}
+          return <ProtocolCard key={index} protocol={protocol} positions={positions} />
+        })}
     </Box>
   )
 }

@@ -19,7 +19,7 @@ const NotLoggedComponent = () => {
     push('/api/auth/login')
   }
   return (
-    <Button onClick={onLogin} sx={{ gap: 2, height: '48px', padding: '6px 14px' }}>
+    <Button onClick={onLogin} variant="contained" size="large" sx={{ borderRadius: '0.8rem' }}>
       Login
     </Button>
   )
@@ -55,7 +55,7 @@ const LoggedComponent = (props: LoggedComponentProps) => {
           {name}
         </CustomTypography>
       </BoxWrapperRow>
-      <Button onClick={onLogout} sx={{ gap: 2, height: '48px', padding: '6px 14px' }}>
+      <Button onClick={onLogout} variant="contained" size="large" sx={{ borderRadius: '0.8rem' }}>
         Logout
       </Button>
     </BoxWrapperRow>

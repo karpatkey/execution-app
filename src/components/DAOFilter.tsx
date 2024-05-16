@@ -46,7 +46,7 @@ export const DAOFilter = () => {
         labelId="dao-selector-label"
         id="dao-selector"
         color="primary"
-        defaultValue={selectedDao}
+        value={selectedDao}
         label="Dao"
         onChange={handleChange}
       >

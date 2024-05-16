@@ -333,11 +333,11 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          fontFamily: 'IBM Plex Mono',
-          fontStyle: 'normal',
-          fontWeight: 700,
-          fontSize: '16px',
-          lineHeight: '18px',
+          // fontFamily: 'IBM Plex Mono',
+          // fontStyle: 'normal',
+          // fontWeight: 700,
+          // fontSize: '16px',
+          // lineHeight: '18px',
           // color: '#EEEDED',
           // background: '#1A1A1A',
           textTransform: 'none',

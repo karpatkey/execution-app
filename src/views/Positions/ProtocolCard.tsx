@@ -1,14 +1,29 @@
-import { Box } from '@mui/material'
-import { MouseEventHandler, useCallback } from 'react'
+import { Box, Button } from '@mui/material'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { useMemo } from 'react'
 import Link from 'src/components/Link'
 import { PositionWithStrategies } from 'src/contexts/state'
 import { USD } from 'src/views/Positions/USD'
 import ProtocolIcon from './ProtocolIcon'
 
+const DEFAULT_STRATS = new Map([['Aura', 'exit_2_1']])
+
+function stratId(p: PositionWithStrategies) {
+  const strat = DEFAULT_STRATS.get(p.protocol) || 'noop'
+  const config = p.strategies.positionConfig.find((c) => c.function_name == strat)
+  if (!config) return false
+
+  return config.function_name
+}
+
 function allCompatible(positions: PositionWithStrategies[]) {
   const chain = positions[0].blockchain
   const dao = positions[0].dao
-  return !positions.find((p) => p.blockchain != chain || p.dao != dao)
+  const strat = stratId(positions[0])
+
+  return !positions.find(
+    (p) => p.blockchain != chain || p.dao != dao || !stratId(p) || strat != stratId(p),
+  )
 }
 
 export default function ProtocolCard({
@@ -19,47 +34,67 @@ export default function ProtocolCard({
   positions: PositionWithStrategies[]
 }) {
   const totalUsd = positions.reduce((t, p) => p.usd_amount + t, 0)
-  const noWayJose = 'noop'
-  const url = allCompatible(positions) ? '/positions' : noWayJose
 
-  const handleMissingFiltering = useCallback<MouseEventHandler>(
-    (e) => {
-      if (url == noWayJose) {
-        e.preventDefault()
-      }
-    },
-    [url, noWayJose],
-  )
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+
+  const isSelected = useMemo(() => {
+    const params = new URLSearchParams(searchParams.toString())
+    return params.get('protocol') == protocol
+  }, [protocol, searchParams])
+
+  const url = useMemo(() => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (params.get('protocol') == protocol) {
+      params.delete('protocol')
+    } else {
+      params.set('protocol', protocol)
+    }
+    const p = params.toString()
+    const uri = p ? `${pathname}?${p}` : pathname
+    return uri.toString()
+  }, [pathname, searchParams, protocol])
+
   return (
-    <Link
-      sx={{
-        // width: '380px',
-        // minHeight: '140px',
-        padding: '12px 12px',
-        border: '1px solid #B6B6B6',
-        background: 'background.paper',
-        borderRadius: '8px',
-        display: 'flex',
-        justify: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        textDecoration: 'none',
-      }}
-      href={url}
-      onClick={handleMissingFiltering}
-    >
-      <Box
+    <Box sx={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
+      <Link
         sx={{
+          padding: '1.3em',
+          border: isSelected ? '1px solid #333' : '1px solid #B6B6B6',
+          background: isSelected ? '#fdfdfd' : 'background.paper',
+          borderRadius: '2em',
           display: 'flex',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          marginBottom: '0.5em',
+          justify: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          textDecoration: 'none',
         }}
+        href={url}
       >
-        <ProtocolIcon protocol={protocol} /> <Box sx={{ marginLeft: '0.5em' }}>{protocol}</Box>
-      </Box>
-      <Box sx={{ marginBottom: '0.5em' }}>{positions.length} Positions</Box>
-      <USD value={totalUsd} />
-    </Link>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            marginBottom: '0.5em',
+          }}
+        >
+          <ProtocolIcon protocol={protocol} /> <Box sx={{ marginLeft: '0.5em' }}>{protocol}</Box>
+        </Box>
+        <Box sx={{ marginBottom: '0.5em' }}>{positions.length} Positions</Box>
+        <USD value={totalUsd} />
+      </Link>
+      {allCompatible(positions) ? (
+        <Button
+          color="error"
+          disabled={!isSelected}
+          size="small"
+          variant="contained"
+          sx={{ marginTop: '1em' }}
+        >
+          Exit All
+        </Button>
+      ) : null}
+    </Box>
   )
 }

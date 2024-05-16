@@ -44,6 +44,13 @@ const Search = (props: SearchPositionProps) => {
 
 const SearchPosition = React.memo(Search)
 
+const sorter = (a: PositionWithStrategies, b: PositionWithStrategies) => {
+  if (a.isActive && !b.isActive) return -1
+  if (!a.isActive && b.isActive) return 1
+
+  return b.usd_amount - a.usd_amount
+}
+
 const WrapperPositions = () => {
   const searchParams = useSearchParams()
   const pathname = usePathname()
@@ -86,35 +93,41 @@ const WrapperPositions = () => {
     })
   }, [daosConfigs, positions])
 
-  const filteredPositions = useMemo(() => {
-    const queryTerms = (searchParams.get('query') || '')
+  const queryTerms = useMemo(() => {
+    return (searchParams.get('query') || '')
       .toLowerCase()
       .split(' ')
       .filter((s) => s)
+  }, [searchParams])
 
-    const all = 'all'
+  const all = 'all'
+  const filteredChainAndDao = useMemo(() => {
     const dao = searchParams.get('dao') || all
     const chain = searchParams.get('chain') || all
 
     const withDao =
-      dao != 'all'
+      dao != all
         ? positionsWithStrategies.filter((position) => slug(position.dao) == dao)
         : positionsWithStrategies
 
     const withChain =
-      chain != 'all' ? withDao.filter((position) => position.blockchain == chain) : withDao
+      chain != all ? withDao.filter((position) => position.blockchain == chain) : withDao
 
-    const sorter = (a: PositionWithStrategies, b: PositionWithStrategies) => {
-      if (a.isActive && !b.isActive) return -1
-      if (!a.isActive && b.isActive) return 1
+    return withChain
+  }, [positionsWithStrategies, searchParams])
 
-      return b.usd_amount - a.usd_amount
-    }
+  const filteredPositions = useMemo(() => {
+    const protocol = searchParams.get('protocol') || all
+
+    const withProtocol =
+      protocol != 'all'
+        ? filteredChainAndDao.filter((position) => position.protocol == protocol)
+        : filteredChainAndDao
 
     if (queryTerms.length == 0) {
-      return withChain.sort(sorter)
+      return withProtocol.sort(sorter)
     } else {
-      return withChain
+      return withProtocol
         .filter((position) => {
           const joined = [position.dao, position.lptokenName, position.pool_id, position.protocol]
             .join(' ')
@@ -123,7 +136,9 @@ const WrapperPositions = () => {
         })
         .sort(sorter)
     }
-  }, [positionsWithStrategies, searchParams])
+  }, [filteredChainAndDao, queryTerms, searchParams])
+
+  const filtersKey = `${searchParams.get('dao')}${searchParams.get('chain')}`
 
   return (
     <ErrorBoundaryWrapper>
@@ -136,8 +151,8 @@ const WrapperPositions = () => {
               <BoxWrapperRow gap={2} sx={{ justifyContent: 'space-between' }}>
                 <SearchPosition value={query} onChange={handleSearch} />
               </BoxWrapperRow>
-              <ProtocolFilter positions={filteredPositions} />
-              <List positions={filteredPositions} />
+              <ProtocolFilter positions={filteredChainAndDao} />
+              <List key={filtersKey} positions={filteredPositions} />
             </PaperSection>
           </BoxWrapperColumn>
         )}
