@@ -35,7 +35,7 @@ export const DAOFilter = () => {
 
   const selectedDao = useMemo(() => {
     const params = new URLSearchParams(searchParams.toString())
-    return params.get('dao') || options[0]
+    return params.get('dao') || slug(options[0])
   }, [options, searchParams])
 
   return (
