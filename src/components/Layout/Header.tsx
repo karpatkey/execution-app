@@ -9,6 +9,7 @@ import Loading from 'src/components/Loading'
 import LogoKarpatkey from 'src/components/LogoKarpatkey'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 import { usePositions } from 'src/queries/positions'
+import 'src/services/wallet_connect'
 
 export const HEADER_HEIGHT = 100
 
@@ -57,6 +58,7 @@ const LoggedComponent = (props: LoggedComponentProps) => {
           {name}
         </CustomTypography>
       </BoxWrapperRow>
+      <w3m-button />
       <Button onClick={onLogout} variant="contained" size="large" sx={{ borderRadius: '0.8rem' }}>
         Logout
       </Button>
