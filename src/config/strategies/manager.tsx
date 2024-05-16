@@ -10,6 +10,8 @@ export type Dao =
 
 export type Blockchain = 'gnosis' | 'ethereum'
 
+export const CHAINS: Blockchain[] = ['ethereum', 'gnosis']
+
 export type ExecParameter =
   | 'dao'
   | 'protocol'

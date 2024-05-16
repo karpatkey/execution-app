@@ -1,8 +1,15 @@
 import { Box } from '@mui/material'
+import { MouseEventHandler, useCallback } from 'react'
 import Link from 'src/components/Link'
 import { PositionWithStrategies } from 'src/contexts/state'
 import { USD } from 'src/views/Positions/USD'
 import ProtocolIcon from './ProtocolIcon'
+
+function allCompatible(positions: PositionWithStrategies[]) {
+  const chain = positions[0].blockchain
+  const dao = positions[0].dao
+  return !positions.find((p) => p.blockchain != chain || p.dao != dao)
+}
 
 export default function ProtocolCard({
   protocol,
@@ -12,7 +19,17 @@ export default function ProtocolCard({
   positions: PositionWithStrategies[]
 }) {
   const totalUsd = positions.reduce((t, p) => p.usd_amount + t, 0)
-  const url = '/positions'
+  const noWayJose = 'noop'
+  const url = allCompatible(positions) ? '/positions' : noWayJose
+
+  const handleMissingFiltering = useCallback<MouseEventHandler>(
+    (e) => {
+      if (url == noWayJose) {
+        e.preventDefault()
+      }
+    },
+    [url, noWayJose],
+  )
   return (
     <Link
       sx={{
@@ -29,6 +46,7 @@ export default function ProtocolCard({
         textDecoration: 'none',
       }}
       href={url}
+      onClick={handleMissingFiltering}
     >
       <Box
         sx={{

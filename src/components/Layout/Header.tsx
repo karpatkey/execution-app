@@ -2,7 +2,9 @@ import { useUser } from '@auth0/nextjs-auth0/client'
 import { Avatar, Button } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useRouter } from 'next/navigation'
+import { ChainFilter } from 'src/components/ChainFilter'
 import CustomTypography from 'src/components/CustomTypography'
+import { DAOFilter } from 'src/components/DAOFilter'
 import Loading from 'src/components/Loading'
 import LogoKarpatkey from 'src/components/LogoKarpatkey'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
@@ -88,6 +90,8 @@ const Header = () => {
         {isLoadingPositions ? <Loading sx={{ marginLeft: '2em' }} size={'1rem'} /> : null}
       </BoxWrapperRow>
       <BoxWrapperRow>
+        <DAOFilter />
+        <ChainFilter />
         {!isLoading ? (
           !user ? (
             <NotLoggedComponent />
