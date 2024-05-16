@@ -11,7 +11,7 @@ import { slug } from 'src/utils/string'
 import { Modal } from 'src/views/Position/Modal/Modal'
 import Card from 'src/views/Positions/Card'
 
-const List = () => {
+export default function List() {
   const {
     state: { daosConfigs },
   } = useApp()
@@ -120,5 +120,3 @@ const List = () => {
     </>
   )
 }
-
-export default List

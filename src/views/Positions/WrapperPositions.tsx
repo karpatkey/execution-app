@@ -10,7 +10,8 @@ import BoxContainerWrapper from 'src/components/Wrappers/BoxContainerWrapper'
 import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 import { usePositions } from 'src/queries/positions'
-import List from 'src/views/Positions/List'
+import List from './List'
+import ProtocolExits from './ProtocolExits'
 
 interface SearchPositionProps {
   onChange: (value: string) => void
@@ -84,6 +85,7 @@ const WrapperPositions = () => {
               <BoxWrapperRow gap={2} sx={{ justifyContent: 'space-between' }}>
                 <SearchPosition value={query} onChange={handleSearch} />
               </BoxWrapperRow>
+              <ProtocolExits />
               <List />
             </PaperSection>
           </BoxWrapperColumn>
