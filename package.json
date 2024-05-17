@@ -22,7 +22,7 @@
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.3",
     "@emotion/server": "^11.11.0",
-    "@emotion/styled": "^11.11.0",
+    "@emotion/styled": "^11.11.5",
     "@google-cloud/bigquery": "^7.4.0",
     "@mui/icons-material": "5.14.8",
     "@mui/material": "5.14.8",
