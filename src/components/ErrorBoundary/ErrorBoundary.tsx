@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-import React, { ComponentProps, ErrorInfo, FC } from 'react'
+import { ComponentProps, ErrorInfo, FC } from 'react'
 import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary'
 
 const ErrorFallback = dynamic(() => import('./ErrorFallback'), { ssr: false })
