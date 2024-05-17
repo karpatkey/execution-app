@@ -27,11 +27,21 @@ function isActive(strategy: PositionConfig, config: PositionConfig[]) {
   return all.get(base) || all.get(base + recoveryModeSufix) || false
 }
 
+function unique(value: any, index: number, array: any[]) {
+  return array.indexOf(value) === index
+}
+function uniqueJoin(positions: Position[], key: keyof Position) {
+  return positions
+    .map((p) => p[key])
+    .filter(unique)
+    .join(', ')
+}
+
 export default function Detail({
-  position,
+  positions,
   onChange,
 }: {
-  position: Position
+  positions: Position[]
   onChange: (params: any) => void
 }) {
   const { state } = useApp()
@@ -46,7 +56,18 @@ export default function Detail({
     [setStrategy, onChange],
   )
 
-  const { positionConfig, commonConfig } = getStrategy(daosConfigs, position)
+  const dao = useMemo(() => uniqueJoin(positions, 'dao'), [positions])
+  const blockchain = useMemo(() => uniqueJoin(positions, 'blockchain'), [positions])
+  const protocol = useMemo(() => uniqueJoin(positions, 'protocol'), [positions])
+  const lptokenName = useMemo(() => uniqueJoin(positions, 'lptokenName'), [positions])
+  const usd_amount = useMemo(
+    () => positions.reduce((total, p) => p.usd_amount + total, 0),
+    [positions],
+  )
+
+  const tokens = useMemo(() => positions.flatMap((p) => p.tokens), [positions])
+
+  const { positionConfig, commonConfig } = getStrategy(daosConfigs, positions[0])
   const areAnyStrategies = positionConfig?.length > 0
 
   const strategies = useMemo(() => {
@@ -68,7 +89,7 @@ export default function Detail({
     [onChange, selectedStrategy],
   )
 
-  if (!position) return null
+  if (!positions || positions.length == 0) return null
 
   return (
     <BoxWrapperRowStyled gap={2}>
@@ -78,16 +99,16 @@ export default function Detail({
           <Divider sx={{ borderBottomWidth: 5 }} />
         </BoxWrapperColumn>
         <BoxWrapperColumn gap={2}>
-          <Secondary title="DAO:" subtitle={position.dao} />
-          <Secondary title="Blockchain:" subtitle={position.blockchain} />
-          <Secondary title="Protocol:" subtitle={position.protocol} />
-          <Secondary title="Position:" subtitle={position.lptokenName} />
+          <Secondary title="DAO:" subtitle={dao} />
+          <Secondary title="Blockchain:" subtitle={blockchain} />
+          <Secondary title="Protocol:" subtitle={protocol} />
+          <Secondary title="Position:" subtitle={lptokenName} />
           <Secondary title="USD Amount:">
-            <USD value={position.usd_amount} />
+            <USD value={usd_amount} />
           </Secondary>
         </BoxWrapperColumn>
         <Divider sx={{ borderBottomWidth: 5 }} />
-        <Balances tokens={position.tokens} />
+        <Balances tokens={tokens} />
       </BoxWrapperColumn>
       <BoxWrapperColumn gap={2}>
         {areAnyStrategies ? (
@@ -101,7 +122,7 @@ export default function Detail({
             // strategies={strategies}
             commonConfig={commonConfig}
             strategy={strategy}
-            position={position}
+            position={positions[0]}
             onValid={onConfigChange}
           />
         ) : null}

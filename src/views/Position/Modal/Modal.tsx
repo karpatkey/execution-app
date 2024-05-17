@@ -130,7 +130,7 @@ export const Modal = (props: ModalProps) => {
               gap={2}
             >
               <BoxWrapper>
-                <Detail position={positions[0]} onChange={handleParamsChange} />
+                <Detail positions={positions} onChange={handleParamsChange} />
 
                 <TransactionDetails isLoading={isBuilding} tx={tx} error={buildError} />
                 <TransactionCheck isLoading={isChecking} check={txCheck} error={checkError} />
