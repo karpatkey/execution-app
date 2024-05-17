@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material'
+import { Box, Button, Tooltip } from '@mui/material'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
 import { useCallback, useMemo } from 'react'
@@ -103,16 +103,20 @@ export default function ProtocolCard({
         <USD value={totalUsd} />
       </Link>
       {isAllCompatible ? (
-        <Button
-          color="error"
-          disabled={!isSelected}
-          size="small"
-          variant="contained"
-          onClick={handleExitAll}
-          sx={{ marginTop: '1em' }}
-        >
-          Exit All
-        </Button>
+        <Tooltip title={!isSelected ? 'filter it mate' : null}>
+          <span>
+            <Button
+              color="error"
+              disabled={!isSelected}
+              size="small"
+              variant="contained"
+              onClick={handleExitAll}
+              sx={{ marginTop: '1em' }}
+            >
+              Exit All
+            </Button>
+          </span>
+        </Tooltip>
       ) : null}
     </Box>
   )
