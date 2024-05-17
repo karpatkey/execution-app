@@ -37,6 +37,13 @@ function uniqueJoin(positions: Position[], key: keyof Position) {
     .join(', ')
 }
 
+const SIMPLE_INPUTS = new Set(['max_slippage'])
+
+function isSimpleStrat(strategy: PositionConfig) {
+  const inputs = strategy.parameters.filter((p) => p.type == 'input')
+  return inputs.every((i) => SIMPLE_INPUTS.has(i.name))
+}
+
 export default function Detail({
   positions,
   onChange,
@@ -75,13 +82,16 @@ export default function Detail({
   const areAnyStrategies = positionConfig?.length > 0
 
   const strategies = useMemo(() => {
-    return positionConfig.filter(
-      (strategy) =>
-        isActive(strategy, positionConfig) &&
-        allConfigs.every((c) => {
-          return !!c.positionConfig.find((s) => s.function_name == strategy.function_name)
-        }),
-    )
+    return positionConfig.filter((strategy) => {
+      const active = isActive(strategy, positionConfig)
+      const allHaveIt = allConfigs.every((c) => {
+        return !!c.positionConfig.find((s) => s.function_name == strategy.function_name)
+      })
+      console.log(strategy.parameters)
+      const simpleForMultiple = allConfigs.length == 1 || isSimpleStrat(strategy)
+
+      return active && allHaveIt && simpleForMultiple
+    })
   }, [allConfigs, positionConfig])
 
   const strategy = useMemo(
