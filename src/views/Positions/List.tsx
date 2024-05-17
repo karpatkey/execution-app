@@ -17,7 +17,7 @@ export default function List({ positions }: { positions: PositionWithStrategies[
   const selectedPositions = useMemo(() => {
     const selector = searchParams.get('position')
     if (selector) {
-      if (selector == 'all') return positions
+      if (selector == 'all') return positions.filter((p) => p.isActive)
 
       const [dao, blockchain, pool_id] = selector.split(';')
       return positions.filter(
