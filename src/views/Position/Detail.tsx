@@ -67,12 +67,22 @@ export default function Detail({
 
   const tokens = useMemo(() => positions.flatMap((p) => p.tokens), [positions])
 
-  const { positionConfig, commonConfig } = getStrategy(daosConfigs, positions[0])
+  const allConfigs = useMemo(
+    () => positions.map((p) => getStrategy(daosConfigs, p)),
+    [daosConfigs, positions],
+  )
+  const { positionConfig, commonConfig } = allConfigs[0]
   const areAnyStrategies = positionConfig?.length > 0
 
   const strategies = useMemo(() => {
-    return positionConfig.filter((strategy) => isActive(strategy, positionConfig))
-  }, [positionConfig])
+    return positionConfig.filter(
+      (strategy) =>
+        isActive(strategy, positionConfig) &&
+        allConfigs.every((c) => {
+          return !!c.positionConfig.find((s) => s.function_name == strategy.function_name)
+        }),
+    )
+  }, [allConfigs, positionConfig])
 
   const strategy = useMemo(
     () => strategies.find((s) => s.function_name == selectedStrategy),
