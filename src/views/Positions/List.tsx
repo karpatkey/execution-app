@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
 import { useCallback, useMemo, useState } from 'react'
@@ -14,13 +14,17 @@ export default function List({ positions }: { positions: PositionWithStrategies[
 
   const [showDisabled, setShowDisabled] = useState(false)
 
-  const selectedPosition = useMemo(() => {
-    const id = searchParams.get('position')
-    if (id) {
-      const [dao, blockchain, pool_id] = id.split(';')
-      return positions.find(
+  const selectedPositions = useMemo(() => {
+    const selector = searchParams.get('position')
+    if (selector) {
+      if (selector == 'all') return positions
+
+      const [dao, blockchain, pool_id] = selector.split(';')
+      return positions.filter(
         (pos) => pos.pool_id == pool_id && pos.blockchain == blockchain && slug(pos.dao) == dao,
       )
+    } else {
+      return undefined
     }
   }, [positions, searchParams])
 
@@ -37,8 +41,8 @@ export default function List({ positions }: { positions: PositionWithStrategies[
 
   return (
     <>
-      {selectedPosition ? (
-        <Modal position={selectedPosition} open handleClose={handleModalClose} />
+      {selectedPositions && selectedPositions.length > 0 ? (
+        <Modal positions={selectedPositions} open handleClose={handleModalClose} />
       ) : null}
       <Box
         sx={{
@@ -69,22 +73,22 @@ export default function List({ positions }: { positions: PositionWithStrategies[
             )
           })}
         <Box
-          key="showDisabled"
           sx={{
-            width: '380px',
-            height: '100px',
             margin: '4rem',
-            border: '1px solid #333',
-            background: '#fff',
-            borderRadius: '8px',
             alignItems: 'center',
             justifyContent: 'center',
             display: 'flex',
             cursor: 'pointer',
           }}
-          onClick={() => setShowDisabled(!showDisabled)}
         >
-          {showDisabled ? 'Hide disabled' : 'Show disabled'}
+          <Button
+            key="showDisabled"
+            variant="contained"
+            color="secondary"
+            onClick={() => setShowDisabled(!showDisabled)}
+          >
+            {showDisabled ? 'Hide disabled' : 'Show disabled'}
+          </Button>
         </Box>
       </Box>
     </>

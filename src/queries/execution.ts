@@ -1,4 +1,10 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { Params as BuildParams } from 'src/pages/api/tx/build'
+import { Params as CheckParams } from 'src/pages/api/tx/check'
+import { Params as ExecuteParams } from 'src/pages/api/tx/execute'
+import { Params as SimulateParams } from 'src/pages/api/tx/simulate'
+
+export { type BuildParams }
 
 export type TxData = {
   transaction: any
@@ -15,24 +21,11 @@ export type TxSimulationData = {
   error?: string
 }
 
-export type BuildParams = {
-  dao: string
-  blockchain: string
-  protocol: string
-  pool_id: string
-  strategy: string
-  percentage: any
-  exit_arguments: any
+export type ExecuteData = {
+  status: number
+  tx_hash: string
+  error?: string
 }
-
-export type CheckParams = {
-  dao: string
-  blockchain: string
-  protocol: string
-  tx_transactables: any
-}
-
-export type SimulateParams = { dao: string; blockchain: string; transaction: any }
 
 const headers = { Accept: 'application/json', 'Content-Type': 'application/json' }
 
@@ -73,18 +66,6 @@ export function useTxSimulation(params?: SimulateParams) {
     queryKey: ['tx/simulate/v1', btoa(JSON.stringify(params))],
     queryFn: async ({ signal }) => await fetcher('/api/tx/simulate', params, signal),
   })
-}
-
-type ExecuteParams = {
-  dao: string
-  blockchain: string
-  transaction: any
-}
-
-type ExecuteData = {
-  status: number
-  tx_hash: string
-  error?: string
 }
 
 export function useExecute() {

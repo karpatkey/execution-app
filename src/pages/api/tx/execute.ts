@@ -5,23 +5,23 @@ import { getEthersProvider } from 'src/services/ethers'
 import { executorEnv } from 'src/services/executor/env'
 import { Signor } from 'src/services/signer'
 
-type Status = {
-  data?: Maybe<any>
-  status?: Maybe<number>
-  error?: Maybe<string>
+export type Response = {
+  data?: any
+  status?: number
+  error?: string
 }
 
-type Params = {
-  blockchain: Maybe<Blockchain>
-  dao: Maybe<Dao>
-  transaction: Maybe<any>
+export type Params = {
+  blockchain?: Blockchain
+  dao?: Dao
+  transaction?: any
 }
 
 import { authorizedDao } from 'src/services/authorizer'
 
 export default withApiAuthRequired(async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Status>,
+  res: NextApiResponse<Response>,
 ) {
   try {
     // Should be a post request

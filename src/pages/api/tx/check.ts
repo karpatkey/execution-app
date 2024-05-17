@@ -5,13 +5,13 @@ import { authorizedDao } from 'src/services/authorizer'
 import { executorEnv } from 'src/services/executor/env'
 import { RolesApi } from 'src/services/rolesapi'
 
-type Status = {
-  data?: Maybe<any>
-  status?: Maybe<number>
-  error?: Maybe<string>
+export type Response = {
+  data?: any
+  status?: number
+  error?: string
 }
 
-type Params = {
+export type Params = {
   blockchain?: Blockchain
   dao?: Dao
   protocol?: string
@@ -20,7 +20,7 @@ type Params = {
 
 export default withApiAuthRequired(async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Status>,
+  res: NextApiResponse<Response>,
 ) {
   try {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })

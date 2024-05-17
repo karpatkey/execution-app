@@ -1,6 +1,7 @@
 import { Box, Button } from '@mui/material'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { useMemo } from 'react'
+import { useRouter } from 'next/router'
+import { useCallback, useMemo } from 'react'
 import Link from 'src/components/Link'
 import { PositionWithStrategies } from 'src/contexts/state'
 import { USD } from 'src/views/Positions/USD'
@@ -62,6 +63,16 @@ export default function ProtocolCard({
     return allCompatible(positions)
   }, [positions])
 
+  const router = useRouter()
+  const handleExitAll = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('position', 'all')
+
+    const p = params.toString()
+    const uri = p ? `${pathname}?${p}` : pathname
+    router.push(uri, undefined, { shallow: true })
+  }, [pathname, router, searchParams])
+
   return (
     <Box sx={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
       <Link
@@ -97,6 +108,7 @@ export default function ProtocolCard({
           disabled={!isSelected}
           size="small"
           variant="contained"
+          onClick={handleExitAll}
           sx={{ marginTop: '1em' }}
         >
           Exit All

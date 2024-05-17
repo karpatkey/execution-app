@@ -52,19 +52,14 @@ const FORM_CONFIG: Record<FormFieldName, FormFieldConfig> = {
 
 export default function CustomForm({ commonConfig, strategy, position, onValid }: CustomFormProps) {
   const {
-    formState: { errors, isValid },
+    formState: { errors },
     handleSubmit,
     control,
     setValue,
     watch,
-    formState,
   } = useForm<FormValues>({
     mode: 'onBlur',
   })
-
-  console.log('isValid', isValid)
-
-  console.log(formState)
 
   const watchPercentage = watch('percentage')
   const watchTokenOut = watch('token_out_address')

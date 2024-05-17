@@ -39,8 +39,6 @@ export type ControlledTextFieldProps = InputProps & TextFieldProps & CustomInput
 export const PercentageText = (props: ControlledTextFieldProps) => {
   const { name, rules, defaultValue, control, errors, ...restProps } = props
 
-  console.log({ name, errors })
-
   return (
     <Controller
       name={name}

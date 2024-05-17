@@ -20,7 +20,7 @@ import { BuildParams, useTxBuild, useTxCheck, useTxSimulation } from 'src/querie
 
 interface ModalProps {
   open: boolean
-  position: Position
+  positions: Position[]
   handleClose: () => void
 }
 
@@ -35,7 +35,7 @@ const BoxWrapperRowStyled = styled(BoxWrapperRow)(() => ({
 }))
 
 export const Modal = (props: ModalProps) => {
-  const { position, open, handleClose } = props
+  const { positions, open, handleClose } = props
 
   const smallScreen = useMediaQuery((theme: any) => theme.breakpoints.down('sm'))
 
@@ -45,17 +45,18 @@ export const Modal = (props: ModalProps) => {
     (params: any) => {
       if (!params) return setParams(undefined)
 
+      const position = positions[0]
+
       setParams({
         dao: position.dao,
         blockchain: position.blockchain,
         protocol: position.protocol,
-        pool_id: position.pool_id,
         strategy: params.strategy,
         percentage: params.percentage,
-        exit_arguments: params,
+        exit_arguments: positions.map((p) => ({ pool_id: p.pool_id, ...params })),
       })
     },
-    [position],
+    [positions],
   )
 
   const { data: tx, isLoading: isBuilding, error: buildError } = useTxBuild(params)
@@ -129,7 +130,7 @@ export const Modal = (props: ModalProps) => {
               gap={2}
             >
               <BoxWrapper>
-                <Detail position={position} onChange={handleParamsChange} />
+                <Detail position={positions[0]} onChange={handleParamsChange} />
 
                 <TransactionDetails isLoading={isBuilding} tx={tx} error={buildError} />
                 <TransactionCheck isLoading={isChecking} check={txCheck} error={checkError} />
@@ -140,7 +141,7 @@ export const Modal = (props: ModalProps) => {
                 />
                 {tx && txCheck && txSimulation ? (
                   <Confirm
-                    position={position}
+                    position={positions[0]}
                     tx={tx}
                     txCheck={txCheck}
                     txSimulation={txSimulation}

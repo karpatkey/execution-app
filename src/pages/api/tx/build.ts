@@ -5,31 +5,32 @@ import { authorizedDao } from 'src/services/authorizer'
 import { getDaosConfigs } from 'src/services/executor/strategies'
 import { RolesApi } from 'src/services/rolesapi'
 
-type Status = {
-  data?: Maybe<any>
-  status?: Maybe<number>
-  error?: Maybe<string>
+export type Response = {
+  data?: any
+  status?: number
+  error?: string
+}
+export type ExitArgs = {
+  pool_id: string
+  rewards_address?: string
+  max_slippage?: number
+  token_in_address?: string
+  token_out_address?: string
+  bpt_address?: string
 }
 
-type Params = {
+export type Params = {
   blockchain?: Blockchain
   dao?: Dao
   strategy?: string
   percentage?: number
-  pool_id?: string
   protocol?: string
-  exit_arguments?: {
-    rewards_address?: string
-    max_slippage?: number
-    token_in_address?: string
-    token_out_address?: string
-    bpt_address?: string
-  }
+  exit_arguments: ExitArgs[]
 }
 
 export default withApiAuthRequired(async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Status>,
+  res: NextApiResponse<Response>,
 ) {
   try {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
@@ -38,7 +39,6 @@ export default withApiAuthRequired(async function handler(
       dao = '',
       strategy,
       percentage,
-      pool_id,
       protocol,
       exit_arguments,
     } = req.body as Params
@@ -49,28 +49,32 @@ export default withApiAuthRequired(async function handler(
     if (!dao) throw new Error('missing dao')
     if (!blockchain) throw new Error('missing blockchain')
     if (!percentage) throw new Error('missing percentage')
-    if (!pool_id || !protocol || !strategy) {
+    if (!protocol || !strategy) {
       return res.status(500).json({ status: 500, error: 'Missing params' })
     }
 
     const daosConfigs = await getDaosConfigs(dao ? [dao] : [])
 
-    const { positionConfig } = getStrategyByPositionId(daosConfigs, dao, blockchain, pool_id)
-    const execConfig = positionConfig.find((c) => c.function_name === strategy)
+    const args = exit_arguments.map((args) => {
+      const pool_id = args.pool_id
+      const { positionConfig } = getStrategyByPositionId(daosConfigs, dao, blockchain, pool_id)
+      const execConfig = positionConfig.find((c) => c.function_name === strategy)
+      const a = new Map()
 
-    const args = new Map()
-    execConfig?.parameters?.forEach((parameter) => {
-      if (parameter.type === 'constant') args.set(parameter.name, parameter.value)
-    })
-    // Add the rest of the parameters if needed. User provided arguments
-    Object.entries(exit_arguments || {}).forEach(([key, value]) => {
-      if (value) args.set(key, value)
+      execConfig?.parameters?.forEach((parameter) => {
+        if (parameter.type === 'constant') a.set(parameter.name, parameter.value)
+      })
+      // Add the rest of the parameters if needed. User provided arguments
+      Object.entries(args || {}).forEach(([key, value]) => {
+        if (value) a.set(key, value)
+      })
+
+      return Object.fromEntries(a.entries())
     })
 
-    const argsParams = Object.fromEntries(args.entries())
     // Execute the transaction builder
     const api = new RolesApi(dao, blockchain)
-    const response = await api.buildTransaction(protocol, strategy, percentage, [argsParams])
+    const response = await api.buildTransaction(protocol, strategy, percentage, args)
 
     return res
       .status(200)
