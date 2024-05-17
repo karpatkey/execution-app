@@ -6,7 +6,10 @@ import { PositionWithStrategies } from 'src/contexts/state'
 import { USD } from 'src/views/Positions/USD'
 import ProtocolIcon from './ProtocolIcon'
 
-const DEFAULT_STRATS = new Map([['Aura', 'exit_2_1']])
+const DEFAULT_STRATS = new Map([
+  ['Aura', 'exit_2_1'],
+  ['Balancer', 'exit_1_1'],
+])
 
 function stratId(p: PositionWithStrategies) {
   const strat = DEFAULT_STRATS.get(p.protocol) || 'noop'
@@ -55,6 +58,10 @@ export default function ProtocolCard({
     return uri.toString()
   }, [pathname, searchParams, protocol])
 
+  const isAllCompatible = useMemo(() => {
+    return allCompatible(positions)
+  }, [positions])
+
   return (
     <Box sx={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
       <Link
@@ -84,7 +91,7 @@ export default function ProtocolCard({
         <Box sx={{ marginBottom: '0.5em' }}>{positions.length} Positions</Box>
         <USD value={totalUsd} />
       </Link>
-      {allCompatible(positions) ? (
+      {isAllCompatible ? (
         <Button
           color="error"
           disabled={!isSelected}
