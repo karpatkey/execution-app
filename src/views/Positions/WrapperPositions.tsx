@@ -113,8 +113,15 @@ const WrapperPositions = () => {
     const withChain =
       chain != all ? withDao.filter((position) => position.blockchain == chain) : withDao
 
-    return withChain
-  }, [positionsWithStrategies, searchParams])
+    if (queryTerms.length == 0) {
+      return withChain
+    } else {
+      return withChain.filter((position) => {
+        const joined = [position.lptokenName, position.pool_id].join(' ').toLowerCase()
+        return !queryTerms.find((t) => joined.search(t) == -1)
+      })
+    }
+  }, [positionsWithStrategies, queryTerms, searchParams])
 
   const filteredPositions = useMemo(() => {
     const protocol = searchParams.get('protocol') || all
@@ -124,19 +131,8 @@ const WrapperPositions = () => {
         ? filteredChainAndDao.filter((position) => position.protocol == protocol)
         : filteredChainAndDao
 
-    if (queryTerms.length == 0) {
-      return withProtocol.sort(sorter)
-    } else {
-      return withProtocol
-        .filter((position) => {
-          const joined = [position.dao, position.lptokenName, position.pool_id, position.protocol]
-            .join(' ')
-            .toLowerCase()
-          return !queryTerms.find((t) => joined.search(t) == -1)
-        })
-        .sort(sorter)
-    }
-  }, [filteredChainAndDao, queryTerms, searchParams])
+    return withProtocol.sort(sorter)
+  }, [filteredChainAndDao, searchParams])
 
   const filtersKey = `${searchParams.get('dao')}${searchParams.get('chain')}`
 
