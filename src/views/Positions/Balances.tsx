@@ -31,7 +31,7 @@ const BalanceGroup = ({ name, tokens }: { name: TokenGroup; tokens: Token[] }) =
       {tokens.map((token: Token) => {
         const { symbol, amount, price } = token
         return (
-          <Box key={symbol}>
+          <Box key={name + symbol + amount}>
             <BoxWrapperColumn gap={1}>
               <BoxWrapperRow sx={{ justifyContent: 'space-between' }}>
                 <BoxWrapperRow gap={1}>
