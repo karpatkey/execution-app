@@ -20,13 +20,6 @@ type GroupedTokens = {
 const BalanceGroup = ({ name, tokens }: { name: TokenGroup; tokens: Token[] }) => {
   return (
     <BoxWrapperColumn gap={0.8}>
-      {name !== 'core' ? (
-        <>
-          <BoxWrapperRow sx={{ justifyContent: 'flex-end' }}>
-            <Title title={name} sx={{ fontSize: '0.9rem', fontWeight: '600' }} />
-          </BoxWrapperRow>
-        </>
-      ) : null}
       {tokens.map((token: Token) => {
         const { symbol, amount, price } = token
         return (
