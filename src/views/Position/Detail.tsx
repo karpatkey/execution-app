@@ -87,7 +87,6 @@ export default function Detail({
       const allHaveIt = allConfigs.every((c) => {
         return !!c.positionConfig.find((s) => s.function_name == strategy.function_name)
       })
-      console.log(strategy.parameters)
       const simpleForMultiple = allConfigs.length == 1 || isSimpleStrat(strategy)
 
       return active && allHaveIt && simpleForMultiple
