@@ -44,6 +44,8 @@ export default function List({ positions }: { positions: PositionWithStrategies[
     router.push(uri, undefined, { shallow: true })
   }, [router, searchParams])
 
+  const hasDisabled = useMemo(() => positions.find((p) => !p.isActive), [positions])
+
   if (!positions || positions.length == 0) return <NoPositions />
 
   return (
@@ -79,24 +81,26 @@ export default function List({ positions }: { positions: PositionWithStrategies[
               </Box>
             )
           })}
-        <Box
-          sx={{
-            margin: '4rem',
-            alignItems: 'center',
-            justifyContent: 'center',
-            display: 'flex',
-            cursor: 'pointer',
-          }}
-        >
-          <Button
-            key="showDisabled"
-            variant="contained"
-            color="secondary"
-            onClick={() => setShowDisabled(!showDisabled)}
+        {hasDisabled ? (
+          <Box
+            sx={{
+              margin: '4rem',
+              alignItems: 'center',
+              justifyContent: 'center',
+              display: 'flex',
+              cursor: 'pointer',
+            }}
           >
-            {showDisabled ? 'Hide disabled' : 'Show disabled'}
-          </Button>
-        </Box>
+            <Button
+              key="showDisabled"
+              variant="contained"
+              color="secondary"
+              onClick={() => setShowDisabled(!showDisabled)}
+            >
+              {showDisabled ? 'Hide disabled' : 'Show disabled'}
+            </Button>
+          </Box>
+        ) : null}
       </Box>
     </>
   )
