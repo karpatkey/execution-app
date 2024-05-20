@@ -70,7 +70,7 @@ export default function Detail({
     () =>
       positions.map((p) => {
         return (
-          <Box key={p.lptokenName} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Box key={p.pool_id} sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box sx={{ marginRight: '1rem' }}>{p.lptokenName}</Box>
             <USD value={p.usd_amount} />
           </Box>
@@ -82,8 +82,6 @@ export default function Detail({
     () => positions.reduce((total, p) => p.usd_amount + total, 0),
     [positions],
   )
-
-  const tokens = useMemo(() => positions.flatMap((p) => p.tokens), [positions])
 
   const allConfigs = useMemo(
     () => positions.map((p) => getStrategy(daosConfigs, p)),
@@ -123,12 +121,12 @@ export default function Detail({
 
   return (
     <BoxWrapperRowStyled gap={2}>
-      <BoxWrapperColumn gap={2}>
+      <BoxWrapperColumn gap={1}>
         <BoxWrapperColumn gap={1}>
           <Primary title="Overview" />
           <Divider sx={{ borderBottomWidth: 5 }} />
         </BoxWrapperColumn>
-        <BoxWrapperColumn gap={2}>
+        <BoxWrapperColumn gap={1}>
           <Secondary title="DAO:" subtitle={dao} />
           <Secondary title="Blockchain:" subtitle={blockchain} />
           <Secondary title="Protocol:" subtitle={protocol} />
@@ -138,9 +136,24 @@ export default function Detail({
           </Secondary>
         </BoxWrapperColumn>
         <Divider sx={{ borderBottomWidth: 5 }} />
-        <Balances tokens={tokens} />
+        {positions.map((pos) => (
+          <Box key={pos.pool_id + 'tokens'}>
+            <Box
+              sx={{
+                paddingTop: '2rem',
+                display: 'flex',
+                fontWeight: '700',
+                fontSize: '1.1rem',
+                justifyContent: 'center',
+              }}
+            >
+              {pos.lptokenName}
+            </Box>
+            <Balances tokens={pos.tokens} />
+          </Box>
+        ))}
       </BoxWrapperColumn>
-      <BoxWrapperColumn gap={2}>
+      <BoxWrapperColumn gap={1}>
         {areAnyStrategies ? (
           <StrategyForm strategies={strategies} onValid={onStrategyChange} />
         ) : (
