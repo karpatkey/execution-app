@@ -1,4 +1,4 @@
-import { Divider, styled } from '@mui/material'
+import { Box, Divider, styled } from '@mui/material'
 import { useCallback, useMemo, useState } from 'react'
 import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 import { PositionConfig } from 'src/config/strategies/manager'
@@ -66,7 +66,18 @@ export default function Detail({
   const dao = useMemo(() => uniqueJoin(positions, 'dao'), [positions])
   const blockchain = useMemo(() => uniqueJoin(positions, 'blockchain'), [positions])
   const protocol = useMemo(() => uniqueJoin(positions, 'protocol'), [positions])
-  const lptokenName = useMemo(() => uniqueJoin(positions, 'lptokenName'), [positions])
+  const lptokenName = useMemo(
+    () =>
+      positions.map((p) => {
+        return (
+          <Box key={p.lptokenName} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box sx={{ marginRight: '1rem' }}>{p.lptokenName}</Box>
+            <USD value={p.usd_amount} />
+          </Box>
+        )
+      }),
+    [positions],
+  )
   const usd_amount = useMemo(
     () => positions.reduce((total, p) => p.usd_amount + total, 0),
     [positions],
