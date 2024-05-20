@@ -2,11 +2,18 @@ import { Box, Button } from '@mui/material'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
 import { useCallback, useMemo, useState } from 'react'
-import EmptyData from 'src/components/EmptyData'
 import { PositionWithStrategies } from 'src/contexts/state'
 import { slug } from 'src/utils/string'
 import { Modal } from 'src/views/Position/Modal/Modal'
 import Card from 'src/views/Positions/Card'
+
+function NoPositions() {
+  return (
+    <Box>
+      <h3>No Positions for the selection</h3>
+    </Box>
+  )
+}
 
 export default function List({ positions }: { positions: PositionWithStrategies[] }) {
   const searchParams = useSearchParams()
@@ -37,7 +44,7 @@ export default function List({ positions }: { positions: PositionWithStrategies[
     router.push(uri, undefined, { shallow: true })
   }, [router, searchParams])
 
-  if (!positions) return <EmptyData />
+  if (!positions || positions.length == 0) return <NoPositions />
 
   return (
     <>
