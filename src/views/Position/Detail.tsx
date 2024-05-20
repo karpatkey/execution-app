@@ -153,7 +153,7 @@ export default function Detail({
           </Box>
         ))}
       </BoxWrapperColumn>
-      <BoxWrapperColumn gap={1}>
+      <BoxWrapperColumn gap={1} sx={{ marginTop: '2rem' }}>
         {areAnyStrategies ? (
           <StrategyForm strategies={strategies} onValid={onStrategyChange} />
         ) : (

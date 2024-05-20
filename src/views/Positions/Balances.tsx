@@ -59,7 +59,6 @@ export const Balances = ({ tokens }: ListItemsProps) => {
         const tokens = groups[name]
         return tokens.length > 0 ? <BalanceGroup key={name} name={name} tokens={tokens} /> : null
       })}
-      <Divider sx={{ borderTopWidth: 3, marginTop: '-5px' }} />
     </BoxWrapperColumn>
   )
 }
