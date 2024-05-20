@@ -21,6 +21,8 @@ function stratId(p: PositionWithStrategies) {
 }
 
 function allCompatible(positions: PositionWithStrategies[]) {
+  if (positions.length == 0) return false
+
   const chain = positions[0].blockchain
   const dao = positions[0].dao
   const strat = stratId(positions[0])

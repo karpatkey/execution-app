@@ -1,11 +1,19 @@
 import { Box } from '@mui/material'
+import { useSearchParams } from 'next/navigation'
 import { useMemo } from 'react'
 import { PositionWithStrategies } from 'src/contexts/state'
 import ProtocolCard from './ProtocolCard'
 
 export default function ProtocolFilter({ positions }: { positions: PositionWithStrategies[] }) {
+  const searchParams = useSearchParams()
+
+  const selected = useMemo(() => {
+    const params = new URLSearchParams(searchParams.toString())
+    return params.get('protocol')
+  }, [searchParams])
+
   const protocols = useMemo(() => {
-    return positions.reduce((acc: any, pos) => {
+    const prots = positions.reduce((acc: any, pos) => {
       // if (pos.protocol == 'Wallet') return acc
       if (pos.isActive) {
         acc[pos.protocol] = acc[pos.protocol] || []
@@ -13,7 +21,13 @@ export default function ProtocolFilter({ positions }: { positions: PositionWithS
       }
       return acc
     }, {})
-  }, [positions])
+
+    if (selected) {
+      prots[selected] = prots[selected] || []
+    }
+
+    return prots
+  }, [positions, selected])
 
   if (!positions) return null
 
