@@ -11,6 +11,8 @@ export type StrategyArguments = {
   bpt_address: string
 }
 
+const LOG_LABEL = '[RolesApi]'
+
 async function request(path: string, body: Record<string, any>) {
   const url = process.env.ROLESAPI_URL + path
   try {
@@ -23,6 +25,11 @@ async function request(path: string, body: Record<string, any>) {
       body: JSON.stringify(body),
     })
 
+    console.log(`${LOG_LABEL} Response status for ${path}: ${r.status}`)
+
+    if (r.status != 200) {
+      throw new Error('Failed ' + (await r.text()))
+    }
     const b: any = await r.json()
 
     const error: string =
@@ -36,7 +43,7 @@ async function request(path: string, body: Record<string, any>) {
       ...b,
     }
   } catch (e: any) {
-    console.error(`RolesApiError: ${url}`, e)
+    console.error(`${LOG_LABEL} RolesApiError: ${url}`, e)
     return { error: `RolesApiError: ${e.message} ${url}` }
   }
 }
@@ -59,9 +66,7 @@ export class RolesApi {
     args: StrategyArguments[],
   ) {
     return await request('/build', {
-      rpc_url: this.rpc_url,
-      dao: this.dao,
-      blockchain: this.blockchain,
+      env: this.getEnv(),
       protocol,
       strategy,
       percentage,
@@ -71,9 +76,7 @@ export class RolesApi {
 
   async checkTransaction(protocol: Protocol, tx_transactables: any[]) {
     return await request('/check', {
-      rpc_url: this.rpc_url,
-      dao: this.dao,
-      blockchain: this.blockchain,
+      env: this.getEnv(),
       protocol,
       tx_transactables,
     })
@@ -86,5 +89,27 @@ export class RolesApi {
       blockchain: this.blockchain,
       transaction,
     })
+  }
+
+  getEnv() {
+    return {
+      rpc_url: this.rpc_url || this.getConfig('rpc_endpoint'),
+      rpc_fallback_url: this.getConfig('rpc_endpoint_fallback'),
+      mode: 'production',
+      avatar_safe_address: this.getDaoConfig('avatar_safe_address'),
+      disassembler_address: this.getDaoConfig('disassembler_address'),
+      roles_mod_address: this.getDaoConfig('roles_mod_address'),
+      role: this.getDaoConfig('role'),
+    }
+  }
+
+  getDaoConfig(name: string) {
+    const key = [this.dao, this.blockchain, name].map((s) => s.toUpperCase()).join('_')
+    return process.env[key]
+  }
+
+  getConfig(name: string) {
+    const key = [this.blockchain, name].map((s) => s.toUpperCase()).join('_')
+    return process.env[key]
   }
 }
