@@ -2,8 +2,9 @@ import { withApiAuthRequired } from '@auth0/nextjs-auth0'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Blockchain, Dao } from 'src/config/strategies/manager'
 import { authorizedDao } from 'src/services/authorizer'
+import { getEthersProvider } from 'src/services/ethers'
 import { executorEnv } from 'src/services/executor/env'
-import { RolesApi } from 'src/services/rolesapi'
+import { Tenderly } from 'src/services/tenderly'
 
 export type Response = {
   data?: any
@@ -36,13 +37,19 @@ export default withApiAuthRequired(async function handler(
     const env = await executorEnv(blockchain)
 
     try {
-      const api = new RolesApi(dao, blockchain, env.rpc_url)
-      const response = await api.simulateTransaction(transaction)
+      const api = new Tenderly()
+      const provider = await getEthersProvider(blockchain, env.env)
+      const blockNumber = await provider.getBlockNumber()
+      const response = await api.simulate(transaction, blockNumber)
+
+      if (response.simulation) {
+        response.simulation = await api.share(response.simulation)
+      }
 
       return res.status(200).json({
-        ...response,
-        ...response.sim_data,
-        error: response.sim_data?.error_message || response.error,
+        status: response.status,
+        data: response,
+        error: response.transaction.status ? null : response.simulation.error,
       })
     } finally {
       env.release()
