@@ -22,6 +22,7 @@ export interface DAO {
     address: string
     chainId: number
   }[]
+  manager_roles?: { address: string; role: number }[]
 }
 
 export const ALL_DAOS = [
@@ -129,6 +130,12 @@ export const DAO_LIST: DAO[] = [
       {
         address: '0x25e6bf739efdf0f79656423b592afc4d25f70f20',
         chainId: 100,
+      },
+    ],
+    manager_roles: [
+      {
+        address: '0xD0AD4A2DAbDeaE18A943b8237c9023afD87c9664',
+        role: 2,
       },
     ],
   },
