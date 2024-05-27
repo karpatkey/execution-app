@@ -82,15 +82,6 @@ export class RolesApi {
     })
   }
 
-  async simulateTransaction(transaction: string) {
-    return await request('/simulate', {
-      rpc_url: this.rpc_url,
-      dao: this.dao,
-      blockchain: this.blockchain,
-      transaction,
-    })
-  }
-
   getEnv() {
     return {
       rpc_url: this.rpc_url || this.getConfig('rpc_endpoint'),
