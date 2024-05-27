@@ -29,6 +29,12 @@ const ethersConfig = defaultConfig({
 // 5. Create a Web3Modal instance
 createWeb3Modal({
   ethersConfig,
+  themeVariables: {
+    '--w3m-font-family': 'var(--font-mono)',
+    '--w3m-color-mix': '#55556FFF',
+    '--w3m-color-mix-strength': 50,
+    '--w3m-accent': '#191A21FF',
+  },
   chains: [
     {
       chainId: 1,
