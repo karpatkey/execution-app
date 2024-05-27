@@ -86,7 +86,7 @@ export const Modal = (props: ModalProps) => {
     isLoading: isSimulating,
     error: simulationError,
   } = useTxSimulation(
-    params && tx?.tx_transactables
+    params && tx?.transaction
       ? {
           dao: params.dao,
           blockchain: params.blockchain,
