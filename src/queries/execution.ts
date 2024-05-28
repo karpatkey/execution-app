@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { useWeb3ModalAccount } from '@web3modal/ethers/react'
 import { Params as BuildParams } from 'src/pages/api/tx/build'
 import { Params as CheckParams } from 'src/pages/api/tx/check'
 import { Params as ExecuteParams } from 'src/pages/api/tx/execute'
@@ -45,9 +46,12 @@ async function fetcher(path: string, body: any, signal: AbortSignal | undefined 
 const TTL = 1 * 60 * 1000 // 1*60*1000 == 1 minutes
 
 export function useTxBuild(params?: BuildParams, refresh: boolean = true) {
+  const { address } = useWeb3ModalAccount()
+
+  const p = params && { ...params, connectedWallet: address }
   return useQuery<TxData>({
-    queryKey: ['tx/build/v1', btoa(JSON.stringify(params))],
-    queryFn: async ({ signal }) => await fetcher('/api/tx/build', params, signal),
+    queryKey: ['tx/build/v1', btoa(JSON.stringify(p))],
+    queryFn: async ({ signal }) => await fetcher('/api/tx/build', p, signal),
     refetchInterval: refresh && TTL,
     gcTime: TTL,
     retry: false,

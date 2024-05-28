@@ -1,48 +1,36 @@
 import { ethers } from 'ethers'
-import { Blockchain } from 'src/config/strategies/manager'
 import { chainId } from './executor/mapper'
+
+import { Blockchain } from 'src/config/strategies/manager'
+
+interface RPCEnv {
+  mev_rpc_url?: string
+  rpc_url?: string
+  fallback_rpc_url?: string
+}
 
 export async function getEthersProvider(
   blockchain: Blockchain,
-  env: Record<string, string>,
-  useMev: boolean = true,
+  env: RPCEnv,
+  useMev: boolean = false,
 ) {
   const { mev, normal, fallback } = {
-    ethereum: {
-      production: {
-        mev: env.ETHEREUM_RPC_ENDPOINT_MEV,
-        normal: env.ETHEREUM_RPC_ENDPOINT,
-        fallback: env.ETHEREUM_RPC_ENDPOINT_FALLBACK,
-      },
-      development: {
-        mev: env.LOCAL_FORK_URL + '?as=mev',
-        normal: env.LOCAL_FORK_URL + '?as=normal',
-        fallback: env.LOCAL_FORK_URL + '?as=fallback',
-      },
-      test: {
-        mev: '',
-        normal: '',
-        fallback: '',
-      },
+    production: {
+      mev: env.mev_rpc_url,
+      normal: env.rpc_url,
+      fallback: env.fallback_rpc_url,
     },
-    gnosis: {
-      production: {
-        mev: env.GNOSIS_RPC_ENDPOINT_MEV,
-        normal: env.GNOSIS_RPC_ENDPOINT,
-        fallback: env.GNOSIS_RPC_ENDPOINT_FALLBACK,
-      },
-      development: {
-        mev: env.LOCAL_FORK_URL + '?as=mev',
-        normal: env.LOCAL_FORK_URL + '?as=normal',
-        fallback: env.LOCAL_FORK_URL + '?as=fallback',
-      },
-      test: {
-        mev: '',
-        normal: '',
-        fallback: '',
-      },
+    development: {
+      mev: env.mev_rpc_url,
+      normal: env.rpc_url,
+      fallback: env.fallback_rpc_url,
     },
-  }[blockchain][(env.MODE || 'development') as 'development' | 'production' | 'test']
+    test: {
+      mev: '',
+      normal: '',
+      fallback: '',
+    },
+  }[(process.env.MODE || 'development') as 'development' | 'production' | 'test']
 
   const network = chainId(blockchain)
   const options = [network, { staticNetwork: true }] as [

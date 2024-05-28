@@ -1,3 +1,4 @@
+import { daoManagerRole } from 'src/config/constants'
 import { Blockchain, Dao } from 'src/config/strategies/manager'
 import { REVERSE_DAO_MAPPER } from 'src/services/executor/strategies'
 
@@ -48,15 +49,24 @@ async function request(path: string, body: Record<string, any>) {
   }
 }
 
+export type Args = {
+  dao: Dao
+  blockchain: Blockchain
+  connectedWallet?: string
+  rpc_url?: string
+}
+
 export class RolesApi {
   dao: string
-  blockchain: string
+  blockchain: Blockchain
+  connectedWallet?: string
   rpc_url?: string
 
-  constructor(dao: Dao, blockchain: Blockchain, rpc_url?: string) {
+  constructor({ dao, blockchain, connectedWallet, rpc_url }: Args) {
     this.dao = REVERSE_DAO_MAPPER[dao]
-    this.blockchain = blockchain.toUpperCase()
+    this.blockchain = blockchain
     this.rpc_url = rpc_url
+    this.connectedWallet = connectedWallet
   }
 
   async buildTransaction(
@@ -83,14 +93,18 @@ export class RolesApi {
   }
 
   getEnv() {
+    const role = daoManagerRole(this.dao, this.blockchain, this.connectedWallet)
+
+    console.log({ connectedWallet: this.connectedWallet, role })
+
     return {
       rpc_url: this.rpc_url || this.getConfig('rpc_endpoint'),
       rpc_fallback_url: this.getConfig('rpc_endpoint_fallback'),
       mode: 'production',
       avatar_safe_address: this.getDaoConfig('avatar_safe_address'),
-      disassembler_address: this.getDaoConfig('disassembler_address'),
       roles_mod_address: this.getDaoConfig('roles_mod_address'),
-      role: this.getDaoConfig('role'),
+      disassembler_address: role?.address || this.getDaoConfig('disassembler_address'),
+      role: role?.role || this.getDaoConfig('role'),
     }
   }
 

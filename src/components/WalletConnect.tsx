@@ -3,7 +3,7 @@ import 'src/services/wallet_connect'
 
 export function WalletConnect() {
   return (
-    <Box sx={{ color: 'red !important' }}>
+    <Box sx={{ marginRight: '1rem' }}>
       <w3m-button balance="show" size="sm" />
     </Box>
   )

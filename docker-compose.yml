@@ -36,10 +36,11 @@ services:
       context: ../roles_royce
       dockerfile: ../roles_royce/docker/Dockerfile.bots
     container_name: rolesapi
-    environment:
-      - APP=execution_app
     env_file:
       - .env
+    environment:
+      - APP=execution_app
+      - MODE=production
     ports:
       - '4001:8080'
 

@@ -26,6 +26,7 @@ export type Params = {
   percentage?: number
   protocol?: string
   exit_arguments: ExitArgs[]
+  connectedWallet?: string
 }
 
 export default withApiAuthRequired(async function handler(
@@ -41,6 +42,7 @@ export default withApiAuthRequired(async function handler(
       percentage,
       protocol,
       exit_arguments,
+      connectedWallet,
     } = req.body as Params
 
     const { error } = await authorizedDao({ req, res }, dao)
@@ -73,7 +75,7 @@ export default withApiAuthRequired(async function handler(
     })
 
     // Execute the transaction builder
-    const api = new RolesApi(dao, blockchain)
+    const api = new RolesApi({ dao, blockchain, connectedWallet })
     const response = await api.buildTransaction(protocol, strategy, percentage, args)
 
     return res
