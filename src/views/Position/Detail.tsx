@@ -72,7 +72,6 @@ export default function Detail({
         return (
           <Box key={p.pool_id} sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box sx={{ marginRight: '1rem' }}>{p.lptokenName}</Box>
-            <USD value={p.usd_amount} />
           </Box>
         )
       }),
@@ -140,14 +139,16 @@ export default function Detail({
           <Box key={pos.pool_id + 'tokens'}>
             <Box
               sx={{
-                paddingTop: '2rem',
+                paddingTop: '1.5rem',
+                paddingBottom: '1rem',
                 display: 'flex',
                 fontWeight: '700',
                 fontSize: '1.1rem',
-                justifyContent: 'center',
+                justifyContent: 'space-between',
               }}
             >
-              {pos.lptokenName}
+              <Box>{pos.lptokenName}</Box>
+              <USD value={pos.usd_amount} />
             </Box>
             <Balances tokens={pos.tokens} />
           </Box>
