@@ -17,7 +17,7 @@ import { Title } from './Title'
 interface CustomFormProps {
   strategy: PositionConfig
   commonConfig: Config[]
-  position: Position
+  positions: Position[]
   onValid: (params: any) => void
 }
 
@@ -49,7 +49,12 @@ const FORM_CONFIG: Record<FormFieldName, FormFieldConfig> = {
   bpt_address: { placeholder: '0x00000' },
 }
 
-export default function CustomForm({ commonConfig, strategy, position, onValid }: CustomFormProps) {
+export default function CustomForm({
+  commonConfig,
+  strategy,
+  positions,
+  onValid,
+}: CustomFormProps) {
   const {
     formState: { errors },
     handleSubmit,
@@ -112,9 +117,9 @@ export default function CustomForm({ commonConfig, strategy, position, onValid }
                       />
                       {name == 'percentage' ? (
                         <AmountsPreviewFromPercentage
-                          position={position}
+                          positions={positions}
                           percentage={watchPercentage}
-                          tokenOut={watchTokenOut}
+                          tokenOut={undefined && watchTokenOut}
                         />
                       ) : null}
                     </BoxWrapperColumn>

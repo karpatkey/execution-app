@@ -166,7 +166,7 @@ export default function Detail({
             // strategies={strategies}
             commonConfig={commonConfig}
             strategy={strategy}
-            position={positions[0]}
+            positions={positions}
             onValid={onConfigChange}
           />
         ) : null}
