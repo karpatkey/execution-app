@@ -95,8 +95,6 @@ export class RolesApi {
   getEnv() {
     const role = daoManagerRole(this.dao, this.blockchain, this.connectedWallet)
 
-    console.log({ connectedWallet: this.connectedWallet, role })
-
     return {
       rpc_url: this.rpc_url || this.getConfig('rpc_endpoint'),
       rpc_fallback_url: this.getConfig('rpc_endpoint_fallback'),

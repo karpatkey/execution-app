@@ -52,7 +52,6 @@ export function daoManagerRole(
   blockchain: Blockchain,
   connectedWallet?: string,
 ): { address: string; role: number } | undefined {
-  console.log({ dao, blockchain, connectedWallet })
   if (!connectedWallet) return undefined
 
   const chain = chainId(blockchain)
@@ -60,7 +59,6 @@ export function daoManagerRole(
   if (!config) return undefined
 
   const wallet = config.addresses.find((a) => a.chainId == chain)
-  console.log({ wallet })
 
   return (wallet?.manager_roles || []).find(
     (mr) => mr.address.toLowerCase() == connectedWallet.toLowerCase(),
