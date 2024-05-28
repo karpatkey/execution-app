@@ -1,9 +1,12 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { useWeb3ModalAccount } from '@web3modal/ethers/react'
+import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
+import { BrowserProvider } from 'ethers'
+import { daoManagerRole } from 'src/config/constants'
 import { Params as BuildParams } from 'src/pages/api/tx/build'
 import { Params as CheckParams } from 'src/pages/api/tx/check'
 import { Params as ExecuteParams } from 'src/pages/api/tx/execute'
 import { Params as SimulateParams } from 'src/pages/api/tx/simulate'
+import { chainId } from 'src/services/executor/mapper'
 
 export { type BuildParams }
 
@@ -73,9 +76,23 @@ export function useTxSimulation(params?: SimulateParams) {
 }
 
 export function useExecute(key: any) {
+  const { address } = useWeb3ModalAccount()
+  const { walletProvider } = useWeb3ModalProvider()
+
   return useMutation<ExecuteData, Error, ExecuteParams>({
     mutationFn: async (params: ExecuteParams) => {
-      return await fetcher('/api/tx/execute', params)
+      if (!params.dao || !params.blockchain) throw new Error('Missing params')
+      const role = daoManagerRole(params.dao, params.blockchain, address)
+      if (walletProvider && role) {
+        const chain = chainId(params.blockchain)
+        const ethersProvider = new BrowserProvider(walletProvider, chain)
+        const signer = await ethersProvider.getSigner()
+        const tx = await signer.sendTransaction(params.transaction)
+        const receipt = await tx.wait()
+        return { tx, receipt }
+      } else {
+        return await fetcher('/api/tx/execute', params)
+      }
     },
     mutationKey: key,
   })

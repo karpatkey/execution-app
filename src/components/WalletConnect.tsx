@@ -1,4 +1,7 @@
 import { Box } from '@mui/material'
+import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
+import { BrowserProvider, formatUnits } from 'ethers'
+import { useEffect, useState } from 'react'
 import 'src/services/wallet_connect'
 
 export function WalletConnect() {
@@ -8,10 +11,6 @@ export function WalletConnect() {
     </Box>
   )
 }
-
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
-import { BrowserProvider, formatUnits } from 'ethers'
-import { useEffect, useState } from 'react'
 
 export function Balance() {
   const { isConnected } = useWeb3ModalAccount()
