@@ -82,6 +82,7 @@ export function useExecute(key: any) {
   return useMutation<ExecuteData, Error, ExecuteParams>({
     mutationFn: async (params: ExecuteParams) => {
       if (!params.dao || !params.blockchain) throw new Error('Missing params')
+
       const role = daoManagerRole(params.dao, params.blockchain, address)
       if (walletProvider && role) {
         const chain = chainId(params.blockchain)
