@@ -95,7 +95,7 @@ export const Modal = (props: ModalProps) => {
       : undefined,
   )
 
-  const execution = useExecute()
+  const execution = useExecute([tx?.transaction])
   const onExecute = useCallback(async () => {
     if (!tx) return false
 

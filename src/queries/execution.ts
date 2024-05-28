@@ -68,10 +68,11 @@ export function useTxSimulation(params?: SimulateParams) {
   })
 }
 
-export function useExecute() {
+export function useExecute(key: any) {
   return useMutation<ExecuteData, Error, ExecuteParams>({
-    mutationFn: async (params) => {
+    mutationFn: async (params: ExecuteParams) => {
       return await fetcher('/api/tx/execute', params)
     },
+    mutationKey: key,
   })
 }
