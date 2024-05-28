@@ -1,4 +1,3 @@
-import { Button } from '@mui/material'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 
@@ -55,7 +54,6 @@ export default function CustomForm({ commonConfig, strategy, position, onValid }
     formState: { errors },
     handleSubmit,
     control,
-    setValue,
     watch,
   } = useForm<FormValues>({
     mode: 'onBlur',
@@ -81,11 +79,6 @@ export default function CustomForm({ commonConfig, strategy, position, onValid }
 
                 const { min, max } = rules || {}
 
-                const onClickApplyMax = () => {
-                  if (max !== undefined)
-                    setValue(name as FormFieldName, max, { shouldValidate: true })
-                }
-
                 if (min !== undefined && max !== undefined) {
                   return (
                     <BoxWrapperColumn gap={2} key={index}>
@@ -105,12 +98,6 @@ export default function CustomForm({ commonConfig, strategy, position, onValid }
                             </Tooltip>
                           ) : null}
                         </BoxWrapperRow>
-
-                        {name == 'percentage' ? (
-                          <Button onClick={onClickApplyMax} variant="contained">
-                            Max
-                          </Button>
-                        ) : null}
                       </BoxWrapperRow>
                       <PercentageText
                         name={name}
