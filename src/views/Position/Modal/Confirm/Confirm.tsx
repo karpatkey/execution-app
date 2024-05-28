@@ -1,6 +1,5 @@
 import { Box } from '@mui/material'
 import Button from '@mui/material/Button'
-import { useCallback } from 'react'
 import { AccordionBoxWrapper } from 'src/components/Accordion/AccordionBoxWrapper'
 import CustomTypography from 'src/components/CustomTypography'
 import Link from 'src/components/Link'
@@ -9,7 +8,7 @@ import TextLoadingDots from 'src/components/TextLoadingDots'
 import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 import { Position, SetupItemStatus } from 'src/contexts/state'
-import { TxCheckData, TxData, TxSimulationData, useExecute } from 'src/queries/execution'
+import { TxCheckData, TxData, TxSimulationData } from 'src/queries/execution'
 
 const WaitingExecutingTransaction = () => {
   return (
@@ -27,23 +26,21 @@ interface ConfirmProps {
   tx: TxData
   txCheck: TxCheckData
   txSimulation: TxSimulationData
-  handleClose: () => void
+  execution?: any
+  onExecute: () => void
+  onClose: () => void
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const Confirm = ({ position, tx, txCheck, txSimulation, handleClose }: ConfirmProps) => {
-  const execute = useExecute()
-
-  const onExecute = useCallback(async () => {
-    execute.mutate({
-      dao: position.dao,
-      blockchain: position.blockchain,
-      transaction: tx.transaction,
-    })
-  }, [execute, position.blockchain, position.dao, tx.transaction])
-
-  const error = execute.error
-  const txHash = execute.data?.tx_hash
+export const Confirm = ({
+  position,
+  txSimulation,
+  execution,
+  onExecute,
+  onClose,
+}: ConfirmProps) => {
+  const error = execution?.error
+  const txHash = execution?.data?.tx_hash
 
   const exploreUrl =
     position.blockchain == 'ethereum'
@@ -56,9 +53,9 @@ export const Confirm = ({ position, tx, txCheck, txSimulation, handleClose }: Co
         <BoxWrapperColumn gap={2}>
           <BoxWrapperRow sx={{ justifyContent: 'space-between' }}>
             <CustomTypography variant={'body2'}>Confirmation</CustomTypography>
-            {execute.isPending && <StatusLabel status={'loading' as SetupItemStatus} />}
+            {execution?.isPending && <StatusLabel status={'loading' as SetupItemStatus} />}
           </BoxWrapperRow>
-          {!execute.isPending && !execute.isError && !execute.data && (
+          {!execution?.isPending && !execution?.isError && !execution?.data && (
             <CustomTypography variant={'subtitle1'}>
               You're about to create and confirm this transaction.
             </CustomTypography>
@@ -66,8 +63,8 @@ export const Confirm = ({ position, tx, txCheck, txSimulation, handleClose }: Co
         </BoxWrapperColumn>
         <BoxWrapperColumn gap={'20px'}>
           <BoxWrapperRow gap={'20px'}>
-            {execute.isPending && <WaitingExecutingTransaction />}
-            {execute.isError && !execute.isPending && (
+            {execution?.isPending && <WaitingExecutingTransaction />}
+            {execution?.isError && !execution?.isPending && (
               <CustomTypography variant={'body2'} sx={{ color: 'red', overflow: 'auto' }}>
                 {error?.message && typeof error?.message === 'string'
                   ? error?.message
@@ -87,17 +84,17 @@ export const Confirm = ({ position, tx, txCheck, txSimulation, handleClose }: Co
                 View on block explorer
               </Link>
             )}
-            {!execute.isError && !execute.data && (
-              <Button variant="contained" color="error" onClick={() => handleClose()}>
+            {!execution?.isError && !execution?.data && (
+              <Button variant="contained" color="error" onClick={() => onClose()}>
                 Cancel
               </Button>
             )}
-            {execute.isIdle && (
+            {execution?.isIdle && (
               <Button variant="contained" onClick={onExecute}>
                 Execute
               </Button>
             )}
-            {execute.data && !execute.isPending && (
+            {execution?.data && !execution?.isPending && (
               <Button variant="contained" component={Link} href={`/positions`}>
                 Finish
               </Button>
