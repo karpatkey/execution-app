@@ -74,11 +74,11 @@ export const Modal = (props: ModalProps) => {
   } = useTxCheck(
     params && tx?.tx_transactables
       ? {
-          dao: params.dao,
-          blockchain: params.blockchain,
-          protocol: params.protocol,
-          tx_transactables: tx.tx_transactables,
-        }
+        dao: params.dao,
+        blockchain: params.blockchain,
+        protocol: params.protocol,
+        tx_transactables: tx.tx_transactables,
+      }
       : undefined,
   )
   const {
@@ -88,10 +88,10 @@ export const Modal = (props: ModalProps) => {
   } = useTxSimulation(
     params && tx?.transaction
       ? {
-          dao: params.dao,
-          blockchain: params.blockchain,
-          transaction: tx.transaction,
-        }
+        dao: params.dao,
+        blockchain: params.blockchain,
+        transaction: tx.transaction,
+      }
       : undefined,
   )
 
