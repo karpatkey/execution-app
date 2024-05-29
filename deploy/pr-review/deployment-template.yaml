@@ -48,7 +48,7 @@ spec:
               value: debug
 
         - name: rolesapi
-          image: registry.digitalocean.com/karpatkey/bots:main-c585cf0
+          image: registry.digitalocean.com/karpatkey/bots:feature-generic-execution-app-ad92d13
           env:
             - name: APP
               value: execution_app
