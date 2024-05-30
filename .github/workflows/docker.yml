@@ -32,8 +32,8 @@ jobs:
         shell: bash
         run: |
           echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-          echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
-          echo "time=$(date +'%H%M%S')" >> $GITHUB_OUTPUT
+          echo "date=$(date -u +'%Y%m%d')" >> $GITHUB_OUTPUT
+          echo "time=$(date -u +'%H%M%S')" >> $GITHUB_OUTPUT
         id: extract_branch_d_t
 
       - name: Docker meta
