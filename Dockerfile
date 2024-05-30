@@ -37,7 +37,7 @@ RUN yarn install
 COPY .git ./.git
 COPY roles_royce ./roles_royce
 
-RUN pip3 install ./roles_royce && \
+RUN pip3 install ./roles_royce 'rolesroyce[all]' && \
     # pip3 install -r requirements.txt && \
     apk del python3-dev musl-dev gcc g++
 
