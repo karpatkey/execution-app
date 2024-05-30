@@ -28,10 +28,13 @@ jobs:
           PR_SHA=$(echo "${{ github.event.pull_request.head.sha }}" | cut -c1-7)
           echo "PR_SHA=${PR_SHA}" >> $GITHUB_ENV
 
-      - name: Extract branch name
+      - name: Extract branch name, date and time
         shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+          echo "time=$(date +'%H%M%S')" >> $GITHUB_OUTPUT
+        id: extract_branch_d_t
 
       - name: Docker meta
         id: docker_meta
@@ -40,7 +43,8 @@ jobs:
           images: registry.digitalocean.com/karpatkey/execution-app
           tags: |
             type=raw,value=pr${{ env.PR_SHA }}
-            ${{ steps.extract_branch.outputs.branch }}
+            ${{ steps.extract_branch_d_t.outputs.branch }}
+            ${{ steps.extract_branch_d_t.outputs.branch }}-${{ steps.extract_branch_d_t.outputs.date }}-${{ steps.extract_branch_d_t.outputs.time }}
 
       - name: Login to Docker
         uses: docker/login-action@v3
