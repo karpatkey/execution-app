@@ -31,8 +31,11 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          echo "date=$(date +'%Y%m%d')" >> $GITHUB_ENV
+          echo "time=$(date +'%H%M%S')" >> $GITHUB_ENV
+        id: extract_branch_date_time
 
       - name: Docker meta
         id: docker_meta
@@ -42,7 +45,7 @@ jobs:
           tags: |
             type=raw,value=pr${{ env.PR_SHA }}
             ${{ steps.extract_branch.outputs.branch }}
-            ${{ steps.extract_branch.outputs.branch }}-${(date +"%Y%m%d")}-${(date +"%H%M%S")}
+            ${{ steps.extract_branch.outputs.branch }}-${{ steps.extract_branch.outputs.date }}-${{ steps.extract_branch.outputs.time }}
 
       - name: Login to Docker
         uses: docker/login-action@v3
