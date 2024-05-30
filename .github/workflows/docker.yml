@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - test/semver
   pull_request:
     branches:
       - main
