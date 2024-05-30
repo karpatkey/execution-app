@@ -29,12 +29,12 @@ jobs:
           PR_SHA=$(echo "${{ github.event.pull_request.head.sha }}" | cut -c1-7)
           echo "PR_SHA=${PR_SHA}" >> $GITHUB_ENV
 
-      - name: Extract branch name
+      - name: Extract branch name, date and time
         shell: bash
         run: |
           echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-          echo "date=$(date +'%Y%m%d')" >> $GITHUB_ENV
-          echo "time=$(date +'%H%M%S')" >> $GITHUB_ENV
+          echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+          echo "time=$(date +'%H%M%S')" >> $GITHUB_OUTPUT
         id: extract_branch_date_time
 
       - name: Docker meta
