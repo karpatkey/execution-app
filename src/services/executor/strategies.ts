@@ -10,6 +10,7 @@ const MINIO_BUCKET = process.env.MINIO_BUCKET ?? ''
 
 interface File {
   dao: Dao
+  updatedAt: string
   blockchain: string
   general_parameters: any
   positions: any
@@ -73,7 +74,10 @@ async function fetchJsons(): Promise<File[]> {
         stream.on('error', (err) => reject(err))
       })
 
-      return streamData.then((content: any) => JSON.parse(content))
+      return streamData.then((content: any) => ({
+        ...JSON.parse(content),
+        updatedAt: object.lastModified?.toISOString(),
+      }))
     })
 
   return await Promise.all(res)
@@ -135,6 +139,7 @@ export type DaoConfig = {
   dao: Dao
   blockchain: Blockchain
   general_parameters: Record<string, string>
+  updatedAt: string
 }
 
 export async function getDaosConfigs(daos: string[]): Promise<DaoConfig[]> {
@@ -143,7 +148,7 @@ export async function getDaosConfigs(daos: string[]): Promise<DaoConfig[]> {
   if (!configs) return []
 
   return configs
-    .map((f) => ({
+    .flatMap((f) => ({
       ...f,
       positions: f.positions.map(fixPosition),
       dao: DAO_NAME_MAPPER[f.dao] || f.dao,
@@ -156,6 +161,7 @@ export async function getDaosConfigs(daos: string[]): Promise<DaoConfig[]> {
 
 type StatusResult = {
   ok: boolean
+  last_updated?: string
   last_error?: string
   total?: number
   total_positions?: number
@@ -171,6 +177,10 @@ export async function getDaosConfigsStatus(): Promise<StatusResult> {
   const configs = await getDaosConfigs(ALL_DAOS)
   if (configs.length == 0) return { ok: false, error: LAST_ERROR || 'No configs' }
 
+  const lastUpdated = configs
+    .flatMap((c) => c.updatedAt)
+    .sort()
+    .reverse()[0]
   const all_positions = configs.flatMap((c) => c.positions)
   const total_positions = all_positions.length
   const all_tests = all_positions.flatMap((p) => p.exec_config)
@@ -191,8 +201,14 @@ export async function getDaosConfigsStatus(): Promise<StatusResult> {
   }, {})
 
   const time_since_last_refresh = +new Date() - LAST_REFRESH
+  const daysAgo = new Date()
+  daysAgo.setDate(new Date().getDay() - 2)
+  const updatedInPast2Days = new Date(lastUpdated) > daysAgo
+
   return {
-    ok: true,
+    ok: updatedInPast2Days,
+    error: !updatedInPast2Days ? "Looks like it's outdated" : undefined,
+    last_updated: lastUpdated,
     last_error: LAST_ERROR,
     total_positions,
     total_tests,

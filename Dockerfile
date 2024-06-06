@@ -15,7 +15,6 @@ COPY package.json yarn.lock .
 # Install Node.js dependencies in the builder stage
 RUN yarn install
 
-# Runner stage for dev ======================================================
 FROM base as dev
 
 # Set working directory in the runner stage
