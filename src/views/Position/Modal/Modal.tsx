@@ -102,11 +102,11 @@ export const Modal = (props: ModalProps) => {
     setExecuting(true)
 
     execution.mutate({
-      dao: params?.dao,
-      blockchain: params?.blockchain,
+      dao: positions[0].dao,
+      blockchain: positions[0].blockchain,
       transaction: tx?.transaction,
     })
-  }, [tx, execution, params?.blockchain, params?.dao])
+  }, [tx, execution, positions])
 
   const modalPadding = smallScreen ? '1rem' : '3rem'
   return (
