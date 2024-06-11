@@ -184,6 +184,17 @@ const Protocols = new Map([
   ['LIDO', 'Lido'],
 ])
 
+function fixProtocol(chain: string, protocol: string, pool_id: string) {
+  switch ([chain, protocol, pool_id.toLowerCase()].toString()) {
+    case ['ethereum', 'Maker', '0x83f20f44975d03b1b09e64809b757c47f942beea'].toString():
+      return 'Spark'
+    case ['gnosis', 'Gnosis', '0xaf204776c7245bf4147c2612bf6e5972ee483701'].toString():
+      return 'Spark'
+  }
+
+  return protocol
+}
+
 import kitchen_data from './kitchen.json'
 const PositionNamesFromPoolId = new Map(
   kitchen_data.map((d) => [d.lptoken_address, d.lptoken_name]),
@@ -221,7 +232,7 @@ function transformPosition(position: DebankPosition): ResponsePosition[] {
       chain,
       position_type,
       pool_id,
-      protocol_name,
+      protocol_name: fixProtocol(chain, protocol_name, pool_id),
       lptoken_name,
       tokens,
       updated_at: i.update_at * 1000,
