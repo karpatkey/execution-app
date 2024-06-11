@@ -41,9 +41,9 @@ type FormFieldConfig = {
 }
 
 const FORM_CONFIG: Record<FormFieldName, FormFieldConfig> = {
-  percentage: { placeholder: '0.00%' },
+  percentage: { placeholder: '0.000%' },
   rewards_address: { placeholder: '0x00000' },
-  max_slippage: { placeholder: '0.00%' },
+  max_slippage: { placeholder: '0.000%' },
   token_in_address: { placeholder: '0x00000' },
   token_out_address: { placeholder: '0x00000' },
   bpt_address: { placeholder: '0x00000' },
