@@ -14,6 +14,7 @@ import { usePositions } from 'src/queries/positions'
 import { getStrategy } from 'src/services/strategies'
 import { slug } from 'src/utils/string'
 import { useDebounceCallback } from 'usehooks-ts'
+import ExitAllButton from './ExitAllButton'
 import List from './List'
 import ProtocolFilter from './ProtocolFilter'
 
@@ -147,7 +148,10 @@ const WrapperPositions = () => {
               <BoxWrapperRow gap={2} sx={{ justifyContent: 'space-between' }}>
                 <SearchPosition value={query} onChange={handleSearch} />
               </BoxWrapperRow>
-              <ProtocolFilter positions={filteredChainAndDao} />
+              <BoxWrapperRow gap={2} sx={{ justifyContent: 'space-between' }}>
+                <ProtocolFilter positions={filteredChainAndDao} />
+                <ExitAllButton positions={filteredPositions} />
+              </BoxWrapperRow>
               <List key={filtersKey} positions={filteredPositions} />
             </PaperSection>
           </BoxWrapperColumn>
