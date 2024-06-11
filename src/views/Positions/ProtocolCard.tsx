@@ -65,6 +65,15 @@ export default function ProtocolCard({
     return allCompatible(positions)
   }, [positions])
 
+  const hasExitAll = useMemo(() => {
+    if (positions.length == 0) return false
+
+    const strat = stratId(positions[0])
+
+    return !positions.find((p) => !stratId(p) || strat != stratId(p))
+  }, [positions])
+
+  const exitEnabled = isAllCompatible && isSelected
   const router = useRouter()
   const handleExitAll = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString())
@@ -104,12 +113,12 @@ export default function ProtocolCard({
         <Box sx={{ marginBottom: '0.5em' }}>{positions.length} Positions</Box>
         <USD value={totalUsd} />
       </Link>
-      {isAllCompatible ? (
-        <Tooltip title={!isSelected ? 'filter it mate' : null}>
+      {hasExitAll ? (
+        <Tooltip title={!exitEnabled ? 'apply filters to enable' : null}>
           <span>
             <Button
               color="error"
-              disabled={!isSelected}
+              disabled={!exitEnabled}
               size="small"
               variant="contained"
               onClick={handleExitAll}
