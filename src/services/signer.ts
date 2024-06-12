@@ -19,6 +19,7 @@ function testAddress() {
 type StatusResponse = {
   ok: boolean
   error?: string
+  balances: any
   accounts?: any
 }
 
@@ -39,7 +40,7 @@ async function checkDisassemblersGas(inVaultAccounts: string[]) {
 
   async function checkOne(key: string, disassembler: string) {
     let prov = null
-    if (key.includes('ETHEREUM')) {
+    if (key.includes('_ETHEREUM_')) {
       prov = providerEth
     } else {
       prov = providerGno
@@ -50,17 +51,19 @@ async function checkDisassemblersGas(inVaultAccounts: string[]) {
 
   const dis: any = {}
   Object.keys(process.env).forEach((k) => {
-    if (k.includes('DISASSEMBLER')) {
+    if (k.includes('_DISASSEMBLER_')) {
       dis[k] = process.env[k]
     }
   })
 
   let ok = true
+  const balances: any = {}
   const errors: string[] = []
   const promises = Object.keys(dis)
     .map((k) => [k, dis[k], checkOne(k, dis[k])])
     .map(async ([key, dis, balanceP]) => {
       const b = await balanceP
+      balances[key] = (b / ethers.WeiPerEther).toString()
       if (b < ethers.WeiPerEther) {
         errors.push(`${key} has low gas. Current: ${b / ethers.WeiPerEther}`)
         if (inVaultAccounts.includes(dis)) {
@@ -71,37 +74,34 @@ async function checkDisassemblersGas(inVaultAccounts: string[]) {
 
   await Promise.all(promises)
 
-  return { ok, errors }
+  return { ok, balances, errors }
 }
 
 export async function getStatus(): Promise<StatusResponse> {
+  let loadedkeys: string[] = []
+  let vaultError: string | undefined = undefined
   try {
     const res = await callVaultEthsigner(
       { method: 'GET', path: '/accounts?list=true' },
       process.env,
     )
-
     if (!res.data || !res.data.keys || res.data.keys.length == 0) {
-      return {
-        ok: false,
-        error: 'No keys imported',
-      }
+      vaultError = 'No keys imported'
     }
 
-    const { ok, errors } = await checkDisassemblersGas(res.data.keys)
-
-    return {
-      ok: ok,
-      error: errors.join('; ') || undefined,
-      accounts: res.data.keys,
-    }
+    loadedkeys = res.data.keys
   } catch (error: any) {
     console.error(error)
+    vaultError = `VaultError: ${error.message}`
+  }
 
-    return {
-      ok: false,
-      error: error.message,
-    }
+  const { ok, balances, errors } = await checkDisassemblersGas(loadedkeys)
+
+  return {
+    ok: ok && !vaultError,
+    error: [vaultError || '', ...errors].filter((e) => e).join('; '),
+    balances,
+    accounts: loadedkeys,
   }
 }
 
