@@ -1,4 +1,4 @@
-import { JsonRpcProvider, ethers } from 'ethers'
+import { JsonRpcProvider, ethers, formatUnits } from 'ethers'
 import { Blockchain, Dao } from 'src/config/strategies/manager'
 import { getEthersProvider } from 'src/services/ethers'
 import { AnvilTools } from './dev_tools'
@@ -20,6 +20,7 @@ type StatusResponse = {
   ok: boolean
   error?: string
   balances: any
+  threshold: string
   accounts?: any
 }
 
@@ -63,9 +64,10 @@ async function checkDisassemblersGas(inVaultAccounts: string[]) {
     .map((k) => [k, dis[k], checkOne(k, dis[k])])
     .map(async ([key, dis, balanceP]) => {
       const b = await balanceP
-      balances[key] = (b / ethers.WeiPerEther).toString()
+      console.log({ key, dis, b })
+      balances[key] = formatUnits(b, 'ether')
       if (b < ethers.WeiPerEther) {
-        errors.push(`${key} has low gas. Current: ${b / ethers.WeiPerEther}`)
+        errors.push(`${key} has low gas. Current: ${balances[key]}`)
         if (inVaultAccounts.includes(dis)) {
           ok = false
         }
@@ -80,6 +82,7 @@ async function checkDisassemblersGas(inVaultAccounts: string[]) {
 export async function getStatus(): Promise<StatusResponse> {
   let loadedkeys: string[] = []
   let vaultError: string | undefined = undefined
+  const threshold = ethers.WeiPerEther
   try {
     const res = await callVaultEthsigner(
       { method: 'GET', path: '/accounts?list=true' },
@@ -100,6 +103,7 @@ export async function getStatus(): Promise<StatusResponse> {
   return {
     ok: ok && !vaultError,
     error: [vaultError || '', ...errors].filter((e) => e).join('; '),
+    threshold: formatUnits(threshold, 'ether'),
     balances,
     accounts: loadedkeys,
   }
@@ -116,9 +120,9 @@ async function callVaultEthsigner(request: Record<string, any>, env: Env) {
   const url = signerUrl + request.path
 
   const body = request.body
-    ? JSON.stringify(request.body, (_key, value) =>
-        typeof value === 'bigint' ? value.toString() : value,
-      )
+    ? JSON.stringify(request.body, (_key, value) => {
+        return typeof value === 'bigint' ? value.toString() : value
+      })
     : undefined
 
   const req = {
