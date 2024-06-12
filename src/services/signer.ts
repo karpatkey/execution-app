@@ -1,5 +1,6 @@
 import { JsonRpcProvider, ethers } from 'ethers'
 import { Blockchain, Dao } from 'src/config/strategies/manager'
+import { getEthersProvider } from 'src/services/ethers'
 import { AnvilTools } from './dev_tools'
 
 type Transaction = Record<string, any>
@@ -23,6 +24,56 @@ type StatusResponse = {
 
 type Env = Record<string, string> | NodeJS.ProcessEnv
 
+async function checkDisassemblersGas(inVaultAccounts: string[]) {
+  const env = {
+    MODE: 'production',
+    ETHEREUM_RPC_ENDPOINT: process.env.ETHEREUM_RPC_ENDPOINT || '',
+    GNOSIS_RPC_ENDPOINT: process.env.GNOSIS_RPC_ENDPOINT || '',
+  }
+
+  const providerEthP = getEthersProvider('ethereum', env, false)
+  const providerGnoP = getEthersProvider('gnosis', env, false)
+
+  const providerEth = await providerEthP
+  const providerGno = await providerGnoP
+
+  async function checkOne(key: string, disassembler: string) {
+    let prov = null
+    if (key.includes('ETHEREUM')) {
+      prov = providerEth
+    } else {
+      prov = providerGno
+    }
+
+    return await prov.getBalance(disassembler)
+  }
+
+  const dis: any = {}
+  Object.keys(process.env).forEach((k) => {
+    if (k.includes('DISASSEMBLER')) {
+      dis[k] = process.env[k]
+    }
+  })
+
+  let ok = true
+  const errors: string[] = []
+  const promises = Object.keys(dis)
+    .map((k) => [k, dis[k], checkOne(k, dis[k])])
+    .map(async ([key, dis, balanceP]) => {
+      const b = await balanceP
+      if (b < ethers.WeiPerEther) {
+        errors.push(`${key} has low gas. Current: ${b / ethers.WeiPerEther}`)
+        if (inVaultAccounts.includes(dis)) {
+          ok = false
+        }
+      }
+    })
+
+  await Promise.all(promises)
+
+  return { ok, errors }
+}
+
 export async function getStatus(): Promise<StatusResponse> {
   try {
     const res = await callVaultEthsigner(
@@ -37,8 +88,11 @@ export async function getStatus(): Promise<StatusResponse> {
       }
     }
 
+    const { ok, errors } = await checkDisassemblersGas(res.data.keys)
+
     return {
-      ok: true,
+      ok: ok,
+      error: errors.join('; ') || undefined,
       accounts: res.data.keys,
     }
   } catch (error: any) {
