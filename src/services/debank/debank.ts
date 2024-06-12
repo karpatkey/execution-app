@@ -106,6 +106,23 @@ export interface DebankPositionItem {
       time_at: number
       amount: number
     }[]
+    borrow_token_list: {
+      id: string
+      chain: string
+      name: string
+      symbol: string
+      display_symbol?: string
+      optimized_symbol: string
+      decimals: number
+      logo_url: string
+      protocol_id: string
+      price: number
+      is_verified: boolean
+      is_core: boolean
+      is_wallet: boolean
+      time_at: number
+      amount: number
+    }[]
   }
 }
 export interface DebankPosition {
@@ -167,6 +184,17 @@ const Protocols = new Map([
   ['LIDO', 'Lido'],
 ])
 
+function fixProtocol(chain: string, protocol: string, pool_id: string) {
+  switch ([chain, protocol, pool_id.toLowerCase()].toString()) {
+    case ['ethereum', 'Maker', '0x83f20f44975d03b1b09e64809b757c47f942beea'].toString():
+      return 'Spark'
+    case ['gnosis', 'Gnosis', '0xaf204776c7245bf4147c2612bf6e5972ee483701'].toString():
+      return 'Spark'
+  }
+
+  return protocol
+}
+
 import kitchen_data from './kitchen.json'
 const PositionNamesFromPoolId = new Map(
   kitchen_data.map((d) => [d.lptoken_address, d.lptoken_name]),
@@ -189,8 +217,8 @@ function transformPosition(position: DebankPosition): ResponsePosition[] {
   return position.portfolio_item_list.flatMap((i) => {
     const tokens = [
       ...(i.detail.supply_token_list || []).map(tokenOfType('supply')),
+      ...(i.detail.borrow_token_list || []).map(tokenOfType('borrow')),
       // ...(i.detail.reward_token_list || []).map(tokenOfType('reward')),
-      // ...(i.detail.borrow_token_list || []).map(tokenOfType('borrow')),
       // ...(i.detail.other_tokens_list || []).map(tokenOfType('other')),
     ].filter((l) => l)
 
@@ -204,7 +232,7 @@ function transformPosition(position: DebankPosition): ResponsePosition[] {
       chain,
       position_type,
       pool_id,
-      protocol_name,
+      protocol_name: fixProtocol(chain, protocol_name, pool_id),
       lptoken_name,
       tokens,
       updated_at: i.update_at * 1000,
