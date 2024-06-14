@@ -62,13 +62,14 @@ async function checkDisassemblersGas(inVaultAccounts: string[]) {
   const balances: any = {}
   const errors: string[] = []
   const warnings: string[] = []
+  const accounts = inVaultAccounts.map((a) => a.toLowerCase())
   const promises = Object.keys(dis)
     .map((k) => [k, dis[k], getBalance(k, dis[k])])
     .map(async ([key, dis, balanceP]) => {
       const b = await balanceP
       balances[key] = formatUnits(b, 'ether')
       if (b < ethers.WeiPerEther) {
-        if (inVaultAccounts.includes(dis)) {
+        if (accounts.includes(dis.toLowerCase())) {
           errors.push(`${key} has low gas. Current: ${balances[key]}`)
           ok = false
         } else {
@@ -125,7 +126,6 @@ async function callVaultEthsigner(request: Record<string, any>, env: Env) {
 
   const body = request.body
     ? JSON.stringify(request.body, (_, v) => (typeof v === 'bigint' ? v.toString() : v))
-
     : undefined
 
   const req = {
