@@ -1,13 +1,13 @@
-import React from 'react'
-import { Controller } from 'react-hook-form'
-import { TextFieldProps } from '@mui/material/TextField/TextField'
-import { InputProps } from 'src/views/Position/Form/Types'
 import { InputAdornment, TextField } from '@mui/material'
+import { TextFieldProps } from '@mui/material/TextField/TextField'
+import { ChangeEvent } from 'react'
+import { Controller } from 'react-hook-form'
+import { InputProps } from './typing'
 
 export interface CustomInputPropsProps {
   label: string
   textFieldType?: string
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void
   errors: any
   rules?: any
 }
@@ -25,12 +25,12 @@ export const InputText = (props: ControlledTextFieldProps) => {
       render={({ field }) => (
         <TextField
           type={textFieldType}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
             if (onChange) onChange(e)
             field.onChange(e)
           }}
           InputProps={{
-            endAdornment: <InputAdornment position="start">%</InputAdornment>
+            endAdornment: <InputAdornment position="start">%</InputAdornment>,
           }}
           value={field.value || ''}
           error={!!errors[field.name]}
@@ -44,16 +44,16 @@ export const InputText = (props: ControlledTextFieldProps) => {
             color: 'custom.grey.dark',
             width: '100%',
             '& input[type=number]': {
-              MozAppearance: 'textfield'
+              MozAppearance: 'textfield',
             },
             '& input[type=number]::-webkit-outer-spin-button': {
               WebkitAppearance: 'none',
-              margin: 0
+              margin: 0,
             },
             '& input[type=number]::-webkit-inner-spin-button': {
               WebkitAppearance: 'none',
-              margin: 0
-            }
+              margin: 0,
+            },
           }}
           {...restProps}
         />

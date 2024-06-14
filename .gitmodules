@@ -1,4 +1,0 @@
-[submodule "roles_royce"]
-	path = roles_royce
-	url = https://github.com/karpatkey/roles_royce/
-	branch = main

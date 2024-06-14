@@ -15,19 +15,5 @@ export const USD = ({ value }: USDProps) => {
 
     return USDollar.format(+value)
   }, [value])
-  return (
-    <CustomTypography
-      sx={{
-        fontFamily: 'IBM Plex Mono',
-        fontStyle: 'normal',
-        fontWeight: 400,
-        fontSize: '14px',
-        lineHeight: '14px',
-        color: 'custom.grey.dark',
-        letterSpacing: '-0.02em',
-      }}
-    >
-      {formattedValue}
-    </CustomTypography>
-  )
+  return <CustomTypography>{formattedValue}</CustomTypography>
 }

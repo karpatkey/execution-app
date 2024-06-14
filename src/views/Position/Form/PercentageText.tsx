@@ -1,9 +1,9 @@
-import React, { ForwardedRef } from 'react'
-import { Controller } from 'react-hook-form'
-import { TextFieldProps } from '@mui/material/TextField/TextField'
-import { InputProps } from 'src/views/Position/Form/Types'
 import { TextField } from '@mui/material'
+import { TextFieldProps } from '@mui/material/TextField/TextField'
+import { ForwardedRef, forwardRef } from 'react'
+import { Controller, ControllerProps } from 'react-hook-form'
 import { NumericFormat } from 'react-number-format'
+import { InputProps } from './typing'
 
 interface PercentageNumberFormatProps {
   inputRef: (instance: typeof NumericFormat | null) => void
@@ -11,71 +11,52 @@ interface PercentageNumberFormatProps {
 }
 
 // eslint-disable-next-line react/display-name
-const PercentageNumberFormat = React.forwardRef<
-  PercentageNumberFormatProps,
-  PercentageNumberFormatProps
->((props: PercentageNumberFormatProps, ref: ForwardedRef<PercentageNumberFormatProps>) => {
-  return (
-    <NumericFormat
-      {...props}
-      getInputRef={ref}
-      allowNegative={false}
-      valueIsNumericString
-      decimalScale={3}
-    />
-  )
-})
+const PercentageNumberFormat = forwardRef<PercentageNumberFormatProps, PercentageNumberFormatProps>(
+  (props: PercentageNumberFormatProps, ref: ForwardedRef<PercentageNumberFormatProps>) => {
+    return (
+      <NumericFormat
+        {...props}
+        getInputRef={ref}
+        allowNegative={false}
+        valueIsNumericString
+        decimalScale={3}
+      />
+    )
+  },
+)
+
+type PropType<TObj, TProp extends keyof TObj> = TObj[TProp]
 
 export interface CustomInputPropsProps {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
   errors: any
-  rules?: any
-  maxValue: number
-  minValue: number
+  rules?: PropType<ControllerProps, 'rules'>
   defaultValue?: number
 }
 
 export type ControlledTextFieldProps = InputProps & TextFieldProps & CustomInputPropsProps
 
 export const PercentageText = (props: ControlledTextFieldProps) => {
-  const {
-    name,
-    rules,
-    minValue = 0,
-    maxValue = 100,
-    defaultValue,
-    control,
-    errors,
-    onChange,
-    ...restProps
-  } = props
+  const { name, rules, defaultValue, control, errors, ...restProps } = props
 
   return (
     <Controller
-      name={name as any}
+      name={name}
       control={control}
       rules={rules}
-      defaultValue={(defaultValue as any) ?? ''}
+      defaultValue={defaultValue ?? ''}
       render={({ field }) => {
         return (
           <TextField
             InputProps={{
-              inputComponent: PercentageNumberFormat as any
+              inputComponent: PercentageNumberFormat as any,
             }}
             inputProps={{
               value: field?.value,
               suffix: '%',
-              isAllowed: (values: any) => {
-                return (
-                  (values.floatValue! >= minValue && values.floatValue! <= maxValue) ||
-                  values.floatValue === undefined ||
-                  values.floatValue === null
-                )
-              },
               onValueChange: (values: any) => {
-                if (onChange) onChange(values)
                 field.onChange(values.floatValue)
-              }
+              },
             }}
             value={field?.value}
             error={!!errors[field.name]}
@@ -89,16 +70,16 @@ export const PercentageText = (props: ControlledTextFieldProps) => {
               color: 'custom.grey.dark',
               width: '100%',
               '& input[type=number]': {
-                MozAppearance: 'textfield'
+                MozAppearance: 'textfield',
               },
               '& input[type=number]::-webkit-outer-spin-button': {
                 WebkitAppearance: 'none',
-                margin: 0
+                margin: 0,
               },
               '& input[type=number]::-webkit-inner-spin-button': {
                 WebkitAppearance: 'none',
-                margin: 0
-              }
+                margin: 0,
+              },
             }}
             {...restProps}
           />

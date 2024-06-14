@@ -6,18 +6,19 @@ const format = (value: number) => {
 }
 
 export const AmountsPreviewFromPercentage = ({
-  position,
+  positions,
   percentage,
   tokenOut,
 }: {
-  position: Position
+  positions: Position[]
   percentage: any
   tokenOut?: string
 }) => {
   if (!percentage) return null
 
-  let tokens = position.tokens.filter((t) => t.as == 'supply')
-  if (tokens.length == 0) tokens = position.tokens.filter((t) => t.as == 'core')
+  const allTokens = positions.flatMap((p) => p.tokens)
+  let tokens = allTokens.filter((t) => t.as == 'supply')
+  if (tokens.length == 0) tokens = allTokens.filter((t) => t.as == 'core')
   const pct = +percentage / 100
 
   if (tokenOut) {

@@ -36,16 +36,6 @@ spec:
           env:
             - name: AUTH0_BASE_URL
               value: '{{PR_SUBDOMAIN}}'
-
-            - name: DATA_WAREHOUSE_ENV
-              value: development
-
-            - name: MODE
-              value: development
-
-            - name: PULLEY_URL
-              value: 'http://localhost:4000'
-
           envFrom:
             - configMapRef:
                 name: develop-execution-app-config-{{PR_NUMBER}}
@@ -56,6 +46,17 @@ spec:
           env:
             - name: LOGGER_LEVEL
               value: debug
+
+        - name: rolesapi
+          image: registry.digitalocean.com/karpatkey/bots:main-20240612-203117
+          env:
+            - name: APP
+              value: execution_app
+            - name: PORT
+              value: '4001'
+          envFrom:
+            - configMapRef:
+                name: develop-execution-app-config-{{PR_NUMBER}}
 
 ---
 apiVersion: v1
@@ -84,6 +85,7 @@ data:
   DATA_WAREHOUSE_ENV: development
   MODE: development
   PULLEY_URL: 'http://localhost:4000'
+  ROLESAPI_URL: 'http://localhost:4001'
   BALANCERDAO_ETHEREUM_AVATAR_SAFE_ADDRESS: '0x0EFcCBb9E2C09Ea29551879bd9Da32362b32fc89'
   BALANCERDAO_ETHEREUM_DISASSEMBLER_ADDRESS: '0x60716991aCDA9E990bFB3b1224f1f0fB81538267'
   BALANCERDAO_ETHEREUM_ROLE: '1'

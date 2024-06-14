@@ -1,17 +1,5 @@
 import Image from 'next/image'
-import { useCallback, useState } from 'react'
-
-const WITH_EXT = new Map<string, string>([
-  ['aurabal', 'webp'],
-  ['aura', 'png'],
-  ['wsteth', 'webp'],
-  ['xdai', 'webp'],
-  ['eure', 'webp'],
-  ['agve', 'webp'],
-  ['ageur', 'webp'],
-  ['gho', 'webp'],
-  ['ldo', 'webp'],
-])
+import * as icons from './CryptoIcons/icons'
 
 const SYMLINK = new Map<string, string>([
   ['weth', 'eth'],
@@ -28,12 +16,11 @@ const SYMLINK = new Map<string, string>([
 
 export default function CryptoIcon({ symbol, size }: { symbol: string; size?: number }) {
   let name = symbol.toLowerCase()
+
   name = SYMLINK.get(name) || name
   const s = size || 16
-  const ext = WITH_EXT.get(name) || 'svg'
-  const [src, setSrc] = useState(`/images/crypto/color/${name}.${ext}`)
-  const fallback = useCallback(() => {
-    setSrc('/images/protocols/default.svg')
-  }, [])
-  return <Image src={src} onError={fallback} width={s} height={s} alt={name} />
+
+  const defaultPath = '/images/protocols/default.svg'
+  const img = (icons as any)[name] || defaultPath
+  return <Image src={img} width={s} height={s} alt={name} priority />
 }

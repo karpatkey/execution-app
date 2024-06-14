@@ -40,7 +40,7 @@ Today, the app enables only positions exits in order to avoid potential losses, 
 
 To get started, clone the repository and run `yarn install && yarn dev`:
 
-    git clone git@github.com:KarpatkeyDAO/execution-app.git
+    git clone git@github.com:karpatkey/execution-app.git
     yarn install
     yarn dev
 

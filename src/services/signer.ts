@@ -124,9 +124,8 @@ async function callVaultEthsigner(request: Record<string, any>, env: Env) {
   const url = signerUrl + request.path
 
   const body = request.body
-    ? JSON.stringify(request.body, (_key, value) => {
-        return typeof value === 'bigint' ? value.toString() : value
-      })
+    ? JSON.stringify(request.body, (_, v) => (typeof v === 'bigint' ? v.toString() : v))
+
     : undefined
 
   const req = {
@@ -203,6 +202,7 @@ export class Signor {
   private async updateGasAndNonce(transaction: Transaction) {
     const gasStrategyFeeMultiplier = AGGRESIVE_FEE_MULTIPLER
 
+    // TODO review this with Santi or Richard
     const latestBlock = await this.provider.getBlock('latest')
     const baseFeePerGas = Number(latestBlock?.baseFeePerGas || 1)
     const feeData = await this.provider.getFeeData()
@@ -222,16 +222,10 @@ export class Signor {
 
   private getRoleParams() {
     let key =
-      {
-        'karpatkey DAO': 'KARPATKEY',
-        'Gnosis DAO': 'GNOSISDAO',
-        'Gnosis Ltd': 'GNOSISLTD',
-        'Balancer LTD': 'BALANCERLTD',
-        'Balancer DAO': 'BALANCERDAO',
-        'CoW DAO': 'COWDAO',
-        'ENS DAO': 'ENS',
-        TestSafeDAO: 'TESTSAFEDAO',
-      }[this.dao] || '__'
+      new Map([
+        ['karpatkey DAO', 'KARPATKEY'],
+        ['ENS DAO', 'ENS'],
+      ]).get(this.dao) || this.dao.replaceAll(' ', '').toUpperCase()
 
     key += '_' + this.blockchain.toUpperCase()
 

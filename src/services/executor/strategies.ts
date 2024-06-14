@@ -1,5 +1,5 @@
 import * as Minio from 'minio'
-import { Dao } from './types'
+import { Blockchain, Dao } from 'src/config/strategies/manager'
 
 export { type Dao }
 
@@ -9,14 +9,14 @@ const MINIO_ACCESS_KEY = process.env.MINIO_ACCESS_KEY ?? ''
 const MINIO_BUCKET = process.env.MINIO_BUCKET ?? ''
 
 interface File {
-  dao: string
+  dao: Dao
   updatedAt: string
   blockchain: string
   general_parameters: any
   positions: any
 }
 
-export const DAO_NAME_MAPPER = {
+export const DAO_NAME_MAPPER: Record<string, Dao> = {
   GnosisDAO: 'Gnosis DAO',
   GnosisLtd: 'Gnosis Ltd',
   karpatkey: 'karpatkey DAO',
@@ -25,7 +25,7 @@ export const DAO_NAME_MAPPER = {
   CoW: 'CoW DAO',
   GnosisGuild: 'Gnosis Guild',
   TestSafeDAO: 'TestSafeDAO',
-} as any
+}
 
 function invert<T extends Record<any, any>>(
   data: T,
@@ -98,7 +98,6 @@ async function refreshCache(fn: () => Promise<Cache>) {
   if (invalidCache()) {
     const started = +new Date()
     try {
-      console.log('[Strategies] Refetching json configs')
       CACHE = await fn()
       LAST_ERROR = undefined
     } catch (e: any) {
@@ -107,7 +106,7 @@ async function refreshCache(fn: () => Promise<Cache>) {
       console.error(e)
     } finally {
       LAST_TOOK = +new Date() - started
-      console.log(`[Strategies] Refetching json configs. took: ${(LAST_TOOK || 0) / 1000}s`)
+      console.log(`[Strategies] Refetched json configs. took: ${(LAST_TOOK || 0) / 1000}s`)
       LAST_REFRESH = +new Date()
     }
   }
@@ -122,8 +121,8 @@ async function cached(fn: () => Promise<Cache>) {
   return CACHE
 }
 
-function mapBlockchain(blockchain: string) {
-  return blockchain.toLowerCase()
+function mapBlockchain(blockchain: string): Blockchain {
+  return blockchain.toLowerCase() as Blockchain
 }
 
 function fixPosition(position: any) {
@@ -135,12 +134,18 @@ function fixPosition(position: any) {
   return position
 }
 
-export async function getDaosConfigs(daos: string[]) {
+export type DaoConfig = {
+  positions: any[]
+  dao: Dao
+  blockchain: Blockchain
+  general_parameters: Record<string, string>
+  updatedAt: string
+}
+
+export async function getDaosConfigs(daos: string[]): Promise<DaoConfig[]> {
   const configs = await cached(fetchJsons)
 
-  if (!configs) {
-    return []
-  }
+  if (!configs) return []
 
   return configs
     .flatMap((f) => ({
@@ -184,6 +189,9 @@ export async function getDaosConfigsStatus(): Promise<StatusResult> {
   const strategies_human = configs.reduce((strateses: any, c: any) => {
     strateses[`${c.dao} on ${c.blockchain}`] = c.positions.reduce((poses: any, p: any) => {
       poses[p.position_id_human_readable] = p.exec_config.reduce((res: any, strat: any) => {
+        res['__id'] = p.position_id_tech
+        res['__protocol'] = p.protocol
+
         res[strat.label] = strat.stresstest || strat.stresstest_error
         return res
       }, {})
