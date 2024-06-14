@@ -44,12 +44,12 @@ async function fetcher(path: string, body: any, signal: AbortSignal | undefined 
 
 const TTL = 1 * 60 * 1000 // 1*60*1000 == 1 minutes
 
-export function useTxBuild(params?: BuildParams) {
+export function useTxBuild(params?: BuildParams, refresh: boolean = true) {
   return useQuery<TxData>({
     queryKey: ['tx/build/v1', btoa(JSON.stringify(params))],
     queryFn: async ({ signal }) => await fetcher('/api/tx/build', params, signal),
-    refetchInterval: TTL,
-    gcTime: TTL * 2,
+    refetchInterval: refresh && TTL,
+    gcTime: TTL,
     retry: false,
   })
 }
@@ -68,10 +68,11 @@ export function useTxSimulation(params?: SimulateParams) {
   })
 }
 
-export function useExecute() {
+export function useExecute(key: any) {
   return useMutation<ExecuteData, Error, ExecuteParams>({
-    mutationFn: async (params) => {
+    mutationFn: async (params: ExecuteParams) => {
       return await fetcher('/api/tx/execute', params)
     },
+    mutationKey: key,
   })
 }

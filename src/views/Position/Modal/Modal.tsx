@@ -16,7 +16,13 @@ import { TransactionCheck } from './Create/TransactionCheck'
 import { TransactionDetails } from './Create/TransactionDetails'
 import { TransactionSimulation } from './Create/TransactionSimulation'
 
-import { BuildParams, useTxBuild, useTxCheck, useTxSimulation } from 'src/queries/execution'
+import {
+  BuildParams,
+  useExecute,
+  useTxBuild,
+  useTxCheck,
+  useTxSimulation,
+} from 'src/queries/execution'
 
 interface ModalProps {
   open: boolean
@@ -40,6 +46,7 @@ export const Modal = (props: ModalProps) => {
   const smallScreen = useMediaQuery((theme: any) => theme.breakpoints.down('sm'))
 
   const [params, setParams] = useState<BuildParams | undefined>(undefined)
+  const [executing, setExecuting] = useState(false)
 
   const handleParamsChange = useCallback(
     (params: any) => {
@@ -59,7 +66,7 @@ export const Modal = (props: ModalProps) => {
     [positions],
   )
 
-  const { data: tx, isLoading: isBuilding, error: buildError } = useTxBuild(params)
+  const { data: tx, isLoading: isBuilding, error: buildError } = useTxBuild(params, !executing)
   const {
     data: txCheck,
     isLoading: isChecking,
@@ -87,6 +94,19 @@ export const Modal = (props: ModalProps) => {
         }
       : undefined,
   )
+
+  const execution = useExecute([tx?.transaction])
+  const onExecute = useCallback(async () => {
+    if (!tx) return false
+
+    setExecuting(true)
+
+    execution.mutate({
+      dao: params?.dao,
+      blockchain: params?.blockchain,
+      transaction: tx?.transaction,
+    })
+  }, [tx, execution, params?.blockchain, params?.dao])
 
   const modalPadding = smallScreen ? '1rem' : '3rem'
   return (
@@ -145,7 +165,9 @@ export const Modal = (props: ModalProps) => {
                     tx={tx}
                     txCheck={txCheck}
                     txSimulation={txSimulation}
-                    handleClose={handleClose}
+                    execution={execution}
+                    onExecute={onExecute}
+                    onClose={handleClose}
                   />
                 ) : null}
               </BoxWrapper>
