@@ -19,6 +19,7 @@ function testAddress() {
 type StatusResponse = {
   ok: boolean
   error?: string
+  warning?: string
   balances: any
   threshold: string
   accounts?: any
@@ -39,7 +40,7 @@ async function checkDisassemblersGas(inVaultAccounts: string[]) {
   const providerEth = await providerEthP
   const providerGno = await providerGnoP
 
-  async function checkOne(key: string, disassembler: string) {
+  async function getBalance(key: string, disassembler: string) {
     let prov = null
     if (key.includes('_ETHEREUM_')) {
       prov = providerEth
@@ -60,23 +61,25 @@ async function checkDisassemblersGas(inVaultAccounts: string[]) {
   let ok = true
   const balances: any = {}
   const errors: string[] = []
+  const warnings: string[] = []
   const promises = Object.keys(dis)
-    .map((k) => [k, dis[k], checkOne(k, dis[k])])
+    .map((k) => [k, dis[k], getBalance(k, dis[k])])
     .map(async ([key, dis, balanceP]) => {
       const b = await balanceP
-      console.log({ key, dis, b })
       balances[key] = formatUnits(b, 'ether')
       if (b < ethers.WeiPerEther) {
-        errors.push(`${key} has low gas. Current: ${balances[key]}`)
         if (inVaultAccounts.includes(dis)) {
+          errors.push(`${key} has low gas. Current: ${balances[key]}`)
           ok = false
+        } else {
+          warnings.push(`${key} has low gas. Current: ${balances[key]}`)
         }
       }
     })
 
   await Promise.all(promises)
 
-  return { ok, balances, errors }
+  return { ok, balances, errors, warnings }
 }
 
 export async function getStatus(): Promise<StatusResponse> {
@@ -98,11 +101,12 @@ export async function getStatus(): Promise<StatusResponse> {
     vaultError = `VaultError: ${error.message}`
   }
 
-  const { ok, balances, errors } = await checkDisassemblersGas(loadedkeys)
+  const { ok, balances, errors, warnings } = await checkDisassemblersGas(loadedkeys)
 
   return {
     ok: ok && !vaultError,
     error: [vaultError || '', ...errors].filter((e) => e).join('; '),
+    warning: warnings.join('; '),
     threshold: formatUnits(threshold, 'ether'),
     balances,
     accounts: loadedkeys,
