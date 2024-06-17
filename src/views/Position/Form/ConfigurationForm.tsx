@@ -38,12 +38,13 @@ type FormFieldName = keyof FormValues
 
 type FormFieldConfig = {
   placeholder: string
+  defaultValue?: string | number
 }
 
 const FORM_CONFIG: Record<FormFieldName, FormFieldConfig> = {
   percentage: { placeholder: '0.000%' },
   rewards_address: { placeholder: '0x00000' },
-  max_slippage: { placeholder: '0.000%' },
+  max_slippage: { placeholder: '0.000%', defaultValue: 1 },
   token_in_address: { placeholder: '0x00000' },
   token_out_address: { placeholder: '0x00000' },
   bpt_address: { placeholder: '0x00000' },
@@ -82,6 +83,8 @@ export default function CustomForm({
               {parameters.map(({ name, label, type, rules, options }, index) => {
                 if (type === 'constant') return null
 
+                const config = FORM_CONFIG[name as FormFieldName]
+
                 const { min, max } = rules || {}
 
                 if (min !== undefined && max !== undefined) {
@@ -105,6 +108,7 @@ export default function CustomForm({
                         </BoxWrapperRow>
                       </BoxWrapperRow>
                       <PercentageText
+                        defaultValue={config.defaultValue ? +config.defaultValue : undefined}
                         name={name}
                         control={control}
                         rules={{
@@ -112,7 +116,7 @@ export default function CustomForm({
                           min,
                           max,
                         }}
-                        placeholder={FORM_CONFIG[name as FormFieldName].placeholder}
+                        placeholder={config.placeholder}
                         errors={errors}
                       />
                       {name == 'percentage' ? (
