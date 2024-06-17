@@ -68,9 +68,9 @@ export default function Detail({
   const protocol = useMemo(() => uniqueJoin(positions, 'protocol'), [positions])
   const lptokenName = useMemo(
     () =>
-      positions.map((p) => {
+      positions.map((p, idx) => {
         return (
-          <Box key={p.pool_id} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Box key={p.pool_id + idx} sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box sx={{ marginRight: '1rem' }}>{p.lptokenName}</Box>
           </Box>
         )
@@ -135,8 +135,8 @@ export default function Detail({
           </Secondary>
         </BoxWrapperColumn>
         <Divider sx={{ borderBottomWidth: 5 }} />
-        {positions.map((pos) => (
-          <Box key={pos.pool_id + 'tokens'}>
+        {positions.map((pos, idx) => (
+          <Box key={pos.pool_id + 'tokens' + idx}>
             <Box
               sx={{
                 paddingTop: '1.5rem',
