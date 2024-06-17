@@ -24,6 +24,7 @@ const Secondary = ({ title, subtitle, children }: TitleSecondaryProps) => {
       </CustomTypography>
       {subtitle ? (
         <CustomTypography
+          component="div"
           sx={{
             fontWeight: 700,
             fontFamily: 'IBM Plex Sans',
