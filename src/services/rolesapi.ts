@@ -23,7 +23,18 @@ async function request(path: string, body: Record<string, any>) {
       body: JSON.stringify(body),
     })
 
-    return await r.json()
+    const b: any = await r.json()
+
+    const error: string =
+      r.status !== 200
+        ? b.error || (b.detail && JSON.stringify(b.detail)) || 'Request failed'
+        : undefined
+
+    return {
+      status: r.status,
+      error,
+      ...b,
+    }
   } catch (e: any) {
     console.error(`RolesApiError: ${url}`, e)
     return { error: `RolesApiError: ${e.message} ${url}` }

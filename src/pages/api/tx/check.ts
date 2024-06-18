@@ -38,7 +38,7 @@ export default withApiAuthRequired(async function handler(
     const env = await executorEnv(blockchain)
     try {
       // Execute the transaction builder
-      const api = new RolesApi(dao, blockchain, env.fork?.url)
+      const api = new RolesApi(dao, blockchain, env.rpc_url)
       const response = await api.checkTransaction(protocol, tx_transactables)
 
       return res.status(200).json(response)

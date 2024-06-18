@@ -38,7 +38,7 @@ async function fetcher(path: string, body: any, signal: AbortSignal | undefined 
     signal,
   })
   const resBody = await res.json()
-  if (!resBody || resBody.error) throw new Error(resBody.error)
+  if (!resBody || resBody.error) throw new Error(resBody.error || 'Error')
   return resBody
 }
 

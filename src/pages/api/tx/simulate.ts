@@ -36,13 +36,13 @@ export default withApiAuthRequired(async function handler(
     const env = await executorEnv(blockchain)
 
     try {
-      const api = new RolesApi(dao, blockchain, env.fork?.url)
+      const api = new RolesApi(dao, blockchain, env.rpc_url)
       const response = await api.simulateTransaction(transaction)
 
       return res.status(200).json({
-        status: response.status,
+        ...response,
         ...response.sim_data,
-        error: response.sim_data?.error_message,
+        error: response.sim_data?.error_message || response.error,
       })
     } finally {
       env.release()
