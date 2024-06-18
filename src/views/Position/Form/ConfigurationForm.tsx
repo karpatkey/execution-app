@@ -105,7 +105,7 @@ export default function CustomForm({
                           ) : null}
                         </BoxWrapperRow>
                         {name == 'max_slippage' && watchSlippage && +watchSlippage > 10 ? (
-                          <Alert severity="warning">High slippage amount is selected</Alert>
+                          <Alert severity="error">High slippage amount is selected</Alert>
                         ) : null}
                       </BoxWrapperRow>
                       <PercentageText
