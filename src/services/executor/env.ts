@@ -5,8 +5,16 @@ export async function executorEnv(blockchain: string) {
   if (!chain) throw new Error(`Invalid blockchain ${blockchain}`)
 
   let fork: Pulley | null = null
+  let rpc_url: string | undefined = undefined
   if (process.env.MODE != 'production') {
     fork = await Pulley.start(chain)
+    rpc_url = fork.url
+  } else {
+    if (chain == 1) {
+      rpc_url = process.env.ETHEREUM_RPC_ENDPOINT
+    } else if (chain == 100) {
+      rpc_url = process.env.GNOSIS_RPC_ENDPOINT
+    }
   }
 
   const filtered = filteredObject(process.env, [
@@ -27,6 +35,7 @@ export async function executorEnv(blockchain: string) {
   return {
     env,
     fork,
+    rpc_url,
     release: () => fork && fork.release(),
   }
 }

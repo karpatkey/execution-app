@@ -14,7 +14,7 @@ type Props = {
 export function TransactionCheck({ isLoading, error, check }: Props) {
   let status: SetupItemStatus = SetupItemStatus.NotDone
 
-  if (check) status = SetupItemStatus.Success
+  if (check?.status == 200) status = SetupItemStatus.Success
   if (error) status = SetupItemStatus.Failed
   if (isLoading) status = SetupItemStatus.Loading
 

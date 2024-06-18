@@ -43,7 +43,7 @@ type Props = {
 export function TransactionSimulation({ isLoading, simulation, error, onSimulate }: Props) {
   let status: SetupItemStatus = SetupItemStatus.NotDone
 
-  if (simulation) status = SetupItemStatus.Success
+  if (simulation?.status == 200) status = SetupItemStatus.Success
   if (error) status = SetupItemStatus.Failed
   if (isLoading) status = SetupItemStatus.Loading
 
