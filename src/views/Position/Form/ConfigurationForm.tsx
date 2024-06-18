@@ -2,6 +2,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 
 import InfoIcon from '@mui/icons-material/Info'
+import Alert from '@mui/material/Alert'
 import Tooltip from '@mui/material/Tooltip'
 import { AmountsPreviewFromPercentage } from 'src/components/AmountsPreviewFromPercentage'
 import CustomTypography from 'src/components/CustomTypography'
@@ -22,10 +23,6 @@ interface CustomFormProps {
 }
 
 type FormValues = {
-  // dao?: string
-  // blockchain?: string
-  // protocol?: string
-  // strategy?: string
   percentage?: number
   rewards_address?: string
   max_slippage?: number
@@ -66,6 +63,7 @@ export default function CustomForm({
   })
 
   const watchPercentage = watch('percentage')
+  const watchSlippage = watch('max_slippage')
   const watchTokenOut = watch('token_out_address')
 
   const onSubmit: SubmitHandler<any> = useDebounceCallback(onValid, 300)
@@ -93,7 +91,7 @@ export default function CustomForm({
                       <BoxWrapperRow sx={{ justifyContent: 'space-between' }}>
                         <BoxWrapperRow gap={2}>
                           <Label title={label || ''} />
-                          {name === 'max_slippage' ? (
+                          {name == 'max_slippage' ? (
                             <Tooltip
                               title={
                                 <CustomTypography variant="body2" sx={{ color: 'common.white' }}>
@@ -106,6 +104,9 @@ export default function CustomForm({
                             </Tooltip>
                           ) : null}
                         </BoxWrapperRow>
+                        {name == 'max_slippage' && watchSlippage && +watchSlippage > 10 ? (
+                          <Alert severity="error">High slippage amount is selected</Alert>
+                        ) : null}
                       </BoxWrapperRow>
                       <PercentageText
                         defaultValue={config.defaultValue ? +config.defaultValue : undefined}
@@ -130,11 +131,12 @@ export default function CustomForm({
                   )
                 }
 
-                if (options?.length ?? 0 > 0) {
+                if (options && options.length > 0) {
                   return (
                     <OptionsInput
                       key={index}
                       name={name}
+                      defaultValue={options[0].value}
                       label={label || ''}
                       control={control}
                       options={options}

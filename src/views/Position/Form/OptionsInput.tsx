@@ -12,17 +12,25 @@ type OptionsInputOption = {
 type OptionsInputProps = {
   name: string
   label: string
+  defaultValue?: string
   control: Control<any, any>
   options?: OptionsInputOption[]
 }
 
-export const OptionsInput = ({ name, label, control, options }: OptionsInputProps) => {
+export const OptionsInput = ({
+  name,
+  label,
+  defaultValue,
+  control,
+  options,
+}: OptionsInputProps) => {
   return (
     <BoxWrapperColumn gap={2}>
       <Label title={label} />
       <InputRadio
         name={name}
         control={control}
+        defaultValue={defaultValue}
         options={
           options?.map((item) => {
             const sufix = name.startsWith('token_') ? (

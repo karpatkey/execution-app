@@ -17,12 +17,14 @@ export type Option = {
 export interface InputWithOptionsProps extends InputProps {
   name: string
   options: Option[]
+  defaultValue?: string
   onChange?: (e: any) => void
 }
 
 const InputRadio: React.FC<InputWithOptionsProps> = ({
   name,
   options,
+  defaultValue,
   control,
   onChange: onChangeRadio,
 }: InputWithOptionsProps) => {
@@ -56,6 +58,7 @@ const InputRadio: React.FC<InputWithOptionsProps> = ({
         name={name}
         control={control}
         rules={{ required: `${name} is required` }}
+        defaultValue={defaultValue}
         render={({ field }) => {
           return (
             <RadioGroup
