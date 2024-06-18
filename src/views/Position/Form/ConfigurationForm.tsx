@@ -130,11 +130,12 @@ export default function CustomForm({
                   )
                 }
 
-                if (options?.length ?? 0 > 0) {
+                if (options && options.length > 0) {
                   return (
                     <OptionsInput
                       key={index}
                       name={name}
+                      defaultValue={options[0].value}
                       label={label || ''}
                       control={control}
                       options={options}
