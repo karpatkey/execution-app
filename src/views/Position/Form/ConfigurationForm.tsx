@@ -118,8 +118,8 @@ export default function CustomForm({
                         control={control}
                         rules={{
                           required: `Please enter a value between ${min}% and ${max}%`,
-                          min,
-                          max,
+                          min: { value: min, message: `minimum is ${min}%` },
+                          max: { value: max, message: `maximum is ${max}%` },
                         }}
                         placeholder={config.placeholder}
                         errors={errors}
