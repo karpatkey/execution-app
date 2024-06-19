@@ -116,6 +116,14 @@ export default function Detail({
     [onChange, selectedStrategy],
   )
 
+  const onInvalid = useCallback(
+    (errors: any) => {
+      console.log(errors)
+      onChange(null)
+    },
+    [onChange],
+  )
+
   if (!positions || positions.length == 0) return null
 
   return (
@@ -167,7 +175,8 @@ export default function Detail({
             commonConfig={commonConfig}
             strategy={strategy}
             positions={positions}
-            onValid={onConfigChange}
+            onSubmit={onConfigChange}
+            onInvalid={onInvalid}
           />
         ) : null}
       </BoxWrapperColumn>

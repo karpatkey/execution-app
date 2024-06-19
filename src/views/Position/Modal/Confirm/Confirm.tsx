@@ -1,5 +1,6 @@
 import { Box } from '@mui/material'
 import Button from '@mui/material/Button'
+import { UseMutationResult } from '@tanstack/react-query'
 import { AccordionBoxWrapper } from 'src/components/Accordion/AccordionBoxWrapper'
 import CustomTypography from 'src/components/CustomTypography'
 import Link from 'src/components/Link'
@@ -8,7 +9,7 @@ import TextLoadingDots from 'src/components/TextLoadingDots'
 import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 import { Position, SetupItemStatus } from 'src/contexts/state'
-import { TxCheckData, TxData, TxSimulationData } from 'src/queries/execution'
+import { ExecuteData, TxCheckData, TxData, TxSimulationData } from 'src/queries/execution'
 
 const WaitingExecutingTransaction = () => {
   return (
@@ -26,7 +27,7 @@ interface ConfirmProps {
   tx: TxData
   txCheck: TxCheckData
   txSimulation: TxSimulationData
-  execution?: any
+  execution?: UseMutationResult<ExecuteData, any, any, any>
   onExecute: () => void
   onClose: () => void
 }
@@ -84,7 +85,7 @@ export const Confirm = ({
                 View on block explorer
               </Link>
             )}
-            {!execution?.isError && !execution?.data && (
+            {!execution?.isError && !execution?.data && !execution?.isPending && (
               <Button variant="contained" color="error" onClick={() => onClose()}>
                 Cancel
               </Button>

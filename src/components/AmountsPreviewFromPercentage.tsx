@@ -14,7 +14,7 @@ export const AmountsPreviewFromPercentage = ({
   percentage: any
   tokenOut?: string
 }) => {
-  if (!percentage) return null
+  if (!percentage || percentage > 100) return null
 
   const allTokens = positions.flatMap((p) => p.tokens)
   let tokens = allTokens.filter((t) => t.as == 'supply')
