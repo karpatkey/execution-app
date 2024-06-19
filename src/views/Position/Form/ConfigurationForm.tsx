@@ -19,7 +19,8 @@ interface CustomFormProps {
   strategy: PositionConfig
   commonConfig: Config[]
   positions: Position[]
-  onValid: (params: any) => void
+  onSubmit: (params: any) => void
+  onInvalid: (errors: any) => void
 }
 
 type FormValues = {
@@ -51,7 +52,8 @@ export default function CustomForm({
   commonConfig,
   strategy,
   positions,
-  onValid,
+  onSubmit,
+  onInvalid,
 }: CustomFormProps) {
   const {
     formState: { errors },
@@ -60,19 +62,21 @@ export default function CustomForm({
     watch,
   } = useForm<FormValues>({
     mode: 'onBlur',
+    reValidateMode: 'onBlur',
   })
 
   const watchPercentage = watch('percentage')
   const watchSlippage = watch('max_slippage')
   const watchTokenOut = watch('token_out_address')
 
-  const onSubmit: SubmitHandler<any> = useDebounceCallback(onValid, 300)
+  const handler: SubmitHandler<any> = useDebounceCallback(onSubmit, 300)
+  const invalidHandler: SubmitHandler<any> = useDebounceCallback(onInvalid, 300)
 
   const specificParameters = strategy?.parameters ?? []
   const parameters = [...commonConfig, ...specificParameters]
 
   return (
-    <form id="hook-form" onChange={handleSubmit(onSubmit)}>
+    <form id="hook-form" onChange={handleSubmit(handler, invalidHandler)}>
       <BoxWrapperColumn gap={2}>
         <BoxWrapperColumn gap={6}>
           {parameters.length > 0 ? (
