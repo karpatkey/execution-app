@@ -6,7 +6,7 @@ import { executorEnv } from 'src/services/executor/env'
 import { Signor } from 'src/services/signer'
 
 export type Response = {
-  data?: any
+  tx_hash?: string
   status?: number
   error?: string
 }
@@ -46,7 +46,7 @@ export default withApiAuthRequired(async function handler(
 
       const { status, hash: tx_hash } = (await txResponse.wait()) ?? {}
 
-      if (!status) return res.status(200).json({ error: 'Transaction reverted', data: { tx_hash } })
+      if (!status) return res.status(200).json({ error: 'Transaction reverted', tx_hash })
       if (!tx_hash) return res.status(200).json({ error: 'Error trying to execute transaction' })
 
       if (status == 1) {
@@ -57,7 +57,7 @@ export default withApiAuthRequired(async function handler(
         //   await cowsigner.createOrder()
         // }
 
-        return res.status(200).json({ data: { tx_hash: txResponse.hash } })
+        return res.status(200).json({ tx_hash: txResponse.hash })
       } else {
         throw new Error('Failed transaction receipt')
       }
