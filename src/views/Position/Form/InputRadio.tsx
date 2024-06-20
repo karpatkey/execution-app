@@ -5,23 +5,26 @@ import React from 'react'
 import { Controller } from 'react-hook-form'
 import CustomTypography from 'src/components/CustomTypography'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
-import { InputProps } from 'src/views/Position/Form/Types'
+import { InputProps } from './typing'
 
 export type Option = {
-  name: string
+  label: React.ReactNode
   value: string
   description?: string
   disabled?: boolean
 }
 
 export interface InputWithOptionsProps extends InputProps {
+  name: string
   options: Option[]
+  defaultValue?: string
   onChange?: (e: any) => void
 }
 
 const InputRadio: React.FC<InputWithOptionsProps> = ({
   name,
   options,
+  defaultValue,
   control,
   onChange: onChangeRadio,
 }: InputWithOptionsProps) => {
@@ -30,7 +33,7 @@ const InputRadio: React.FC<InputWithOptionsProps> = ({
       <BoxWrapperRow sx={{ justifyContent: 'flex-start' }} key={index}>
         <FormControlLabel
           value={option.value}
-          label={option.name}
+          label={option.label}
           control={<Radio />}
           disabled={option.disabled}
         />
@@ -54,13 +57,14 @@ const InputRadio: React.FC<InputWithOptionsProps> = ({
       <Controller
         name={name}
         control={control}
-        rules={{ required: `${name} is required` } as any}
+        rules={{ required: `${name} is required` }}
+        defaultValue={defaultValue}
         render={({ field }) => {
           return (
             <RadioGroup
               {...field}
-              value={field?.value}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>, value) => {
+              value={field?.value || null}
+              onChange={(_e: React.ChangeEvent<HTMLInputElement>, value) => {
                 if (onChangeRadio) onChangeRadio(value)
                 field?.onChange(value)
               }}

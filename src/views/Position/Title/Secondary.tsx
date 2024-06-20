@@ -3,7 +3,7 @@ import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 
 interface TitleSecondaryProps {
   title: string
-  subtitle?: string
+  subtitle?: string | React.ReactNode
   children?: React.ReactNode
 }
 
@@ -24,6 +24,7 @@ const Secondary = ({ title, subtitle, children }: TitleSecondaryProps) => {
       </CustomTypography>
       {subtitle ? (
         <CustomTypography
+          component="div"
           sx={{
             fontWeight: 700,
             fontFamily: 'IBM Plex Sans',

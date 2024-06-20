@@ -1,5 +1,4 @@
 import CustomTypography from 'src/components/CustomTypography'
-import * as React from 'react'
 
 interface FormLabelProps {
   title: string
@@ -15,7 +14,7 @@ export const Label = ({ title }: FormLabelProps) => {
         fontSize: 18,
         lineHeight: '18px',
         color: 'custom.grey.dark',
-        textTransform: 'capitalize'
+        textTransform: 'capitalize',
       }}
     >
       {title}

@@ -1,25 +1,24 @@
+import { Link } from '@mui/material'
+import { styled } from '@mui/material/styles'
 import AnimatePresenceWrapper from 'src/components/AnimatePresenceWrapper'
-import CustomTypography from 'src/components/CustomTypography'
 import Github from 'src/components/Assets/Icons/Socials/Github'
 import Linkedin from 'src/components/Assets/Icons/Socials/Linkedin'
 import Mirror from 'src/components/Assets/Icons/Socials/Mirror'
 import Twitter from 'src/components/Assets/Icons/Socials/Twitter'
-import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
+import CustomTypography from 'src/components/CustomTypography'
 import BoxWrapperColumn from 'src/components/Wrappers/BoxWrapperColumn'
-import { Link } from '@mui/material'
-import { styled } from '@mui/material/styles'
-import React from 'react'
+import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 
 export const FOOTER_HEIGHT = 160
 
 const FooterWrapper = styled(BoxWrapperColumn)(({ theme }: any) => ({
   backgroundColor: theme.palette.background.default,
   height: FOOTER_HEIGHT,
-  paddingRight: '48px',
-  paddingLeft: '48px',
-  paddingTop: '48px',
+  paddingRight: '3rem',
+  paddingLeft: '3rem',
+  paddingTop: '3rem',
   justifyContent: 'center',
-  gap: 20
+  gap: 20,
 }))
 
 const CustomTypographyFooter = styled(CustomTypography)({
@@ -28,7 +27,7 @@ const CustomTypographyFooter = styled(CustomTypography)({
   fontWeight: 400,
   fontSize: '20px',
   lineHeight: '34px',
-  color: '#262626'
+  color: '#262626',
 })
 
 interface FooterProps {

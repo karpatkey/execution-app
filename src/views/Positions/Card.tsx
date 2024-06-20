@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import TimeAgo from 'react-timeago'
 import CryptoIcon from 'src/components/CryptoIcon'
 import CustomTypography from 'src/components/CustomTypography'
@@ -95,9 +96,18 @@ const Card = (props: PositionProps) => {
 
   const wrapperStyle = { textDecoration: 'none', display: 'flex', flexGrow: 1 }
 
+  const router = useRouter()
+
   const render = isActive ? (
     <Link
-      href={`/positions/${slug(position.dao)}/${position.blockchain}/${position.pool_id}`}
+      href={{
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+          position: [slug(position.dao), position.blockchain, position.pool_id].join(';'),
+        },
+      }}
+      scroll={false}
       style={wrapperStyle}
     >
       <CardWrapper />

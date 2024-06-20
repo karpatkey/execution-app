@@ -35,9 +35,9 @@ sed -i "s|{{PR_NUMBER}}|${PR_NUMBER}|g" ${TEMP_INGRESS_FILE}
 
 
 # Apply the temporary Kubernetes deployment
-kubectl apply -f ${TEMP_DEPLOYMENT_FILE}
-
 # Apply the temporary Kubernetes ingress
+# both commands connected so it fails CI when deployment fails
+kubectl apply -f ${TEMP_DEPLOYMENT_FILE} && \
 kubectl apply -f ${TEMP_INGRESS_FILE}
 
 # Clean up temporary files

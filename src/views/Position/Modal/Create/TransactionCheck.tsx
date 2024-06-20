@@ -1,24 +1,31 @@
+import InfoIcon from '@mui/icons-material/Info'
+import Tooltip from '@mui/material/Tooltip'
+import { AccordionBoxWrapper } from 'src/components/Accordion/AccordionBoxWrapper'
 import CustomTypography from 'src/components/CustomTypography'
 import StatusLabel from 'src/components/StatusLabel'
-import * as React from 'react'
-import { AccordionBoxWrapper } from 'src/components/Accordion/AccordionBoxWrapper'
-import { useApp } from 'src/contexts/app.context'
-import Tooltip from '@mui/material/Tooltip'
-import InfoIcon from '@mui/icons-material/Info'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
+import { SetupItemStatus } from 'src/contexts/state'
 
-export const TransactionCheck = () => {
-  const { state } = useApp()
+type Props = {
+  isLoading: boolean
+  error?: Error | null
+  check: any
+}
+export function TransactionCheck({ isLoading, error, check }: Props) {
+  let status: SetupItemStatus = SetupItemStatus.NotDone
 
-  const transactionCheckStatus = state?.setup?.transactionCheck?.status || null
+  if (check?.status == 200) status = SetupItemStatus.Success
+  if (error) status = SetupItemStatus.Failed
+  if (isLoading) status = SetupItemStatus.Loading
 
+  if (status == SetupItemStatus.NotDone) return null
   return (
     <AccordionBoxWrapper
       gap={2}
       sx={{
         m: 3,
         backgroundColor: 'background.default',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
       }}
     >
       <BoxWrapperRow gap={1}>
@@ -35,7 +42,7 @@ export const TransactionCheck = () => {
           <InfoIcon sx={{ fontSize: 24, cursor: 'pointer' }} />
         </Tooltip>
       </BoxWrapperRow>
-      <StatusLabel status={transactionCheckStatus} />
+      <StatusLabel status={status} />
     </AccordionBoxWrapper>
   )
 }

@@ -5163,10 +5163,10 @@ minimist@^1.2.0, minimist@^1.2.6, minimist@^1.2.8, minimist@~1.2.5:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.8.tgz#c1a464e7693302e082a075cee0c057741ac4772c"
   integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
 
-minio@^7.1.3:
-  version "7.1.4"
-  resolved "https://registry.yarnpkg.com/minio/-/minio-7.1.4.tgz#338590423366848109c017b98daf77b2b2d284f4"
-  integrity sha512-1rjcS8l7QlWsA4EZ1JauInkRkzu2J/qN0U+ee3HZErY84bdcebMhd10wDdfpAjmXyFsvrUPnKjZB2G7OJXrvXw==
+minio@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/minio/-/minio-8.0.0.tgz#c712bace51232e20c30568ca160a41a5ac1d13ce"
+  integrity sha512-GkM/lk+Gzwd4fAQvLlB+cy3NV3PRADe0tNXnH9JD5BmdAHKIp+5vypptbjdkU85xWBIQsa2xK35GpXjmYXBBYA==
   dependencies:
     async "^3.2.4"
     block-stream2 "^2.1.0"
@@ -5717,13 +5717,13 @@ queue-microtask@^1.2.2:
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
-react-dom@18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
-  integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
+react-dom@^18.2.0:
+  version "18.3.1"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.3.1.tgz#c2265d79511b57d479b3dd3fdfa51536494c5cb4"
+  integrity sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==
   dependencies:
     loose-envify "^1.1.0"
-    scheduler "^0.23.0"
+    scheduler "^0.23.2"
 
 react-error-boundary@^4.0.12:
   version "4.0.13"
@@ -6029,7 +6029,7 @@ saxes@^6.0.0:
   dependencies:
     xmlchars "^2.2.0"
 
-scheduler@^0.23.0:
+scheduler@^0.23.2:
   version "0.23.2"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.23.2.tgz#414ba64a3b282892e944cf2108ecc078d115cdc3"
   integrity sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==

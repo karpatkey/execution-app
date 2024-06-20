@@ -1,4 +1,6 @@
-import { ExecConfig } from 'src/config/strategies/manager'
+import { Dao, ExecConfig } from 'src/config/strategies/manager'
+
+export { type Dao }
 
 export enum Status {
   Loading = 'Loading',
@@ -16,7 +18,7 @@ export type Token = {
 }
 
 export type Position = {
-  dao: string
+  dao: Dao
   pool_id: string
   protocol: string
   blockchain: AppBlockchain
@@ -49,7 +51,7 @@ export type DBankInfo = {
 
 export type Strategy = {
   id: string
-  dao: string
+  dao: Dao
   name: string
   pool_id: string
   description: string
@@ -94,61 +96,11 @@ export enum SetupStatus {
 }
 
 export const initialState: InitialState = {
-  status: Status.Loading,
   daosConfigs: [],
   daos: [],
-  envNetworkData: null,
-  setup: {
-    status: SetupStatus.Loading,
-    create: {
-      value: null,
-      status: SetupItemStatus.NotDone,
-    },
-    transactionBuild: {
-      value: null,
-      status: SetupItemStatus.NotDone,
-    },
-    transactionCheck: {
-      value: null,
-      status: SetupItemStatus.NotDone,
-    },
-    simulation: {
-      value: null,
-      status: SetupItemStatus.NotDone,
-    },
-    confirm: {
-      value: null,
-      status: SetupItemStatus.NotDone,
-    },
-  },
 }
 
 export type InitialState = {
-  status: Status
   daosConfigs: any[]
-  daos: string[]
-  envNetworkData: Maybe<any>
-  setup: {
-    status: SetupStatus
-    create: {
-      value: Maybe<Strategy>
-      status: SetupItemStatus
-    }
-    transactionBuild: {
-      value: Maybe<TransactionBuild>
-      status: SetupItemStatus
-    }
-    transactionCheck: {
-      value: Maybe<boolean>
-      status: SetupItemStatus
-    }
-    simulation: {
-      value: Maybe<any>
-      status: SetupItemStatus
-    }
-    confirm: {
-      value: Maybe<any>
-      status: SetupItemStatus
-    }
-  }
+  daos: Dao[]
 }

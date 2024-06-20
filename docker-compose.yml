@@ -31,13 +31,30 @@ services:
     profiles:
       - prod
 
+  rolesapi:
+    build:
+      context: ../roles_royce
+      dockerfile: ../roles_royce/docker/Dockerfile.bots
+    container_name: rolesapi
+    environment:
+      - APP=execution_app
+    env_file:
+      - .env
+    ports:
+      - '4001:8080'
+
   pulley:
     build:
       context: ../pulley
     container_name: app-pulley
     environment:
-      - LOGGER_LEVEL=info
+      - LOGGER_LEVEL=debug
+      - PULLEY_SECONDS_TO_REFRESH=300
+      - PULLEY_SECONDS_TO_IDLE_TIMEOUT=90
     env_file:
       - .env
     ports:
       - '4000:4000'
+
+networks:
+  default:

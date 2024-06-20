@@ -16,7 +16,8 @@ async function create(chain: number) {
       throw new Error('RequestError: ' + (await resp.text()))
     }
   } catch (e: any) {
-    throw new Error('Error creating Pulley fork: ' + e.message)
+    console.error('PulleyError: ', e)
+    throw new Error('PulleyError: creating fork: ' + e.message)
   }
 }
 

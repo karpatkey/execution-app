@@ -2,7 +2,9 @@ import { useUser } from '@auth0/nextjs-auth0/client'
 import { Avatar, Button } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useRouter } from 'next/navigation'
+import { ChainFilter } from 'src/components/ChainFilter'
 import CustomTypography from 'src/components/CustomTypography'
+import { DAOFilter } from 'src/components/DAOFilter'
 import Loading from 'src/components/Loading'
 import LogoKarpatkey from 'src/components/LogoKarpatkey'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
@@ -17,7 +19,7 @@ const NotLoggedComponent = () => {
     push('/api/auth/login')
   }
   return (
-    <Button onClick={onLogin} sx={{ gap: 2, height: '48px', padding: '6px 14px' }}>
+    <Button onClick={onLogin} variant="contained" size="large" sx={{ borderRadius: '0.8rem' }}>
       Login
     </Button>
   )
@@ -39,8 +41,10 @@ const LoggedComponent = (props: LoggedComponentProps) => {
   }
   return (
     <BoxWrapperRow>
+      <DAOFilter />
+      <ChainFilter />
       <BoxWrapperRow>
-        {matches && <Avatar alt={name} src={image} />}
+        {matches && <Avatar alt={name} src={image} imgProps={{ loading: 'lazy' }} />}
         <CustomTypography
           ellipsis={true}
           sx={{
@@ -53,7 +57,7 @@ const LoggedComponent = (props: LoggedComponentProps) => {
           {name}
         </CustomTypography>
       </BoxWrapperRow>
-      <Button onClick={onLogout} sx={{ gap: 2, height: '48px', padding: '6px 14px' }}>
+      <Button onClick={onLogout} variant="contained" size="large" sx={{ borderRadius: '0.8rem' }}>
         Logout
       </Button>
     </BoxWrapperRow>
@@ -77,9 +81,9 @@ const Header = () => {
       sx={{
         backgroundColor: 'background.default',
         justifyContent: 'space-between',
-        paddingX: '26px',
-        paddingRight: '48px',
-        paddingLeft: '48px',
+        // paddingX: '26px',
+        paddingRight: '3rem',
+        paddingLeft: '3rem',
         height: HEADER_HEIGHT,
       }}
     >

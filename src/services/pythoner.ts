@@ -7,19 +7,41 @@ interface CommonExecuteReturn {
   error: Maybe<string>
 }
 
-export const CommonExecutePromise = (
-  filePath: string,
+export enum Script {
+  Build,
+  Simulate,
+  Execute,
+}
+
+export const getScriptFilePath = (script: Script) => {
+  const base = 'roles_royce/roles_royce/applications/execution_app'
+  switch (script) {
+    case Script.Execute:
+      return base + '/execute.py'
+    case Script.Simulate:
+      return base + '/simulate.py'
+    case Script.Build:
+      return base + '/transaction_builder.py'
+  }
+}
+
+export function runScript(
+  script: Script,
   parameters: any,
   env: Record<string, string>,
-): Promise<CommonExecuteReturn> => {
+): Promise<CommonExecuteReturn> {
   return new Promise((resolve, reject) => {
     try {
+      const filePath = getScriptFilePath(script)
       const scriptFile = path.resolve(process.cwd(), filePath)
 
       const childEnv = {
         NODE_ENV: process.env.NODE_ENV,
         ...env,
       }
+
+      console.log('Executing', [filePath, ...parameters].join(' '))
+      const started = +new Date()
 
       const python = spawn(`python3`, [`${scriptFile}`, ...parameters], { env: childEnv })
 
@@ -74,6 +96,7 @@ export const CommonExecutePromise = (
           error: message || null,
         }
 
+        console.log(`script took: ${(+new Date() - started) / 1000}s`)
         resolve(body)
       })
     } catch (error) {
