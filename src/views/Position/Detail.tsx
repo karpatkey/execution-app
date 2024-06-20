@@ -92,10 +92,12 @@ export default function Detail({
   const strategies = useMemo(() => {
     return positionConfig.filter((strategy) => {
       const active = isActive(strategy, positionConfig)
-      const allHaveIt = allConfigs.every((c) => {
-        const s = c.positionConfig.find((s) => s.function_name == strategy.function_name)
-        return s?.stresstest
-      })
+      const allHaveIt =
+        allConfigs.length == 1 ||
+        allConfigs.every((c) => {
+          const s = c.positionConfig.find((s) => s.function_name == strategy.function_name)
+          return s?.stresstest
+        })
       const simpleForMultiple = allConfigs.length == 1 || isSimpleStrat(strategy)
 
       return active && allHaveIt && simpleForMultiple
