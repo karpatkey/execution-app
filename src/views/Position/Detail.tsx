@@ -93,7 +93,8 @@ export default function Detail({
     return positionConfig.filter((strategy) => {
       const active = isActive(strategy, positionConfig)
       const allHaveIt = allConfigs.every((c) => {
-        return !!c.positionConfig.find((s) => s.function_name == strategy.function_name)
+        const s = c.positionConfig.find((s) => s.function_name == strategy.function_name)
+        return s?.stresstest
       })
       const simpleForMultiple = allConfigs.length == 1 || isSimpleStrat(strategy)
 
