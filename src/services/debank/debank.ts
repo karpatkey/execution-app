@@ -59,13 +59,15 @@ async function fetchWallet(wallet: Wallet) {
 let getFromDebank = fetchWallet
 
 if (process.env.NODE_ENV != 'test') {
-  // Use caching
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const ExpiryMap = require('expiry-map')
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const pMemoize = require('p-memoize').default
-  const cache = new ExpiryMap(20 * 60 * 1000)
-  getFromDebank = pMemoize(fetchWallet, { cache })
+  ;(async function () {
+    // Use caching
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { default: ExpiryMap } = await import('expiry-map')
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { default: pMemoize } = await import('p-memoize')
+    const cache = new ExpiryMap(20 * 60 * 1000)
+    getFromDebank = pMemoize(fetchWallet, { cache })
+  })()
 }
 
 async function getDebank(path: string, retriesLeft: number = MAX_RETRIES): Promise<any> {
