@@ -243,9 +243,9 @@ const transformToken = (updatedAt: number) => (token: DebankToken) => {
 function transformPosition(position: DebankPosition): ResponsePosition[] {
   const protocol_name = Protocols.get(position.name) || position.name
   const chain = Chains.get(position.chain) || position.chain
-  const tokenOfType =
-    (t: any) =>
-    ({ id, symbol, amount, price }: any) => ({ id, symbol, amount, price, as: t })
+  const tokenOfType = (t: any) => {
+    return ({ id, symbol, amount, price }: any) => ({ id, symbol, amount, price, as: t })
+  }
 
   return position.portfolio_item_list.flatMap((i) => {
     const tokens = [
