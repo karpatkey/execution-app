@@ -27,6 +27,13 @@ type StatusResponse = {
 
 type Env = Record<string, string> | NodeJS.ProcessEnv
 
+const GAS_THRESHOLD_ETH = +(process.env.GASMON_MIN_THRESHOLD || 0.2)
+const GAS_THRESHOLD = BigInt(parseFloat(ethers.WeiPerEther.toString()) * GAS_THRESHOLD_ETH)
+const IGNORE_ADDRESSES = (process.env.GASMON_IGNORE_ADDRESSES || '')
+  .split(',')
+  .filter((a) => a)
+  .map((add) => add.toLowerCase())
+
 async function checkDisassemblersGas(inVaultAccounts: string[]) {
   const env = {
     MODE: 'production',
@@ -68,8 +75,9 @@ async function checkDisassemblersGas(inVaultAccounts: string[]) {
     .map(async ([key, dis, balanceP]) => {
       const b = await balanceP
       balances[key] = formatUnits(b, 'ether')
-      if (b < ethers.WeiPerEther) {
-        if (accounts.includes(dis.toLowerCase())) {
+      if (b < GAS_THRESHOLD) {
+        const addrr = dis.toLowerCase()
+        if (accounts.includes(addrr) && !IGNORE_ADDRESSES.includes(addrr)) {
           errors.push(`${key} has low gas. Current: ${balances[key]}`)
           ok = false
         } else {
@@ -86,7 +94,6 @@ async function checkDisassemblersGas(inVaultAccounts: string[]) {
 export async function getStatus(): Promise<StatusResponse> {
   let loadedkeys: string[] = []
   let vaultError: string | undefined = undefined
-  const threshold = ethers.WeiPerEther
   try {
     const res = await callVaultEthsigner(
       { method: 'GET', path: '/accounts?list=true' },
@@ -108,7 +115,7 @@ export async function getStatus(): Promise<StatusResponse> {
     ok: ok && !vaultError,
     error: [vaultError || '', ...errors].filter((e) => e).join('; '),
     warning: warnings.join('; '),
-    threshold: formatUnits(threshold, 'ether'),
+    threshold: formatUnits(GAS_THRESHOLD, 'ether'),
     balances,
     accounts: loadedkeys,
   }
