@@ -1,0 +1,116 @@
+{
+  "request": {
+    "url": "https://pro-openapi.debank.com/v1/user/protocol?protocol_id=olas&id=0x849D52316331967b6fF1198e5E32A0eB168D039d",
+    "headers": {
+      "accesskey": "",
+      "accept": "application/json"
+    }
+  },
+  "response": {
+    "ok": true,
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "access-control-allow-headers": "X-Requested-With,Content-Type,account,X-Client,X-Version,source,AccessKey",
+      "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
+      "access-control-allow-origin": "*",
+      "access-control-max-age": "1800",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-length": "693",
+      "content-type": "application/json",
+      "date": "Fri, 21 Jun 2024 13:06:04 GMT",
+      "server": "gunicorn/20.0.4",
+      "vary": "Accept-Encoding",
+      "via": "1.1 f2dd3b65381fad5aad94ac94ad7043f8.cloudfront.net (CloudFront)",
+      "x-amz-cf-id": "AIkdL13ZGCMgXJ-8l2xP-t0SyKotp0NTKxKKXYDJI7KjLyaJw1tXcw==",
+      "x-amz-cf-pop": "LIS50-P1",
+      "x-cache": "Miss from cloudfront"
+    },
+    "bodyJson": {
+      "id": "olas",
+      "chain": "eth",
+      "name": "Autonolas",
+      "site_url": "https://olas.network",
+      "logo_url": "https://static.debank.com/image/project/logo_url/olas/4f689363d69fbffd49d9b2a634ca0fd7.png",
+      "has_supported_portfolio": true,
+      "tvl": 421100378.645389,
+      "portfolio_item_list": [
+        {
+          "stats": {
+            "asset_usd_value": 10148278.205430573,
+            "debt_usd_value": 0,
+            "net_usd_value": 10148278.205430573
+          },
+          "asset_dict": {
+            "0x0001a500a6b18995b03f44bb040a5ffc28e45cb0": 6000000
+          },
+          "asset_token_list": [
+            {
+              "id": "0x0001a500a6b18995b03f44bb040a5ffc28e45cb0",
+              "chain": "eth",
+              "name": "Autonolas",
+              "symbol": "OLAS",
+              "display_symbol": null,
+              "optimized_symbol": "OLAS",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/eth_token/logo_url/0x0001a500a6b18995b03f44bb040a5ffc28e45cb0/a1f9a1d2e52588d68d1e229c2aa8b8c5.png",
+              "protocol_id": "olas",
+              "price": 1.6913797009050955,
+              "price_24h_change": -0.05127432623151279,
+              "credit_score": 204585.86596502297,
+              "is_verified": null,
+              "is_scam": false,
+              "is_suspicious": false,
+              "is_core": true,
+              "is_wallet": true,
+              "time_at": 1656584807,
+              "auto_is_core": false,
+              "amount": 6000000
+            }
+          ],
+          "update_at": 1718975164.3639917,
+          "name": "Locked",
+          "detail_types": ["locked"],
+          "detail": {
+            "supply_token_list": [
+              {
+                "id": "0x0001a500a6b18995b03f44bb040a5ffc28e45cb0",
+                "chain": "eth",
+                "name": "Autonolas",
+                "symbol": "OLAS",
+                "display_symbol": null,
+                "optimized_symbol": "OLAS",
+                "decimals": 18,
+                "logo_url": "https://static.debank.com/image/eth_token/logo_url/0x0001a500a6b18995b03f44bb040a5ffc28e45cb0/a1f9a1d2e52588d68d1e229c2aa8b8c5.png",
+                "protocol_id": "olas",
+                "price": 1.6913797009050955,
+                "price_24h_change": -0.05127432623151279,
+                "credit_score": 204585.86596502297,
+                "is_verified": null,
+                "is_scam": false,
+                "is_suspicious": false,
+                "is_core": true,
+                "is_wallet": true,
+                "time_at": 1656584807,
+                "auto_is_core": false,
+                "amount": 6000000
+              }
+            ],
+            "unlock_at": 1725494400
+          },
+          "proxy_detail": {},
+          "pool": {
+            "id": "0x7e01a500805f8a52fad229b3015ad130a332b7b3",
+            "chain": "eth",
+            "project_id": "olas",
+            "adapter_id": "olas_lock",
+            "controller": "0x7e01a500805f8a52fad229b3015ad130a332b7b3",
+            "index": null,
+            "time_at": 1656591093
+          }
+        }
+      ]
+    }
+  }
+}

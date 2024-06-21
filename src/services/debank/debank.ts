@@ -13,40 +13,71 @@ function retryBackoff(retriesLeft: number) {
   return extraSecondPerRetry + randomPart
 }
 
-async function fetchDebankWalletData(wallet: string) {
-  return await getDebank(`/v1/user/all_complex_protocol_list?chain_ids=eth,xdai&id=${wallet}`)
+function chainNumberToId(chain: number): string | undefined {
+  const m = new Map([
+    [1, 'eth'],
+    [100, 'xdai'],
+  ])
+  return m.get(chain)
 }
 
-async function fetchDebankTokensData(wallet: string) {
-  return await getDebank(`/v1/user/all_token_list?isAll=true&id=${wallet}`)
+const MIN_USD_AMOUNT = process.env.AXA_MIN_USD_AMOUNT || 5000
+
+async function fetchDebankWalletData(wallet: Wallet): Promise<any> {
+  const chainId = chainNumberToId(wallet.chainId)
+  const list = await getDebank(
+    `/v1/user/simple_protocol_list?chain_id=${chainId}&id=${wallet.address}`,
+  )
+
+  const protocols = list
+    .filter((p: any) => p.net_usd_value > MIN_USD_AMOUNT)
+    .map((p: any) => {
+      return getDebank(`/v1/user/protocol?protocol_id=${p.id}&id=${wallet.address}`)
+    })
+
+  const results = await Promise.all(protocols)
+  const message = results.find((p) => p.message)?.message
+  if (message) return { message }
+
+  return results.flatMap((p: any) => p)
 }
 
-async function fetchWallet(wallet: string) {
-  console.log(`CALLED FETCH_WALLET ${wallet}`)
+async function fetchDebankTokensData(address: string) {
+  return await getDebank(`/v1/user/all_token_list?isAll=true&id=${address}`)
+}
+
+async function fetchWallet(wallet: Wallet) {
+  console.debug(`CALLED FETCH_WALLET ${wallet.chainId} ${wallet.address}`)
   const p1 = fetchDebankWalletData(wallet)
-  const p2 = fetchDebankTokensData(wallet)
+  const p2 = fetchDebankTokensData(wallet.address)
   const positions = await p1
   const tokens = await p2
   return { positions, tokens, updatedAt: +new Date() }
 }
 
 // Switch to this one for run as script in json-builder
-// const getFromDebank = fetchWallet
+let getFromDebank = fetchWallet
 
-// Use caching
-import ExpiryMap from 'expiry-map'
-import pMemoize from 'p-memoize'
-const cache = new ExpiryMap(20 * 60 * 1000)
-const getFromDebank = pMemoize(fetchWallet, { cache })
+if (process.env.NODE_ENV != 'test') {
+  // Use caching
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const ExpiryMap = require('expiry-map')
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const pMemoize = require('p-memoize').default
+  const cache = new ExpiryMap(20 * 60 * 1000)
+  getFromDebank = pMemoize(fetchWallet, { cache })
+}
 
 async function getDebank(path: string, retriesLeft: number = MAX_RETRIES): Promise<any> {
   try {
     const url = `https://pro-openapi.debank.com${path}`
     const headers = { accept: 'application/json', AccessKey: accessKey() }
+    // console.debug(`[DeBank] fetching ${url}`)
     const response = await fetch(url, { headers })
     const data = await response.json()
     return data
   } catch (error) {
+    // console.error(error)
     if (retriesLeft > 0) {
       const backoff = retryBackoff(retriesLeft)
       console.log(`Retrying Debank call ${path} in ${Math.round(backoff)}ms`)
@@ -240,13 +271,18 @@ function transformPosition(position: DebankPosition): ResponsePosition[] {
   })
 }
 
-export async function getPositions(wallets: string[]) {
-  const processWallet = async (wallet: string) => {
+type Wallet = {
+  address: string
+  chainId: number
+}
+
+export async function getPositions(wallets: Wallet[]) {
+  const processWallet = async (wallet: Wallet) => {
     const { positions, tokens, updatedAt } = await getFromDebank(wallet)
     if (positions.message || tokens.message) {
       throw new Error(positions.message || tokens.message)
     }
-    return transformData(wallet, positions, tokens, updatedAt)
+    return transformData(wallet.address, positions, tokens, updatedAt)
   }
   return await Promise.all(wallets.flatMap(processWallet))
 }

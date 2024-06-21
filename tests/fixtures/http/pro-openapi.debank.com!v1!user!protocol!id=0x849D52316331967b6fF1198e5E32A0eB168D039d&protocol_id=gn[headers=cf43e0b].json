@@ -1,0 +1,337 @@
+{
+  "request": {
+    "url": "https://pro-openapi.debank.com/v1/user/protocol?protocol_id=gnosis_safe&id=0x849D52316331967b6fF1198e5E32A0eB168D039d",
+    "headers": {
+      "accesskey": "",
+      "accept": "application/json"
+    }
+  },
+  "response": {
+    "ok": true,
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "access-control-allow-headers": "X-Requested-With,Content-Type,account,X-Client,X-Version,source,AccessKey",
+      "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
+      "access-control-allow-origin": "*",
+      "access-control-max-age": "1800",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-length": "1232",
+      "content-type": "application/json",
+      "date": "Fri, 21 Jun 2024 13:06:04 GMT",
+      "server": "gunicorn/20.0.4",
+      "vary": "Accept-Encoding",
+      "via": "1.1 a48f09960f130cb6049f12b379cf591e.cloudfront.net (CloudFront)",
+      "x-amz-cf-id": "_Cq0eAxpfFnTOeVziu6I1yyVJms9Ho2s6H80xGIRrcBAWyzPupikUQ==",
+      "x-amz-cf-pop": "LIS50-P1",
+      "x-cache": "Miss from cloudfront"
+    },
+    "bodyJson": {
+      "id": "gnosis_safe",
+      "chain": "eth",
+      "name": "Gnosis Safe",
+      "site_url": "https://gnosis-safe.io",
+      "logo_url": "https://static.debank.com/image/project/logo_url/gnosis_safe/cd360a74475ba95d5c76c189eee7f199.png",
+      "has_supported_portfolio": true,
+      "tvl": 802106900.9247574,
+      "portfolio_item_list": [
+        {
+          "stats": {
+            "asset_usd_value": 93745753.55798857,
+            "debt_usd_value": 0,
+            "net_usd_value": 93745753.55798857
+          },
+          "asset_dict": {
+            "0x5afe3855358e112b5647b952709e6165e1c1eeee": 64000000
+          },
+          "asset_token_list": [
+            {
+              "id": "0x5afe3855358e112b5647b952709e6165e1c1eeee",
+              "chain": "eth",
+              "name": "Safe Token",
+              "symbol": "SAFE",
+              "display_symbol": null,
+              "optimized_symbol": "SAFE",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/eth_token/logo_url/0x5afe3855358e112b5647b952709e6165e1c1eeee/46e9dd25f7a9df3b795d35232bc3c527.png",
+              "protocol_id": "gnosis_safe",
+              "price": 1.4647773993435713,
+              "price_24h_change": 0.03190459338430405,
+              "credit_score": 311659.1198699889,
+              "is_verified": true,
+              "is_scam": false,
+              "is_suspicious": false,
+              "is_core": true,
+              "is_wallet": true,
+              "time_at": 1650491755,
+              "auto_is_core": false,
+              "amount": 64000000
+            }
+          ],
+          "update_at": 1718975164.3225925,
+          "name": "Locked",
+          "detail_types": ["locked"],
+          "detail": {
+            "supply_token_list": [
+              {
+                "id": "0x5afe3855358e112b5647b952709e6165e1c1eeee",
+                "chain": "eth",
+                "name": "Safe Token",
+                "symbol": "SAFE",
+                "display_symbol": null,
+                "optimized_symbol": "SAFE",
+                "decimals": 18,
+                "logo_url": "https://static.debank.com/image/eth_token/logo_url/0x5afe3855358e112b5647b952709e6165e1c1eeee/46e9dd25f7a9df3b795d35232bc3c527.png",
+                "protocol_id": "gnosis_safe",
+                "price": 1.4647773993435713,
+                "price_24h_change": 0.03190459338430405,
+                "credit_score": 311659.1198699889,
+                "is_verified": true,
+                "is_scam": false,
+                "is_suspicious": false,
+                "is_core": true,
+                "is_wallet": true,
+                "time_at": 1650491755,
+                "auto_is_core": false,
+                "amount": 64000000
+              }
+            ]
+          },
+          "proxy_detail": {},
+          "pool": {
+            "id": "0x0a7cb434f96f65972d46a5c1a64a9654dc9959b2",
+            "chain": "eth",
+            "project_id": "gnosis_safe",
+            "adapter_id": "safe_locked",
+            "controller": "0x0a7cb434f96f65972d46a5c1a64a9654dc9959b2",
+            "index": null,
+            "time_at": 1710902471
+          }
+        },
+        {
+          "stats": {
+            "asset_usd_value": 103242819.16325778,
+            "debt_usd_value": 0,
+            "net_usd_value": 103242819.16325778
+          },
+          "asset_dict": {
+            "0x5afe3855358e112b5647b952709e6165e1c1eeee": 70483623.79807693
+          },
+          "asset_token_list": [
+            {
+              "id": "0x5afe3855358e112b5647b952709e6165e1c1eeee",
+              "chain": "eth",
+              "name": "Safe Token",
+              "symbol": "SAFE",
+              "display_symbol": null,
+              "optimized_symbol": "SAFE",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/eth_token/logo_url/0x5afe3855358e112b5647b952709e6165e1c1eeee/46e9dd25f7a9df3b795d35232bc3c527.png",
+              "protocol_id": "gnosis_safe",
+              "price": 1.4647773993435713,
+              "price_24h_change": 0.03190459338430405,
+              "credit_score": 311659.1198699889,
+              "is_verified": true,
+              "is_scam": false,
+              "is_suspicious": false,
+              "is_core": true,
+              "is_wallet": true,
+              "time_at": 1650491755,
+              "auto_is_core": false,
+              "amount": 70483623.79807693,
+              "claimable_amount": 5736427.172364673
+            }
+          ],
+          "update_at": 1718975164.3512738,
+          "name": "Vesting",
+          "detail_types": ["vesting"],
+          "detail": {
+            "token": {
+              "id": "0x5afe3855358e112b5647b952709e6165e1c1eeee",
+              "chain": "eth",
+              "name": "Safe Token",
+              "symbol": "SAFE",
+              "display_symbol": null,
+              "optimized_symbol": "SAFE",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/eth_token/logo_url/0x5afe3855358e112b5647b952709e6165e1c1eeee/46e9dd25f7a9df3b795d35232bc3c527.png",
+              "protocol_id": "gnosis_safe",
+              "price": 1.4647773993435713,
+              "price_24h_change": 0.03190459338430405,
+              "credit_score": 311659.1198699889,
+              "is_verified": true,
+              "is_scam": false,
+              "is_suspicious": false,
+              "is_core": true,
+              "is_wallet": true,
+              "time_at": 1650491755,
+              "auto_is_core": false,
+              "amount": 70483623.79807693,
+              "claimable_amount": 5736427.172364673
+            }
+          },
+          "proxy_detail": {},
+          "position_index": "0x12c1ee9f9b122fa7a0e7a6a733f6e07d30affb7fac1ca061325b11d9ba677382",
+          "pool": {
+            "id": "0x96b71e2551915d98d22c448b040a3bc4801ea4ff",
+            "chain": "eth",
+            "project_id": "gnosis_safe",
+            "adapter_id": "safe_vesting",
+            "controller": "0x96b71e2551915d98d22c448b040a3bc4801ea4ff",
+            "index": null,
+            "time_at": 1656744079
+          }
+        },
+        {
+          "stats": {
+            "asset_usd_value": 12187.398596452327,
+            "debt_usd_value": 0,
+            "net_usd_value": 12187.398596452327
+          },
+          "asset_dict": {
+            "0x5afe3855358e112b5647b952709e6165e1c1eeee": 8320.307646686804
+          },
+          "asset_token_list": [
+            {
+              "id": "0x5afe3855358e112b5647b952709e6165e1c1eeee",
+              "chain": "eth",
+              "name": "Safe Token",
+              "symbol": "SAFE",
+              "display_symbol": null,
+              "optimized_symbol": "SAFE",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/eth_token/logo_url/0x5afe3855358e112b5647b952709e6165e1c1eeee/46e9dd25f7a9df3b795d35232bc3c527.png",
+              "protocol_id": "gnosis_safe",
+              "price": 1.4647773993435713,
+              "price_24h_change": 0.03190459338430405,
+              "credit_score": 311659.1198699889,
+              "is_verified": true,
+              "is_scam": false,
+              "is_suspicious": false,
+              "is_core": true,
+              "is_wallet": true,
+              "time_at": 1650491755,
+              "auto_is_core": false,
+              "amount": 8320.307646686804,
+              "claimable_amount": 2292.8677268556603
+            }
+          ],
+          "update_at": 1718975164.3789656,
+          "name": "Vesting",
+          "detail_types": ["vesting"],
+          "detail": {
+            "token": {
+              "id": "0x5afe3855358e112b5647b952709e6165e1c1eeee",
+              "chain": "eth",
+              "name": "Safe Token",
+              "symbol": "SAFE",
+              "display_symbol": null,
+              "optimized_symbol": "SAFE",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/eth_token/logo_url/0x5afe3855358e112b5647b952709e6165e1c1eeee/46e9dd25f7a9df3b795d35232bc3c527.png",
+              "protocol_id": "gnosis_safe",
+              "price": 1.4647773993435713,
+              "price_24h_change": 0.03190459338430405,
+              "credit_score": 311659.1198699889,
+              "is_verified": true,
+              "is_scam": false,
+              "is_suspicious": false,
+              "is_core": true,
+              "is_wallet": true,
+              "time_at": 1650491755,
+              "auto_is_core": false,
+              "amount": 8320.307646686804,
+              "claimable_amount": 2292.8677268556603
+            }
+          },
+          "proxy_detail": {},
+          "position_index": "0xba1f765945cd424dd4972aa4bad8121fe2042775716518dba770d0df6f5adfa1",
+          "pool": {
+            "id": "0xa0b937d5c8e32a80e3a8ed4227cd020221544ee6",
+            "chain": "eth",
+            "project_id": "gnosis_safe",
+            "adapter_id": "safe_vesting",
+            "controller": "0xa0b937d5c8e32a80e3a8ed4227cd020221544ee6",
+            "index": null,
+            "time_at": 1663765355
+          }
+        },
+        {
+          "stats": {
+            "asset_usd_value": 21637.00234234475,
+            "debt_usd_value": 0,
+            "net_usd_value": 21637.00234234475
+          },
+          "asset_dict": {
+            "0x5afe3855358e112b5647b952709e6165e1c1eeee": 14771.529347763835
+          },
+          "asset_token_list": [
+            {
+              "id": "0x5afe3855358e112b5647b952709e6165e1c1eeee",
+              "chain": "eth",
+              "name": "Safe Token",
+              "symbol": "SAFE",
+              "display_symbol": null,
+              "optimized_symbol": "SAFE",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/eth_token/logo_url/0x5afe3855358e112b5647b952709e6165e1c1eeee/46e9dd25f7a9df3b795d35232bc3c527.png",
+              "protocol_id": "gnosis_safe",
+              "price": 1.4647773993435713,
+              "price_24h_change": 0.03190459338430405,
+              "credit_score": 311659.1198699889,
+              "is_verified": true,
+              "is_scam": false,
+              "is_suspicious": false,
+              "is_core": true,
+              "is_wallet": true,
+              "time_at": 1650491755,
+              "auto_is_core": false,
+              "amount": 14771.529347763835,
+              "claimable_amount": 4147.8143655599315
+            }
+          ],
+          "update_at": 1718975164.4358976,
+          "name": "Vesting",
+          "detail_types": ["vesting"],
+          "detail": {
+            "token": {
+              "id": "0x5afe3855358e112b5647b952709e6165e1c1eeee",
+              "chain": "eth",
+              "name": "Safe Token",
+              "symbol": "SAFE",
+              "display_symbol": null,
+              "optimized_symbol": "SAFE",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/eth_token/logo_url/0x5afe3855358e112b5647b952709e6165e1c1eeee/46e9dd25f7a9df3b795d35232bc3c527.png",
+              "protocol_id": "gnosis_safe",
+              "price": 1.4647773993435713,
+              "price_24h_change": 0.03190459338430405,
+              "credit_score": 311659.1198699889,
+              "is_verified": true,
+              "is_scam": false,
+              "is_suspicious": false,
+              "is_core": true,
+              "is_wallet": true,
+              "time_at": 1650491755,
+              "auto_is_core": false,
+              "amount": 14771.529347763835,
+              "claimable_amount": 4147.8143655599315
+            }
+          },
+          "proxy_detail": {},
+          "position_index": "0x093351f282515dac6088e2085a57b27ab6c80e818fa4b5994cccc060c1786ecd",
+          "pool": {
+            "id": "0xc0fde70a65c7569fe919be57492228dee8cdb585",
+            "chain": "eth",
+            "project_id": "gnosis_safe",
+            "adapter_id": "safe_vesting",
+            "controller": "0xc0fde70a65c7569fe919be57492228dee8cdb585",
+            "index": null,
+            "time_at": 1690387127
+          }
+        }
+      ]
+    }
+  }
+}

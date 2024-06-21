@@ -1,0 +1,115 @@
+{
+  "request": {
+    "url": "https://pro-openapi.debank.com/v1/user/protocol?protocol_id=sommelier&id=0x849D52316331967b6fF1198e5E32A0eB168D039d",
+    "headers": {
+      "accesskey": "",
+      "accept": "application/json"
+    }
+  },
+  "response": {
+    "ok": true,
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "access-control-allow-headers": "X-Requested-With,Content-Type,account,X-Client,X-Version,source,AccessKey",
+      "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
+      "access-control-allow-origin": "*",
+      "access-control-max-age": "1800",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-length": "657",
+      "content-type": "application/json",
+      "date": "Fri, 21 Jun 2024 13:06:04 GMT",
+      "server": "gunicorn/20.0.4",
+      "vary": "Accept-Encoding",
+      "via": "1.1 42c937f806e6e43029a719b83b9a8612.cloudfront.net (CloudFront)",
+      "x-amz-cf-id": "RMfz56N_W8iAqmLapG22p71X0Iz-0ALA2FtFRiWpnzX-bQuWARyAPw==",
+      "x-amz-cf-pop": "LIS50-P1",
+      "x-cache": "Miss from cloudfront"
+    },
+    "bodyJson": {
+      "id": "sommelier",
+      "chain": "eth",
+      "name": "Sommelier",
+      "site_url": "https://app.sommelier.finance/",
+      "logo_url": "https://static.debank.com/image/project/logo_url/sommelier/1d0994e2a258ae7bb5738fd0879571ed.png",
+      "has_supported_portfolio": true,
+      "tvl": 64555287.40461137,
+      "portfolio_item_list": [
+        {
+          "stats": {
+            "asset_usd_value": 540309.4486972118,
+            "debt_usd_value": 0,
+            "net_usd_value": 540309.4486972118
+          },
+          "asset_dict": {
+            "eth": 155.0781831507076
+          },
+          "asset_token_list": [
+            {
+              "id": "eth",
+              "chain": "eth",
+              "name": "ETH",
+              "symbol": "ETH",
+              "display_symbol": null,
+              "optimized_symbol": "ETH",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/token/logo_url/eth/935ae4e4d1d12d59a99717a24f2540b5.png",
+              "protocol_id": "",
+              "price": 3484.11,
+              "price_24h_change": -0.027087947846343354,
+              "credit_score": 100000000,
+              "is_verified": true,
+              "is_scam": false,
+              "is_suspicious": false,
+              "is_core": true,
+              "is_wallet": true,
+              "time_at": 1483200000,
+              "auto_is_core": false,
+              "amount": 155.0781831507076
+            }
+          ],
+          "update_at": 1718975164.3822083,
+          "name": "Yield",
+          "detail_types": ["common"],
+          "detail": {
+            "supply_token_list": [
+              {
+                "id": "eth",
+                "chain": "eth",
+                "name": "ETH",
+                "symbol": "ETH",
+                "display_symbol": null,
+                "optimized_symbol": "ETH",
+                "decimals": 18,
+                "logo_url": "https://static.debank.com/image/token/logo_url/eth/935ae4e4d1d12d59a99717a24f2540b5.png",
+                "protocol_id": "",
+                "price": 3484.11,
+                "price_24h_change": -0.027087947846343354,
+                "credit_score": 100000000,
+                "is_verified": true,
+                "is_scam": false,
+                "is_suspicious": false,
+                "is_core": true,
+                "is_wallet": true,
+                "time_at": 1483200000,
+                "auto_is_core": false,
+                "amount": 155.0781831507076
+              }
+            ]
+          },
+          "proxy_detail": {},
+          "pool": {
+            "id": "0x6c1edce139291af5b84fb1e496c9747f83e876c9",
+            "chain": "eth",
+            "project_id": "sommelier",
+            "adapter_id": "ragetrade_yield",
+            "controller": "0x6c1edce139291af5b84fb1e496c9747f83e876c9",
+            "index": null,
+            "time_at": 1706162795
+          }
+        }
+      ]
+    }
+  }
+}
