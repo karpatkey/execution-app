@@ -1,0 +1,164 @@
+{
+  "request": {
+    "url": "https://pro-openapi.debank.com/v1/user/protocol?protocol_id=angle&id=0x849D52316331967b6fF1198e5E32A0eB168D039d",
+    "headers": {
+      "accesskey": "",
+      "accept": "application/json"
+    }
+  },
+  "response": {
+    "ok": true,
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "access-control-allow-headers": "X-Requested-With,Content-Type,account,X-Client,X-Version,source,AccessKey",
+      "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
+      "access-control-allow-origin": "*",
+      "access-control-max-age": "1800",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-length": "985",
+      "content-type": "application/json",
+      "date": "Fri, 21 Jun 2024 13:06:04 GMT",
+      "server": "gunicorn/20.0.4",
+      "vary": "Accept-Encoding",
+      "via": "1.1 07b26b5e851ab857ec87e6df0aa7882e.cloudfront.net (CloudFront)",
+      "x-amz-cf-id": "IJbxSG-yEuswSmyUQwY5LkAj7UirHe23aaqZ72Izgk_dOwPtKvBgXw==",
+      "x-amz-cf-pop": "LIS50-P1",
+      "x-cache": "Miss from cloudfront"
+    },
+    "bodyJson": {
+      "id": "angle",
+      "chain": "eth",
+      "name": "Angle Protocol",
+      "site_url": "https://app.angle.money",
+      "logo_url": "https://static.debank.com/image/project/logo_url/angle/306ffce483295499c5b62e264148d468.png",
+      "has_supported_portfolio": true,
+      "tvl": 31192474.049194112,
+      "portfolio_item_list": [
+        {
+          "stats": {
+            "asset_usd_value": 1935563.3957066303,
+            "debt_usd_value": 259162.9908148302,
+            "net_usd_value": 1676400.4048918001
+          },
+          "asset_dict": {
+            "0xae7ab96520de3a18e5e111b5eaab095312d7fe84": 555.9707682456162,
+            "0x1a7e4e63778b4f12a199c062f3efdd288afcbce8": -242417.10265340732
+          },
+          "asset_token_list": [
+            {
+              "id": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+              "chain": "eth",
+              "name": "Liquid staked Ether 2.0",
+              "symbol": "stETH",
+              "display_symbol": null,
+              "optimized_symbol": "stETH",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/eth_token/logo_url/0xae7ab96520de3a18e5e111b5eaab095312d7fe84/e4f2c8b4d0b254fe8e04880ff76d872e.png",
+              "protocol_id": "lido",
+              "price": 3481.4121645538366,
+              "price_24h_change": null,
+              "credit_score": 5108442.196288936,
+              "is_verified": true,
+              "is_scam": false,
+              "is_suspicious": false,
+              "is_core": false,
+              "is_wallet": false,
+              "time_at": 1608242396,
+              "auto_is_core": false,
+              "amount": 555.9707682456162
+            },
+            {
+              "id": "0x1a7e4e63778b4f12a199c062f3efdd288afcbce8",
+              "chain": "eth",
+              "name": "EURA (previously agEUR)",
+              "symbol": "EURA",
+              "display_symbol": "EURA",
+              "optimized_symbol": "EURA",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/eth_token/logo_url/0x1a7e4e63778b4f12a199c062f3efdd288afcbce8/ee004294d4abb5d51d078fb8151579d1.png",
+              "protocol_id": "angle",
+              "price": 1.0690788231446076,
+              "price_24h_change": 0.006574856770669739,
+              "credit_score": 97090.65083927542,
+              "is_verified": true,
+              "is_scam": false,
+              "is_suspicious": false,
+              "is_core": true,
+              "is_wallet": true,
+              "time_at": 1634982805,
+              "auto_is_core": false,
+              "amount": -242417.10265340732
+            }
+          ],
+          "update_at": 1718975164.3976007,
+          "name": "Leveraged Farming",
+          "detail_types": ["leveraged_farming"],
+          "detail": {
+            "supply_token_list": [
+              {
+                "id": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+                "chain": "eth",
+                "name": "Liquid staked Ether 2.0",
+                "symbol": "stETH",
+                "display_symbol": null,
+                "optimized_symbol": "stETH",
+                "decimals": 18,
+                "logo_url": "https://static.debank.com/image/eth_token/logo_url/0xae7ab96520de3a18e5e111b5eaab095312d7fe84/e4f2c8b4d0b254fe8e04880ff76d872e.png",
+                "protocol_id": "lido",
+                "price": 3481.4121645538366,
+                "price_24h_change": null,
+                "credit_score": 5108442.196288936,
+                "is_verified": true,
+                "is_scam": false,
+                "is_suspicious": false,
+                "is_core": false,
+                "is_wallet": false,
+                "time_at": 1608242396,
+                "auto_is_core": false,
+                "amount": 555.9707682456162
+              }
+            ],
+            "borrow_token_list": [
+              {
+                "id": "0x1a7e4e63778b4f12a199c062f3efdd288afcbce8",
+                "chain": "eth",
+                "name": "EURA (previously agEUR)",
+                "symbol": "EURA",
+                "display_symbol": "EURA",
+                "optimized_symbol": "EURA",
+                "decimals": 18,
+                "logo_url": "https://static.debank.com/image/eth_token/logo_url/0x1a7e4e63778b4f12a199c062f3efdd288afcbce8/ee004294d4abb5d51d078fb8151579d1.png",
+                "protocol_id": "angle",
+                "price": 1.0690788231446076,
+                "price_24h_change": 0.006574856770669739,
+                "credit_score": 97090.65083927542,
+                "is_verified": true,
+                "is_scam": false,
+                "is_suspicious": false,
+                "is_core": true,
+                "is_wallet": true,
+                "time_at": 1634982805,
+                "auto_is_core": false,
+                "amount": 242417.10265340732
+              }
+            ],
+            "debt_ratio": 0.13389537712362848
+          },
+          "proxy_detail": {},
+          "position_index": "19",
+          "pool": {
+            "id": "0x73aaf8694ba137a7537e7ef544fcf5e2475f227b",
+            "chain": "eth",
+            "project_id": "angle",
+            "adapter_id": "angle_leveraged",
+            "controller": "0x73aaf8694ba137a7537e7ef544fcf5e2475f227b",
+            "index": null,
+            "time_at": 1655279111
+          }
+        }
+      ]
+    }
+  }
+}

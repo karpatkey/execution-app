@@ -1,0 +1,273 @@
+{
+  "request": {
+    "url": "https://pro-openapi.debank.com/v1/user/simple_protocol_list?chain_id=eth&id=0x849D52316331967b6fF1198e5E32A0eB168D039d",
+    "headers": {
+      "accesskey": "",
+      "accept": "application/json"
+    }
+  },
+  "response": {
+    "ok": true,
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "access-control-allow-headers": "X-Requested-With,Content-Type,account,X-Client,X-Version,source,AccessKey",
+      "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
+      "access-control-allow-origin": "*",
+      "access-control-max-age": "1800",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-length": "1774",
+      "content-type": "application/json",
+      "date": "Fri, 21 Jun 2024 13:06:03 GMT",
+      "server": "gunicorn/20.0.4",
+      "vary": "Accept-Encoding",
+      "via": "1.1 daf51694fe4a175a7249d39be5e22e4c.cloudfront.net (CloudFront)",
+      "x-amz-cf-id": "aArYc93ZFJ3ar0KW3zFjrN90kr-hlQvs6wxdPIMyx1zuHCiPSngdEg==",
+      "x-amz-cf-pop": "LIS50-P1",
+      "x-cache": "Miss from cloudfront"
+    },
+    "bodyJson": [
+      {
+        "id": "aave2",
+        "chain": "eth",
+        "name": "Aave V2",
+        "site_url": "https://app.aave.com",
+        "logo_url": "https://static.debank.com/image/project/logo_url/aave2/b8d1ef85570855176b102edf8cda6f8d.png",
+        "has_supported_portfolio": true,
+        "tvl": 1850752180.7792263,
+        "net_usd_value": 3.4814121645538367e-15,
+        "asset_usd_value": 3.4814121645538367e-15,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "aave3",
+        "chain": "eth",
+        "name": "Aave V3",
+        "site_url": "https://app.aave.com",
+        "logo_url": "https://static.debank.com/image/project/logo_url/aave3/07bc2403c8c357d2317db15d64872314.png",
+        "has_supported_portfolio": true,
+        "tvl": 8963626846.198938,
+        "net_usd_value": 6614235.98742106,
+        "asset_usd_value": 8242916.981616894,
+        "debt_usd_value": 1628680.9941958338
+      },
+      {
+        "id": "angle",
+        "chain": "eth",
+        "name": "Angle Protocol",
+        "site_url": "https://app.angle.money",
+        "logo_url": "https://static.debank.com/image/project/logo_url/angle/306ffce483295499c5b62e264148d468.png",
+        "has_supported_portfolio": true,
+        "tvl": 31192474.049194112,
+        "net_usd_value": 1676400.4513053019,
+        "asset_usd_value": 1935563.3957066303,
+        "debt_usd_value": 259162.94440132848
+      },
+      {
+        "id": "ankr",
+        "chain": "eth",
+        "name": "Ankr",
+        "site_url": "https://www.ankr.com/earn/dashboard",
+        "logo_url": "https://static.debank.com/image/project/logo_url/ankr/e858961330e7952b93cf0b9731e341f1.png",
+        "has_supported_portfolio": true,
+        "tvl": 59004670.60099083,
+        "net_usd_value": 2098595.6893672715,
+        "asset_usd_value": 2098595.6893672715,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "aurafinance",
+        "chain": "eth",
+        "name": "Aura Finance",
+        "site_url": "https://app.aura.finance/#/",
+        "logo_url": "https://static.debank.com/image/project/logo_url/aurafinance/70072ae87b9a6281159b6a5a4d06df49.png",
+        "has_supported_portfolio": true,
+        "tvl": 332181636.9760423,
+        "net_usd_value": 17903854.043912992,
+        "asset_usd_value": 17903854.043912992,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "balancer2",
+        "chain": "eth",
+        "name": "Balancer V2",
+        "site_url": "https://balancer.finance",
+        "logo_url": "https://static.debank.com/image/project/logo_url/balancer2/4318f98916b139a44996fc06531e9074.png",
+        "has_supported_portfolio": true,
+        "tvl": 733182922.2721013,
+        "net_usd_value": 1965943.3025770201,
+        "asset_usd_value": 1965943.3025770201,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "compound",
+        "chain": "eth",
+        "name": "Compound",
+        "site_url": "https://app.compound.finance",
+        "logo_url": "https://static.debank.com/image/project/logo_url/compound/0b792243f1f68e9ed082f5a49ee6f21d.png",
+        "has_supported_portfolio": true,
+        "tvl": 811569567.308512,
+        "net_usd_value": 29.716188716224924,
+        "asset_usd_value": 29.716188716224924,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "curve",
+        "chain": "eth",
+        "name": "Curve",
+        "site_url": "https://curve.fi",
+        "logo_url": "https://static.debank.com/image/project/logo_url/curve/aa991be165e771cff87ae61e2a61ef68.png",
+        "has_supported_portfolio": true,
+        "tvl": 2342718849.261348,
+        "net_usd_value": 0.00792329627839793,
+        "asset_usd_value": 0.00792329627839793,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "element",
+        "chain": "eth",
+        "name": "Element",
+        "site_url": "https://app.element.fi",
+        "logo_url": "https://static.debank.com/image/project/logo_url/element/762a6a6f050a158424db128eac88e755.png",
+        "has_supported_portfolio": true,
+        "tvl": 1471208.5625662524,
+        "net_usd_value": 2.306666297315586,
+        "asset_usd_value": 2.306666297315586,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "enzyme",
+        "chain": "eth",
+        "name": "Enzyme",
+        "site_url": "https://app.enzyme.finance",
+        "logo_url": "https://static.debank.com/image/project/logo_url/enzyme/62ca1102cd3f79c2dd38150130498519.png",
+        "has_supported_portfolio": true,
+        "tvl": 192355927.07876962,
+        "net_usd_value": 10753177.544644637,
+        "asset_usd_value": 10753177.544644637,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "gnosis_safe",
+        "chain": "eth",
+        "name": "Gnosis Safe",
+        "site_url": "https://gnosis-safe.io",
+        "logo_url": "https://static.debank.com/image/project/logo_url/gnosis_safe/cd360a74475ba95d5c76c189eee7f199.png",
+        "has_supported_portfolio": true,
+        "tvl": 802106900.9247574,
+        "net_usd_value": 197022397.12218517,
+        "asset_usd_value": 197022397.12218517,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "lido",
+        "chain": "eth",
+        "name": "LIDO",
+        "site_url": "https://stake.lido.fi",
+        "logo_url": "https://static.debank.com/image/project/logo_url/lido/081388ebc44fa042561749bd5338d49e.png",
+        "has_supported_portfolio": true,
+        "tvl": 33301102177.607784,
+        "net_usd_value": 80694058.3723217,
+        "asset_usd_value": 80694058.3723217,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "merkl",
+        "chain": "eth",
+        "name": "Merkl",
+        "site_url": "https://app.merkl.xyz",
+        "logo_url": "https://static.debank.com/image/project/logo_url/merkl/7c4a97689b3310cc3436bc6e1a215476.png",
+        "has_supported_portfolio": true,
+        "tvl": 695571.6521619415,
+        "net_usd_value": 46909.46687159281,
+        "asset_usd_value": 46909.46687159281,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "olas",
+        "chain": "eth",
+        "name": "Autonolas",
+        "site_url": "https://olas.network",
+        "logo_url": "https://static.debank.com/image/project/logo_url/olas/4f689363d69fbffd49d9b2a634ca0fd7.png",
+        "has_supported_portfolio": true,
+        "tvl": 421100378.645389,
+        "net_usd_value": 10148278.205430573,
+        "asset_usd_value": 10148278.205430573,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "ribbon",
+        "chain": "eth",
+        "name": "Ribbon",
+        "site_url": "https://app.ribbon.finance",
+        "logo_url": "https://static.debank.com/image/project/logo_url/ribbon/a6876c5de12708e84b82d9b8625d6f55.png",
+        "has_supported_portfolio": true,
+        "tvl": 6198000.679166455,
+        "net_usd_value": 3.4841100000000005e-15,
+        "asset_usd_value": 3.4841100000000005e-15,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "rocketpool",
+        "chain": "eth",
+        "name": "Rocket Pool",
+        "site_url": "https://stake.rocketpool.net",
+        "logo_url": "https://static.debank.com/image/project/logo_url/rocketpool/772834e5bf734e4119917d7674094d08.png",
+        "has_supported_portfolio": true,
+        "tvl": 3075121759.6566744,
+        "net_usd_value": 6959515.716585394,
+        "asset_usd_value": 6959515.716585394,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "sommelier",
+        "chain": "eth",
+        "name": "Sommelier",
+        "site_url": "https://app.sommelier.finance/",
+        "logo_url": "https://static.debank.com/image/project/logo_url/sommelier/1d0994e2a258ae7bb5738fd0879571ed.png",
+        "has_supported_portfolio": true,
+        "tvl": 64555287.40461137,
+        "net_usd_value": 540309.4486972118,
+        "asset_usd_value": 540309.4486972118,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "spark",
+        "chain": "eth",
+        "name": "Spark",
+        "site_url": "https://app.spark.fi",
+        "logo_url": "https://static.debank.com/image/project/logo_url/spark/08009533094452326c7b9439b8613389.png",
+        "has_supported_portfolio": true,
+        "tvl": 3975995753.649437,
+        "net_usd_value": 0.05533373222322144,
+        "asset_usd_value": 0.10422856205686494,
+        "debt_usd_value": 0.0488948298336435
+      },
+      {
+        "id": "stader",
+        "chain": "eth",
+        "name": "Stader",
+        "site_url": "https://www.staderlabs.com",
+        "logo_url": "https://static.debank.com/image/project/logo_url/stader/04f5168bde2d4fcfe4e30434428f0728.png",
+        "has_supported_portfolio": true,
+        "tvl": 489296559.1990084,
+        "net_usd_value": 7010772.180643404,
+        "asset_usd_value": 7010772.180643404,
+        "debt_usd_value": 0
+      },
+      {
+        "id": "stakewise",
+        "chain": "eth",
+        "name": "StakeWise",
+        "site_url": "https://app.stakewise.io",
+        "logo_url": "https://static.debank.com/image/project/logo_url/stakewise/c23c49fcf9096ab73cf0001d78f570a3.png",
+        "has_supported_portfolio": true,
+        "tvl": 176171634.7099035,
+        "net_usd_value": 7011064.689797706,
+        "asset_usd_value": 7011064.689797706,
+        "debt_usd_value": 0
+      }
+    ]
+  }
+}

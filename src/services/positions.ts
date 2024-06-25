@@ -1,6 +1,5 @@
 import { daoWallets } from 'src/config/constants'
 import * as debank from 'src/services/debank/debank'
-import { DataWarehouse } from 'src/services/dwh/dataWarehouse'
 
 interface PositionsResponse {
   data: Position[]
@@ -43,22 +42,6 @@ interface Adapter {
   enabled: () => boolean
 }
 
-class DisabledAdapter implements Adapter {
-  name: string
-
-  constructor(name: string) {
-    this.name = name
-  }
-
-  enabled() {
-    return true
-  }
-
-  async getPositions(): Promise<{ data: Position[] }> {
-    throw Error('getPositions not implemented for disabled adapter')
-  }
-}
-
 const MIN_USD_AMOUNT = process.env.AXA_MIN_USD_AMOUNT || 5000
 
 function translateId(id: string) {
@@ -72,7 +55,7 @@ async function getDebankPositions(daos: string[]): Promise<{ data: Position[] }>
   const walletPositions = await debank.getPositions(wallets)
 
   const walletDao = new Map<string, string>(
-    dwallets.flatMap(({ dao, wallets }) => wallets.map((wallet) => [wallet, dao])),
+    dwallets.flatMap(({ dao, wallets }) => wallets.map((wallet) => [wallet.address, dao])),
   )
 
   const data = walletPositions.flatMap((walletPosition) => {
@@ -143,13 +126,4 @@ function lptokenNameFromPosition(position: debank.ResponsePosition) {
 
 function debankAdapter() {
   return { getPositions: getDebankPositions, enabled: () => true } as Adapter
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function dwAdapter() {
-  try {
-    return DataWarehouse.getInstance()
-  } catch (e) {
-    return new DisabledAdapter('debank')
-  }
 }

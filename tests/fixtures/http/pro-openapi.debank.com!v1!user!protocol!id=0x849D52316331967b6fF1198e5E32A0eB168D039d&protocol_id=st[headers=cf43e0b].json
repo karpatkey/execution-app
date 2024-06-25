@@ -1,0 +1,115 @@
+{
+  "request": {
+    "url": "https://pro-openapi.debank.com/v1/user/protocol?protocol_id=stakewise&id=0x849D52316331967b6fF1198e5E32A0eB168D039d",
+    "headers": {
+      "accesskey": "",
+      "accept": "application/json"
+    }
+  },
+  "response": {
+    "ok": true,
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "access-control-allow-headers": "X-Requested-With,Content-Type,account,X-Client,X-Version,source,AccessKey",
+      "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
+      "access-control-allow-origin": "*",
+      "access-control-max-age": "1800",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-length": "649",
+      "content-type": "application/json",
+      "date": "Fri, 21 Jun 2024 13:06:07 GMT",
+      "server": "gunicorn/20.0.4",
+      "vary": "Accept-Encoding",
+      "via": "1.1 7a968ba892318de9d85ba300078a49ce.cloudfront.net (CloudFront)",
+      "x-amz-cf-id": "kjCDGHNYbEQfwZC7EMFt_7sEywQGHTjMG2WmH-GRK9OmKJxIZAFRqg==",
+      "x-amz-cf-pop": "LIS50-P1",
+      "x-cache": "Miss from cloudfront"
+    },
+    "bodyJson": {
+      "id": "stakewise",
+      "chain": "eth",
+      "name": "StakeWise",
+      "site_url": "https://app.stakewise.io",
+      "logo_url": "https://static.debank.com/image/project/logo_url/stakewise/c23c49fcf9096ab73cf0001d78f570a3.png",
+      "has_supported_portfolio": true,
+      "tvl": 176171634.7099035,
+      "portfolio_item_list": [
+        {
+          "stats": {
+            "asset_usd_value": 7011064.689797706,
+            "debt_usd_value": 0,
+            "net_usd_value": 7011064.689797706
+          },
+          "asset_dict": {
+            "eth": 2012.2971690898696
+          },
+          "asset_token_list": [
+            {
+              "id": "eth",
+              "chain": "eth",
+              "name": "ETH",
+              "symbol": "ETH",
+              "display_symbol": null,
+              "optimized_symbol": "ETH",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/token/logo_url/eth/935ae4e4d1d12d59a99717a24f2540b5.png",
+              "protocol_id": "",
+              "price": 3484.11,
+              "price_24h_change": -0.02683656453987077,
+              "credit_score": 100000000,
+              "is_verified": true,
+              "is_scam": false,
+              "is_suspicious": false,
+              "is_core": true,
+              "is_wallet": true,
+              "time_at": 1483200000,
+              "auto_is_core": false,
+              "amount": 2012.2971690898696
+            }
+          ],
+          "update_at": 1718975167.3461158,
+          "name": "Lending",
+          "detail_types": ["lending"],
+          "detail": {
+            "supply_token_list": [
+              {
+                "id": "eth",
+                "chain": "eth",
+                "name": "ETH",
+                "symbol": "ETH",
+                "display_symbol": null,
+                "optimized_symbol": "ETH",
+                "decimals": 18,
+                "logo_url": "https://static.debank.com/image/token/logo_url/eth/935ae4e4d1d12d59a99717a24f2540b5.png",
+                "protocol_id": "",
+                "price": 3484.11,
+                "price_24h_change": -0.02683656453987077,
+                "credit_score": 100000000,
+                "is_verified": true,
+                "is_scam": false,
+                "is_suspicious": false,
+                "is_core": true,
+                "is_wallet": true,
+                "time_at": 1483200000,
+                "auto_is_core": false,
+                "amount": 2012.2971690898696
+              }
+            ]
+          },
+          "proxy_detail": {},
+          "pool": {
+            "id": "0xe6d8d8ac54461b1c5ed15740eee322043f696c08",
+            "chain": "eth",
+            "project_id": "stakewise",
+            "adapter_id": "stakewise_lending",
+            "controller": "0xe6d8d8ac54461b1c5ed15740eee322043f696c08",
+            "index": null,
+            "time_at": 1700813123
+          }
+        }
+      ]
+    }
+  }
+}

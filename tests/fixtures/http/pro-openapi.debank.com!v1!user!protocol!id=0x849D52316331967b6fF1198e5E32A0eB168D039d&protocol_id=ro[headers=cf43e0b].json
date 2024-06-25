@@ -1,0 +1,116 @@
+{
+  "request": {
+    "url": "https://pro-openapi.debank.com/v1/user/protocol?protocol_id=rocketpool&id=0x849D52316331967b6fF1198e5E32A0eB168D039d",
+    "headers": {
+      "accesskey": "",
+      "accept": "application/json"
+    }
+  },
+  "response": {
+    "ok": true,
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "access-control-allow-headers": "X-Requested-With,Content-Type,account,X-Client,X-Version,source,AccessKey",
+      "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
+      "access-control-allow-origin": "*",
+      "access-control-max-age": "1800",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-length": "664",
+      "content-type": "application/json",
+      "date": "Fri, 21 Jun 2024 13:06:04 GMT",
+      "server": "gunicorn/20.0.4",
+      "vary": "Accept-Encoding",
+      "via": "1.1 68c9162ccc29f8f3ca30be36950cea58.cloudfront.net (CloudFront)",
+      "x-amz-cf-id": "f1PZh_YFpdr33PKvNLjEZwqibnPYcuuyagiKnoCxcCq4GVSZmtuTMw==",
+      "x-amz-cf-pop": "LIS50-P1",
+      "x-cache": "Miss from cloudfront"
+    },
+    "bodyJson": {
+      "id": "rocketpool",
+      "chain": "eth",
+      "name": "Rocket Pool",
+      "site_url": "https://stake.rocketpool.net",
+      "logo_url": "https://static.debank.com/image/project/logo_url/rocketpool/772834e5bf734e4119917d7674094d08.png",
+      "has_supported_portfolio": true,
+      "tvl": 3075121759.6566744,
+      "portfolio_item_list": [
+        {
+          "stats": {
+            "asset_usd_value": 6959515.716585394,
+            "debt_usd_value": 0,
+            "net_usd_value": 6959515.716585394
+          },
+          "asset_dict": {
+            "eth": 1997.5017196889287
+          },
+          "asset_token_list": [
+            {
+              "id": "eth",
+              "chain": "eth",
+              "name": "ETH",
+              "symbol": "ETH",
+              "display_symbol": null,
+              "optimized_symbol": "ETH",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/token/logo_url/eth/935ae4e4d1d12d59a99717a24f2540b5.png",
+              "protocol_id": "",
+              "price": 3484.11,
+              "price_24h_change": -0.027087947846343354,
+              "credit_score": 100000000,
+              "is_verified": true,
+              "is_scam": false,
+              "is_suspicious": false,
+              "is_core": true,
+              "is_wallet": true,
+              "time_at": 1483200000,
+              "auto_is_core": false,
+              "amount": 1997.5017196889287
+            }
+          ],
+          "update_at": 1718975164.3877146,
+          "name": "Staked",
+          "detail_types": ["common"],
+          "detail": {
+            "supply_token_list": [
+              {
+                "id": "eth",
+                "chain": "eth",
+                "name": "ETH",
+                "symbol": "ETH",
+                "display_symbol": null,
+                "optimized_symbol": "ETH",
+                "decimals": 18,
+                "logo_url": "https://static.debank.com/image/token/logo_url/eth/935ae4e4d1d12d59a99717a24f2540b5.png",
+                "protocol_id": "",
+                "price": 3484.11,
+                "price_24h_change": -0.027087947846343354,
+                "credit_score": 100000000,
+                "is_verified": true,
+                "is_scam": false,
+                "is_suspicious": false,
+                "is_core": true,
+                "is_wallet": true,
+                "time_at": 1483200000,
+                "auto_is_core": false,
+                "amount": 1997.5017196889287
+              }
+            ],
+            "description": "rETH"
+          },
+          "proxy_detail": {},
+          "pool": {
+            "id": "0xae78736cd615f374d3085123a210448e74fc6393",
+            "chain": "eth",
+            "project_id": "rocketpool",
+            "adapter_id": "rocketpool_staked",
+            "controller": "0xae78736cd615f374d3085123a210448e74fc6393",
+            "index": null,
+            "time_at": 1632980684
+          }
+        }
+      ]
+    }
+  }
+}

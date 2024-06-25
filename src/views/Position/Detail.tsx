@@ -111,6 +111,7 @@ export default function Detail({
 
   const onConfigChange = useCallback(
     (data: any) => {
+      console.log('submitted', data)
       onChange({
         strategy: selectedStrategy,
         ...data,

@@ -1,0 +1,115 @@
+{
+  "request": {
+    "url": "https://pro-openapi.debank.com/v1/user/protocol?protocol_id=merkl&id=0x849D52316331967b6fF1198e5E32A0eB168D039d",
+    "headers": {
+      "accesskey": "",
+      "accept": "application/json"
+    }
+  },
+  "response": {
+    "ok": true,
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "access-control-allow-headers": "X-Requested-With,Content-Type,account,X-Client,X-Version,source,AccessKey",
+      "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
+      "access-control-allow-origin": "*",
+      "access-control-max-age": "1800",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-length": "703",
+      "content-type": "application/json",
+      "date": "Fri, 21 Jun 2024 13:06:04 GMT",
+      "server": "gunicorn/20.0.4",
+      "vary": "Accept-Encoding",
+      "via": "1.1 e33c092c8429c324c2810046683bf2f2.cloudfront.net (CloudFront)",
+      "x-amz-cf-id": "FYIksYYLzxJz0DKOTO_cGHYkg4uHcYKqA7GzQq9mFQEb0_L3hVJPVQ==",
+      "x-amz-cf-pop": "LIS50-P1",
+      "x-cache": "Miss from cloudfront"
+    },
+    "bodyJson": {
+      "id": "merkl",
+      "chain": "eth",
+      "name": "Merkl",
+      "site_url": "https://app.merkl.xyz",
+      "logo_url": "https://static.debank.com/image/project/logo_url/merkl/7c4a97689b3310cc3436bc6e1a215476.png",
+      "has_supported_portfolio": true,
+      "tvl": 695571.6521619415,
+      "portfolio_item_list": [
+        {
+          "stats": {
+            "asset_usd_value": 46909.46687159281,
+            "debt_usd_value": 0,
+            "net_usd_value": 46909.46687159281
+          },
+          "asset_dict": {
+            "0x40d16fc0246ad3160ccc09b8d0d3a2cd28ae6c2f": 46932.1851048881
+          },
+          "asset_token_list": [
+            {
+              "id": "0x40d16fc0246ad3160ccc09b8d0d3a2cd28ae6c2f",
+              "chain": "eth",
+              "name": "Gho Token",
+              "symbol": "GHO",
+              "display_symbol": null,
+              "optimized_symbol": "GHO",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/eth_token/logo_url/0x40d16fc0246ad3160ccc09b8d0d3a2cd28ae6c2f/f6cc1d86bdf590208ab77700488d25c3.png",
+              "protocol_id": "gho",
+              "price": 0.9995159348910665,
+              "price_24h_change": 0.00021576050973901544,
+              "credit_score": 537440.2147058437,
+              "is_verified": null,
+              "is_scam": false,
+              "is_suspicious": false,
+              "is_core": true,
+              "is_wallet": true,
+              "time_at": 1689420227,
+              "auto_is_core": false,
+              "amount": 46932.1851048881
+            }
+          ],
+          "update_at": 1718975164.3312743,
+          "name": "Rewards",
+          "detail_types": ["common"],
+          "detail": {
+            "supply_token_list": [
+              {
+                "id": "0x40d16fc0246ad3160ccc09b8d0d3a2cd28ae6c2f",
+                "chain": "eth",
+                "name": "Gho Token",
+                "symbol": "GHO",
+                "display_symbol": null,
+                "optimized_symbol": "GHO",
+                "decimals": 18,
+                "logo_url": "https://static.debank.com/image/eth_token/logo_url/0x40d16fc0246ad3160ccc09b8d0d3a2cd28ae6c2f/f6cc1d86bdf590208ab77700488d25c3.png",
+                "protocol_id": "gho",
+                "price": 0.9995159348910665,
+                "price_24h_change": 0.00021576050973901544,
+                "credit_score": 537440.2147058437,
+                "is_verified": null,
+                "is_scam": false,
+                "is_suspicious": false,
+                "is_core": true,
+                "is_wallet": true,
+                "time_at": 1689420227,
+                "auto_is_core": false,
+                "amount": 46932.1851048881
+              }
+            ]
+          },
+          "proxy_detail": {},
+          "pool": {
+            "id": "0x3ef3d8ba38ebe18db133cec108f4d14ce00dd9ae",
+            "chain": "eth",
+            "project_id": "merkl",
+            "adapter_id": "merkl_reward",
+            "controller": "0x3ef3d8ba38ebe18db133cec108f4d14ce00dd9ae",
+            "index": null,
+            "time_at": 1677058631
+          }
+        }
+      ]
+    }
+  }
+}

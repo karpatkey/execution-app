@@ -1,0 +1,115 @@
+{
+  "request": {
+    "url": "https://pro-openapi.debank.com/v1/user/protocol?protocol_id=enzyme&id=0x849D52316331967b6fF1198e5E32A0eB168D039d",
+    "headers": {
+      "accesskey": "",
+      "accept": "application/json"
+    }
+  },
+  "response": {
+    "ok": true,
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "access-control-allow-headers": "X-Requested-With,Content-Type,account,X-Client,X-Version,source,AccessKey",
+      "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
+      "access-control-allow-origin": "*",
+      "access-control-max-age": "1800",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-length": "702",
+      "content-type": "application/json",
+      "date": "Fri, 21 Jun 2024 13:06:04 GMT",
+      "server": "gunicorn/20.0.4",
+      "vary": "Accept-Encoding",
+      "via": "1.1 2b1fd1e1421ca124eaa002817c6c475a.cloudfront.net (CloudFront)",
+      "x-amz-cf-id": "6RH0aZxxKQPYISHu4bL6Nmhv_Bsgd8szKsUYHZ7vnnUaxdCexkDNBA==",
+      "x-amz-cf-pop": "LIS50-P1",
+      "x-cache": "Miss from cloudfront"
+    },
+    "bodyJson": {
+      "id": "enzyme",
+      "chain": "eth",
+      "name": "Enzyme",
+      "site_url": "https://app.enzyme.finance",
+      "logo_url": "https://static.debank.com/image/project/logo_url/enzyme/62ca1102cd3f79c2dd38150130498519.png",
+      "has_supported_portfolio": true,
+      "tvl": 192355927.07876962,
+      "portfolio_item_list": [
+        {
+          "stats": {
+            "asset_usd_value": 10753177.544644637,
+            "debt_usd_value": 0,
+            "net_usd_value": 10753177.544644637
+          },
+          "asset_dict": {
+            "0xae7ab96520de3a18e5e111b5eaab095312d7fe84": 3088.74015381707
+          },
+          "asset_token_list": [
+            {
+              "id": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+              "chain": "eth",
+              "name": "Liquid staked Ether 2.0",
+              "symbol": "stETH",
+              "display_symbol": null,
+              "optimized_symbol": "stETH",
+              "decimals": 18,
+              "logo_url": "https://static.debank.com/image/eth_token/logo_url/0xae7ab96520de3a18e5e111b5eaab095312d7fe84/e4f2c8b4d0b254fe8e04880ff76d872e.png",
+              "protocol_id": "lido",
+              "price": 3481.4121645538366,
+              "price_24h_change": null,
+              "credit_score": 5108442.196288936,
+              "is_verified": true,
+              "is_scam": false,
+              "is_suspicious": false,
+              "is_core": false,
+              "is_wallet": false,
+              "time_at": 1608242396,
+              "auto_is_core": false,
+              "amount": 3088.74015381707
+            }
+          ],
+          "update_at": 1718975164.4332592,
+          "name": "Yield",
+          "detail_types": ["common"],
+          "detail": {
+            "supply_token_list": [
+              {
+                "id": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+                "chain": "eth",
+                "name": "Liquid staked Ether 2.0",
+                "symbol": "stETH",
+                "display_symbol": null,
+                "optimized_symbol": "stETH",
+                "decimals": 18,
+                "logo_url": "https://static.debank.com/image/eth_token/logo_url/0xae7ab96520de3a18e5e111b5eaab095312d7fe84/e4f2c8b4d0b254fe8e04880ff76d872e.png",
+                "protocol_id": "lido",
+                "price": 3481.4121645538366,
+                "price_24h_change": null,
+                "credit_score": 5108442.196288936,
+                "is_verified": true,
+                "is_scam": false,
+                "is_suspicious": false,
+                "is_core": false,
+                "is_wallet": false,
+                "time_at": 1608242396,
+                "auto_is_core": false,
+                "amount": 3088.74015381707
+              }
+            ]
+          },
+          "proxy_detail": {},
+          "pool": {
+            "id": "0x1ce8aafb51e79f6bdc0ef2ebd6fd34b00620f6db",
+            "chain": "eth",
+            "project_id": "enzyme",
+            "adapter_id": "enzyme_yield",
+            "controller": "0x1ce8aafb51e79f6bdc0ef2ebd6fd34b00620f6db",
+            "index": null,
+            "time_at": 1695041471
+          }
+        }
+      ]
+    }
+  }
+}

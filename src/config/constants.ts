@@ -37,10 +37,10 @@ export const ALL_DAOS = [
   'TestSafeDAO',
 ]
 
-export function daoWallets(dao: string): string[] {
+export function daoWallets(dao: string): { chainId: number; address: string }[] {
   const config = DAO_LIST.find((d) => d.keyName == dao)
   if (!config) return []
-  return config.addresses.flatMap((a) => a.address)
+  return config.addresses
 }
 
 export const DAO_LIST: DAO[] = [
