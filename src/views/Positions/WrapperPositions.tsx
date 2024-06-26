@@ -118,8 +118,18 @@ const WrapperPositions = () => {
       return withChain
     } else {
       return withChain.filter((position) => {
-        const joined = [position.lptokenName, position.pool_id].join(' ').toLowerCase()
-        return !queryTerms.find((t) => joined.search(t) == -1)
+        const tokens = position.tokens.flatMap((t) => [t.symbol, t.id])
+        const terms = [position.lptokenName, position.pool_id, ...tokens].map((t) =>
+          t.toLowerCase(),
+        )
+        const joined = terms.join(' ')
+        return !queryTerms.find((t) => {
+          if (t.charAt(0) == '"' && t.charAt(t.length - 1) == '"') {
+            return !terms.includes(t.substring(1, t.length - 1))
+          } else {
+            return joined.search(t) == -1
+          }
+        })
       })
     }
   }, [positionsWithStrategies, queryTerms, searchParams])
