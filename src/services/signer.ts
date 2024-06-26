@@ -36,14 +36,16 @@ const IGNORE_ADDRESSES = (process.env.GASMON_IGNORE_ADDRESSES || '')
   .map((add) => add.toLowerCase())
 
 async function checkDisassemblersGas(inVaultAccounts: string[]) {
-  const env = {
-    MODE: 'production',
-    ETHEREUM_RPC_ENDPOINT: process.env.ETHEREUM_RPC_ENDPOINT || '',
-    GNOSIS_RPC_ENDPOINT: process.env.GNOSIS_RPC_ENDPOINT || '',
-  }
-
-  const providerEthP = getEthersProvider('ethereum', env, false)
-  const providerGnoP = getEthersProvider('gnosis', env, false)
+  const providerEthP = getEthersProvider(
+    'ethereum',
+    { rpc_url: process.env.ETHEREUM_RPC_ENDPOINT },
+    false,
+  )
+  const providerGnoP = getEthersProvider(
+    'gnosis',
+    { rpc_url: process.env.GNOSIS_RPC_ENDPOINT },
+    false,
+  )
 
   const providerEth = await providerEthP
   const providerGno = await providerGnoP
