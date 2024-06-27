@@ -62,9 +62,6 @@ jobs:
           push: true
           tags: ${{ steps.docker_meta.outputs.tags }}
           file: ./Dockerfile
-          platforms: linux/amd64
-          build-args: |
-            BUILDKIT_CONTEXT_KEEP_GIT_DIR=true
 
   deploy_pr:
     if: github.event_name == 'pull_request'
