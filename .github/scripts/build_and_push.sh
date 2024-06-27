@@ -1,11 +1,17 @@
 #!/bin/bash
 set -xe
 
+REPO_URL="https://github.com/karpatkey/execution-app.git"
+
 # pass as environment variables
 # GIT_REF= #GITHUB_REF
 # DOCKER_REGISTRY="your_registry_url" ${{ secrets.XXX }}
 # DOCKER_USERNAME="your_docker_username"
 # DOCKER_PASSWORD="your_docker_password"
+
+git clone $REPO_URL repo
+cd repo
+git checkout $GIT_REF
 
 BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD | sed 's/[^a-zA-Z0-9]/-/g')  # should be the same as GIT_REF
 COMMIT_SHA=$(git rev-parse HEAD)
