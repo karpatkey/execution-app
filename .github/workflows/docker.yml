@@ -15,6 +15,11 @@ on:
       - reopened
 
   workflow_dispatch:
+env:
+  GIT_REF: ${{ github.head_ref || github.ref_name }}
+  DOCKER_REGISTRY: ${{ secrets.DOCKER_URL }}
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
 jobs:
   docker_build:

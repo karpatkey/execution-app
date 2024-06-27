@@ -1,6 +1,8 @@
 #!/bin/bash
 set -xe
 
+REPO_URL="https://github.com/karpatkey/execution-app.git"
+
 # pass as environment variables
 # GIT_REF= #GITHUB_REF
 # DOCKER_REGISTRY="your_registry_url" ${{ secrets.XXX }}
@@ -20,7 +22,7 @@ DOCKER_TAG_WITH_DATE="${DOCKER_IMAGE_NAME}:${BRANCH_NAME}-${CURRENT_DATE}-${CURR
 DOCKER_TAG_WITH_PR_SHA="${DOCKER_IMAGE_NAME}:pr${PR_SHA}
 
 mkdir -p kaniko/.docker
-echo "{\"auths\":{\"$DOCKER_URL\":{\"username\":\"$DOCKER_USERNAME\",\"password\":\"$DOCKER_PASSWORD\"}}}" > kaniko/.docker/config.json
+echo "{\"auths\":{\"$DOCKER_REGISTRY\":{\"username\":\"$DOCKER_USERNAME\",\"password\":\"$DOCKER_PASSWORD\"}}}" > kaniko/.docker/config.json
 
 docker run --rm -v $(pwd):/workspace -v $(pwd)/kaniko/.cache:/cache -v $(pwd)/kaniko/.docker:/kaniko/.docker \
   gcr.io/kaniko-project/executor:latest \
