@@ -1,8 +1,6 @@
 #!/bin/bash
 set -xe
 
-REPO_URL="https://github.com/karpatkey/execution-app.git"
-
 # pass as environment variables
 # GIT_REF= #GITHUB_REF
 # DOCKER_REGISTRY="your_registry_url" ${{ secrets.XXX }}
@@ -13,8 +11,7 @@ BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD | sed 's/[^a-zA-Z0-9]/-/g')  # sho
 COMMIT_SHA=$(git rev-parse HEAD)
 CURRENT_DATE=$(date -u +"%Y%m%d")
 CURRENT_TIME=$(date -u +"%H%M%S")
-PR_SHA=$(echo "${{ github.event.pull_request.head.sha }}" | cut -c1-7)
-
+PR_SHA=$(echo "$COMMIT_SHA" | cut -c1-7)
 
 DOCKER_TAG="${DOCKER_IMAGE_NAME}:${BRANCH_NAME}"
 DOCKER_TAG_WITH_HASH="${DOCKER_IMAGE_NAME}:${BRANCH_NAME}-${COMMIT_SHA:0:7}"
