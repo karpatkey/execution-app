@@ -1,10 +1,9 @@
-FROM node:20.12-alpine3.19 as base
+FROM node:20.12-alpine3.19 AS base
 
 RUN apk --no-cache add libc6-compat
 
-
 # Builder stage ==============================================================
-FROM base as deps
+FROM base AS deps
 
 # Set working directory in the builder stage
 WORKDIR /app
@@ -15,7 +14,7 @@ COPY package.json yarn.lock .
 # Install Node.js dependencies in the builder stage
 RUN yarn install
 
-FROM base as dev
+FROM base AS dev
 
 # Set working directory in the runner stage
 WORKDIR /app
@@ -32,13 +31,13 @@ EXPOSE 3000
 ENTRYPOINT ["yarn", "dev"]
 
 # Runner stage
-FROM base as prod_builder
+FROM base AS prod_builder
 
 # Set working directory in the runner stage
 WORKDIR /app
 
 # Set environment variables
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
@@ -46,15 +45,14 @@ COPY --from=deps /app/node_modules ./node_modules
 RUN yarn build
 
 # prod stage ================================================================
-FROM base as prod
+FROM base AS prod
 
 WORKDIR /app
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
-
 
 # Set the correct permission for prerender cache
 RUN mkdir .next
@@ -74,8 +72,8 @@ COPY --from=prod_builder --chown=nextjs:nodejs /app/public ./public
 
 USER nextjs
 
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
 EXPOSE 3000
 
