@@ -22,7 +22,7 @@ PR_SHA=$(echo "$COMMIT_SHA" | cut -c1-7)
 DOCKER_TAG="${DOCKER_IMAGE_NAME}:${BRANCH_NAME}"
 DOCKER_TAG_WITH_HASH="${DOCKER_IMAGE_NAME}:${BRANCH_NAME}-${COMMIT_SHA:0:7}"
 DOCKER_TAG_WITH_DATE="${DOCKER_IMAGE_NAME}:${BRANCH_NAME}-${CURRENT_DATE}-${CURRENT_TIME}"
-DOCKER_TAG_WITH_PR_SHA="${DOCKER_IMAGE_NAME}:pr${PR_SHA}
+DOCKER_TAG_WITH_PR_SHA="${DOCKER_IMAGE_NAME}:pr${PR_SHA}"
 
 mkdir -p kaniko/.docker
 echo "{\"auths\":{\"$DOCKER_REGISTRY\":{\"username\":\"$DOCKER_USERNAME\",\"password\":\"$DOCKER_PASSWORD\"}}}" > kaniko/.docker/config.json
@@ -34,6 +34,7 @@ docker run --rm -v $(pwd):/workspace -v $(pwd)/kaniko/.cache:/cache -v $(pwd)/ka
   --destination "$DOCKER_TAG" \
   --destination "$DOCKER_TAG_WITH_HASH" \
   --destination "$DOCKER_TAG_WITH_DATE" \
+  --destination "$DOCKER_TAG_WITH_PR_SHA" \
   --cache=true \
   --cache-dir=/cache \
   --compressed-caching=true \
