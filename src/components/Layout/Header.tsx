@@ -7,6 +7,7 @@ import CustomTypography from 'src/components/CustomTypography'
 import { DAOFilter } from 'src/components/DAOFilter'
 import Loading from 'src/components/Loading'
 import LogoKarpatkey from 'src/components/LogoKarpatkey'
+import { WalletConnect } from 'src/components/WalletConnect'
 import BoxWrapperRow from 'src/components/Wrappers/BoxWrapperRow'
 import { usePositions } from 'src/queries/positions'
 
@@ -57,6 +58,7 @@ const LoggedComponent = (props: LoggedComponentProps) => {
           {name}
         </CustomTypography>
       </BoxWrapperRow>
+      <WalletConnect />
       <Button onClick={onLogout} variant="contained" size="large" sx={{ borderRadius: '0.8rem' }}>
         Logout
       </Button>

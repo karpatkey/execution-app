@@ -74,11 +74,11 @@ export const Modal = (props: ModalProps) => {
   } = useTxCheck(
     params && tx?.tx_transactables
       ? {
-          dao: params.dao,
-          blockchain: params.blockchain,
-          protocol: params.protocol,
-          tx_transactables: tx.tx_transactables,
-        }
+        dao: params.dao,
+        blockchain: params.blockchain,
+        protocol: params.protocol,
+        tx_transactables: tx.tx_transactables,
+      }
       : undefined,
   )
   const {
@@ -86,12 +86,12 @@ export const Modal = (props: ModalProps) => {
     isLoading: isSimulating,
     error: simulationError,
   } = useTxSimulation(
-    params && tx?.tx_transactables
+    params && tx?.transaction
       ? {
-          dao: params.dao,
-          blockchain: params.blockchain,
-          transaction: tx.transaction,
-        }
+        dao: params.dao,
+        blockchain: params.blockchain,
+        transaction: tx.transaction,
+      }
       : undefined,
   )
 
@@ -102,11 +102,11 @@ export const Modal = (props: ModalProps) => {
     setExecuting(true)
 
     execution.mutate({
-      dao: params?.dao,
-      blockchain: params?.blockchain,
+      dao: positions[0].dao,
+      blockchain: positions[0].blockchain,
       transaction: tx?.transaction,
     })
-  }, [tx, execution, params?.blockchain, params?.dao])
+  }, [tx, execution, positions])
 
   const modalPadding = smallScreen ? '1rem' : '3rem'
   return (

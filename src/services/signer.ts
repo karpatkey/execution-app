@@ -2,6 +2,9 @@ import { JsonRpcProvider, ethers, formatUnits } from 'ethers'
 import { Blockchain, Dao } from 'src/config/strategies/manager'
 import { getEthersProvider } from 'src/services/ethers'
 import { AnvilTools } from './dev_tools'
+import { Env } from './executor/env'
+import { chainId } from './executor/mapper'
+import { Pulley } from './pulley'
 
 type Transaction = Record<string, any>
 
@@ -25,8 +28,6 @@ type StatusResponse = {
   accounts?: any
 }
 
-type Env = Record<string, string> | NodeJS.ProcessEnv
-
 const GAS_THRESHOLD_ETH = +(process.env.GASMON_MIN_THRESHOLD || 0.2)
 const GAS_THRESHOLD = BigInt(parseFloat(ethers.WeiPerEther.toString()) * GAS_THRESHOLD_ETH)
 const IGNORE_ADDRESSES = (process.env.GASMON_IGNORE_ADDRESSES || '')
@@ -35,14 +36,16 @@ const IGNORE_ADDRESSES = (process.env.GASMON_IGNORE_ADDRESSES || '')
   .map((add) => add.toLowerCase())
 
 async function checkDisassemblersGas(inVaultAccounts: string[]) {
-  const env = {
-    MODE: 'production',
-    ETHEREUM_RPC_ENDPOINT: process.env.ETHEREUM_RPC_ENDPOINT || '',
-    GNOSIS_RPC_ENDPOINT: process.env.GNOSIS_RPC_ENDPOINT || '',
-  }
-
-  const providerEthP = getEthersProvider('ethereum', env, false)
-  const providerGnoP = getEthersProvider('gnosis', env, false)
+  const providerEthP = getEthersProvider(
+    'ethereum',
+    { rpc_url: process.env.ETHEREUM_RPC_ENDPOINT },
+    false,
+  )
+  const providerGnoP = getEthersProvider(
+    'gnosis',
+    { rpc_url: process.env.GNOSIS_RPC_ENDPOINT },
+    false,
+  )
 
   const providerEth = await providerEthP
   const providerGno = await providerGnoP
@@ -95,10 +98,8 @@ export async function getStatus(): Promise<StatusResponse> {
   let loadedkeys: string[] = []
   let vaultError: string | undefined = undefined
   try {
-    const res = await callVaultEthsigner(
-      { method: 'GET', path: '/accounts?list=true' },
-      process.env,
-    )
+    const res = await callVaultEthsigner({ method: 'GET', path: '/accounts?list=true' })
+
     if (!res.data || !res.data.keys || res.data.keys.length == 0) {
       vaultError = 'No keys imported'
     }
@@ -121,15 +122,15 @@ export async function getStatus(): Promise<StatusResponse> {
   }
 }
 
-async function callVaultEthsigner(request: Record<string, any>, env: Env) {
-  const signerUrl = env.VAULT_SIGNER_URL
-  const vaultToken = env.VAULT_SIGNER_TOKEN
+const VAULT_SIGNER_URL = process.env.VAULT_SIGNER_URL
+const VAULT_TOKEN = process.env.VAULT_SIGNER_TOKEN
 
-  if (!signerUrl && !vaultToken) throw new Error('Signer: Missing vault signer configs')
-  if (!signerUrl) throw new Error('Signer: Missing signer url')
-  if (!vaultToken) throw new Error('Signer: Missing config VAULT_SIGNER_TOKEN')
+async function callVaultEthsigner(request: Record<string, any>) {
+  if (!VAULT_SIGNER_URL && !VAULT_TOKEN) throw new Error('Signer: Missing vault signer configs')
+  if (!VAULT_SIGNER_URL) throw new Error('Signer: Missing signer url')
+  if (!VAULT_TOKEN) throw new Error('Signer: Missing config VAULT_SIGNER_TOKEN')
 
-  const url = signerUrl + request.path
+  const url = VAULT_SIGNER_URL + request.path
 
   const body = request.body
     ? JSON.stringify(request.body, (_, v) => (typeof v === 'bigint' ? v.toString() : v))
@@ -139,7 +140,7 @@ async function callVaultEthsigner(request: Record<string, any>, env: Env) {
     method: request.method || 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${vaultToken}`,
+      Authorization: `Bearer ${VAULT_TOKEN}`,
     },
     body,
   }
@@ -157,67 +158,72 @@ async function callVaultEthsigner(request: Record<string, any>, env: Env) {
 }
 
 export class Signor {
-  provider: JsonRpcProvider
   devMode: boolean
   vaultToken?: string
-  env: Env
   dao: Dao
   blockchain: Blockchain
+  chain: number
+  env: Env
 
-  constructor({
-    env,
-    dao,
-    blockchain,
-    provider,
-  }: {
-    dao: Dao
-    blockchain: Blockchain
-    env: Record<string, string>
-    provider: JsonRpcProvider
-  }) {
-    this.provider = provider
-    this.devMode = env.MODE == 'development'
-    this.env = env || process.env
-    this.vaultToken = this.env.VAULT_SIGNER_TOKEN
+  constructor({ dao, blockchain, env }: { dao: Dao; blockchain: Blockchain; env: Env }) {
+    this.devMode = process.env.MODE == 'development'
+    this.vaultToken = VAULT_TOKEN
     this.dao = dao
     this.blockchain = blockchain
+    this.chain = chainId(this.blockchain) || 1
+    this.env = env
   }
 
   getSignerUrl() {
-    return this.env.VAULT_SIGNER_URL
+    return VAULT_SIGNER_URL
   }
 
   async sendTransaction(transaction: Transaction) {
+    let provider
+    let fork
+
     if (this.devMode) {
       transaction.from = testAddress()
 
-      const anvil = new AnvilTools(this.provider)
+      fork = await Pulley.start(this.chain)
+      provider = await getEthersProvider(this.blockchain, {
+        mev_rpc_url: fork.url,
+        rpc_url: fork.url,
+      })
+
+      const anvil = new AnvilTools(provider)
       await anvil.assignRole({
-        ...this.getRoleParams(),
+        ...this.getRoleParams(this.env),
         assignee: transaction.from,
       })
+    } else {
+      provider = await getEthersProvider(this.blockchain, this.env, true)
     }
 
-    transaction = await this.updateGasAndNonce(transaction)
+    try {
+      transaction = await this.updateGasAndNonce(provider, transaction)
 
-    const path = `/accounts/${transaction.from.toLowerCase()}/sign`
-    const resp = await callVaultEthsigner({ path, body: transaction }, this.env)
+      const path = `/accounts/${transaction.from.toLowerCase()}/sign`
+      const resp = await callVaultEthsigner({ path, body: transaction })
 
-    return await this.provider.broadcastTransaction(resp?.data?.signedTx)
+      return await provider.broadcastTransaction(resp?.data?.signedTx)
+    } finally {
+      fork && fork.release()
+    }
   }
 
-  private async updateGasAndNonce(transaction: Transaction) {
+  private async updateGasAndNonce(provider: JsonRpcProvider, transaction: Transaction) {
     const gasStrategyFeeMultiplier = AGGRESIVE_FEE_MULTIPLER
 
     // TODO review this with Santi or Richard
-    const latestBlock = await this.provider.getBlock('latest')
+    const latestBlock = await provider.getBlock('latest')
     const baseFeePerGas = Number(latestBlock?.baseFeePerGas || 1)
-    const feeData = await this.provider.getFeeData()
+    const feeData = await provider.getFeeData()
     const { maxPriorityFeePerGas } = feeData
     const maxFeePerGas =
       Number(maxPriorityFeePerGas || 1) + Math.round(baseFeePerGas * gasStrategyFeeMultiplier)
 
-    const nonce = await this.provider.getTransactionCount(transaction.from)
+    const nonce = await provider.getTransactionCount(transaction.from)
 
     return {
       ...transaction,
@@ -227,19 +233,11 @@ export class Signor {
     }
   }
 
-  private getRoleParams() {
-    let key =
-      new Map([
-        ['karpatkey DAO', 'KARPATKEY'],
-        ['ENS DAO', 'ENS'],
-      ]).get(this.dao) || this.dao.replaceAll(' ', '').toUpperCase()
-
-    key += '_' + this.blockchain.toUpperCase()
-
+  private getRoleParams(env: Env) {
     return {
-      avatar_safe_address: this.env[key + '_AVATAR_SAFE_ADDRESS'] as string,
-      roles_mod_address: this.env[key + '_ROLES_MOD_ADDRESS'] as string,
-      role: this.env[key + '_ROLE'] as unknown as number,
+      avatar_safe_address: env.avatar_safe_address || '',
+      roles_mod_address: env.roles_mod_address || '',
+      role: env.role,
     }
   }
 }

@@ -1,3 +1,6 @@
+import { Blockchain } from 'src/config/strategies/manager'
+import { chainId } from 'src/services/executor/mapper'
+
 export const TITLE = 'karpatkey'
 
 export const enum DAO_NAME_KEY {
@@ -21,6 +24,7 @@ export interface DAO {
   addresses: {
     address: string
     chainId: number
+    manager_roles?: { address: string; role: number }[]
   }[]
 }
 
@@ -41,6 +45,24 @@ export function daoWallets(dao: string): string[] {
   const config = DAO_LIST.find((d) => d.keyName == dao)
   if (!config) return []
   return config.addresses.flatMap((a) => a.address)
+}
+
+export function daoManagerRole(
+  dao: string,
+  blockchain: Blockchain,
+  connectedWallet?: string,
+): { address: string; role: number } | undefined {
+  if (!connectedWallet) return undefined
+
+  const chain = chainId(blockchain)
+  const config = DAO_LIST.find((d) => d.keyName == dao)
+  if (!config) return undefined
+
+  const wallet = config.addresses.find((a) => a.chainId == chain)
+
+  return (wallet?.manager_roles || []).find(
+    (mr) => mr.address.toLowerCase() == connectedWallet.toLowerCase(),
+  )
 }
 
 export const DAO_LIST: DAO[] = [
@@ -129,6 +151,12 @@ export const DAO_LIST: DAO[] = [
       {
         address: '0x25e6bf739efdf0f79656423b592afc4d25f70f20',
         chainId: 100,
+        manager_roles: [
+          {
+            address: '0xD0AD4A2DAbDeaE18A943b8237c9023afD87c9664',
+            role: 2,
+          },
+        ],
       },
     ],
   },

@@ -47,7 +47,7 @@ export function TransactionSimulation({ isLoading, simulation, error, onSimulate
   if (error) status = SetupItemStatus.Failed
   if (isLoading) status = SetupItemStatus.Loading
 
-  const showSimulateButton = !isLoading && !simulation?.shareUrl
+  const showSimulateButton = !isLoading && simulation?.data?.simulation?.share_url
 
   if (status == SetupItemStatus.NotDone) return null
 
@@ -76,11 +76,11 @@ export function TransactionSimulation({ isLoading, simulation, error, onSimulate
               {translateErrorMessage(error)}
             </CustomTypography>
           )}
-          {!isLoading && simulation?.share_url && (
+          {!isLoading && simulation?.data?.simulation?.share_url && (
             <Button
               variant="contained"
               color="secondary"
-              onClick={() => window.open(simulation?.share_url, '_blank')}
+              onClick={() => window.open(simulation?.data?.simulation?.share_url, '_blank')}
             >
               View Tenderly simulation report
             </Button>
